@@ -44,7 +44,7 @@ AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE),
 STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
-Copyright (C) 2010-2011 Apple Inc. All Rights Reserved.
+Copyright (C) 2010-2013 Apple Inc. All Rights Reserved.
 
 */
 
@@ -56,16 +56,18 @@ Copyright (C) 2010-2011 Apple Inc. All Rights Reserved.
 
 @class AVPlayerDemoPlaybackViewController;
 
+
 @interface AVPlayerDemoAppDelegate : NSObject <AssetBrowserControllerDelegate, UITableViewDelegate, UINavigationControllerDelegate>
 {
 @private
     IBOutlet UINavigationController* cachedAssetBrowser;
     IBOutlet UIWindow *window;
     UITabBarController *tabBarController;
-	NSMutableArray *alertCompletionHandlers;
 	AVPlayerDemoPlaybackViewController* playbackViewController;
 }
 
 @property (nonatomic, retain) UINavigationController *cachedAssetBrowser;
+@property (nonatomic, retain) AVPlayerDemoPlaybackViewController* playbackViewController;
+
 
 @end

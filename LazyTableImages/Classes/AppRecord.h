@@ -3,7 +3,7 @@
  Abstract: Object encapsulating information about an iPhone app in the 'Top Paid Apps' RSS feed.
  Each one corresponds to a row in the app's table.
   
-  Version: 1.3 
+  Version: 1.4 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -43,23 +43,16 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2012 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
  */
 
 @interface AppRecord : NSObject
-{
-    NSString *appName;
-    UIImage *appIcon;
-    NSString *artist;
-    NSString *imageURLString;
-    NSString *appURLString;
-}
 
-@property (nonatomic, retain) NSString *appName;
-@property (nonatomic, retain) UIImage *appIcon;
-@property (nonatomic, retain) NSString *artist;
-@property (nonatomic, retain) NSString *imageURLString;
-@property (nonatomic, retain) NSString *appURLString;
+@property (nonatomic, strong) NSString *appName;
+@property (nonatomic, strong) UIImage *appIcon;
+@property (nonatomic, strong) NSString *artist;
+@property (nonatomic, strong) NSString *imageURLString;
+@property (nonatomic, strong) NSString *appURLString;
 
 @end

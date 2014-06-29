@@ -1,7 +1,7 @@
 /*
      File: AddGroupViewController.h
- Abstract: Definitions for the AddGroupViewController class.
-  Version: 1.0
+ Abstract: Allows users to enter a name for a new group.
+  Version: 1.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,30 +41,11 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2011 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
 */
 
-@class AddGroupViewController;
-@protocol AddGroupDelegate;
-
-@interface AddGroupViewController : UIViewController<UITextFieldDelegate>
-{
-	UITextField *textField;
-	id <AddGroupDelegate> delegate;
-}
-
-@property(nonatomic, retain) IBOutlet UITextField *textField;
-@property (nonatomic, assign) id <AddGroupDelegate> delegate;
-
-- (IBAction)cancel:(id)sender;
-- (IBAction)save:(id)sender;
-
-@end
-
-@protocol AddGroupDelegate <NSObject>
-
-- (void)addViewController:(AddGroupViewController *)addGroupViewController 
-			  didAddGroup:(NSString *)name;
+@interface AddGroupViewController : UIViewController
+@property (nonatomic, copy) NSString *group;
 
 @end

@@ -1,7 +1,7 @@
 /*
      File: AUBaseHelper.cpp 
  Abstract:  AUBaseHelper.h  
-  Version: 1.01 
+  Version: 1.0.4 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2012 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
 */
 #include "AUBaseHelper.h"
@@ -75,13 +75,12 @@ UInt32 FindInvalidSamples(Float32 *inSource, UInt32 inFramesToProcess, bool &out
 	float *sourceP = inSource;
 	
 	UInt32 badSamplesDetected = 0;
-	bool hasNonZero = false;
 	for (UInt32 i=0; i < inFramesToProcess; i++)
 	{
-		float  input = *(sourceP++);
+		float  input = *sourceP;
 		
 		if(input > 0) 
-			hasNonZero = true;
+			outHasNonZero = true;
 
 		float absx = fabs(input);
 		
@@ -93,9 +92,10 @@ UInt32 FindInvalidSamples(Float32 *inSource, UInt32 inFramesToProcess, bool &out
 				//printf("\tbad sample: %f\n", input);
 				badSamplesDetected++;
 				if (zapInvalidSamples)
-					input = 0;
+					*sourceP = 0;
 			}
-		} 
+		}
+        sourceP++;
 	}
 	
 	return badSamplesDetected;

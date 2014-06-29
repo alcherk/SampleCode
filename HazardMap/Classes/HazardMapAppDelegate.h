@@ -1,7 +1,7 @@
 /*
      File: HazardMapAppDelegate.h
  Abstract: UIApplication delegate for the application.
-  Version: 1.1
+  Version: 1.2
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,21 +41,15 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
 #import <UIKit/UIKit.h>
 
-@class HazardMapViewController;
+@interface HazardMapAppDelegate : NSObject <UIApplicationDelegate>
 
-@interface HazardMapAppDelegate : NSObject <UIApplicationDelegate> {
-    UIWindow *window;
-    HazardMapViewController *viewController;
-}
-
-@property (nonatomic, retain) IBOutlet UIWindow *window;
-@property (nonatomic, retain) IBOutlet HazardMapViewController *viewController;
+@property (nonatomic, strong) UIWindow *window;
 
 @end
 

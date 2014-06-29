@@ -23,12 +23,12 @@ details on the application architecture.
 ===========================================================================
 BUILD REQUIREMENTS:
 
-iOS SDK 4.2 or later, Mac OS X v10.6 or later
+OS X 10.8, iOS 7.0 SDK
 
 ===========================================================================
 RUNTIME REQUIREMENTS:
 
-iOS 3.2 or later
+iOS 6.0 or later, iPad only
 
 ===========================================================================
 PACKAGING LIST:
@@ -70,7 +70,11 @@ First version, incorporates the following changes from WWDC version:
   - Amended method signature in delegate protocol to conform to Cocoa conventions.
   - Removed text search functionality, addressed in separate sample.
   - Combined font and font feature UI into single popover.
+  
+Version 1.1
+  - Fixed compiler and Static Analyzer warnings.
+  - Updated with storyboard and auto layout.
 
 ===========================================================================
-Copyright (C) 2011 Apple Inc. All rights reserved.
+Copyright (C) 2011~14 Apple Inc. All rights reserved.
 

@@ -1,7 +1,7 @@
 /*
      File: PhoneContentController.h 
  Abstract: Content controller used to manage the iPhone user interface for this app. 
-  Version: 1.4 
+  Version: 1.5 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2010 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
  */
 
@@ -50,21 +50,10 @@
 
 #import "ContentController.h"
 
-@interface PhoneContentController : ContentController <UIScrollViewDelegate>
-{   
-    UIScrollView *scrollView;
-	UIPageControl *pageControl;
-    NSMutableArray *viewControllers;
-    
-    // To be used when scrolls originate from the UIPageControl
-    BOOL pageControlUsed;
-}
+@class RootViewController;
 
-@property (nonatomic, retain) IBOutlet UIScrollView *scrollView;
-@property (nonatomic, retain) IBOutlet UIPageControl *pageControl;
+@interface PhoneContentController : ContentController
 
-@property (nonatomic, retain) NSMutableArray *viewControllers;
-
-- (IBAction)changePage:(id)sender;
+@property (nonatomic, strong) IBOutlet RootViewController *rootViewController;
 
 @end

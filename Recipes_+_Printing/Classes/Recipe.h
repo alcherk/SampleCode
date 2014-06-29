@@ -1,7 +1,7 @@
 /*
      File: Recipe.h 
  Abstract: The model object for storing information about a Recipe 
-  Version: 1.1 
+  Version: 1.2 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,28 +41,21 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2011 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2014 Apple Inc. All Rights Reserved. 
   
  */ 
 
 #import <Foundation/Foundation.h>
 #import <AddressBook/AddressBook.h>
 
-@interface Recipe : NSObject {
-	NSString *name;
-    NSString *description;
-    NSString *prepTime;
-	NSString *instructions;
-	UIImage *image;
-	UIImage *thumbnailImage;
-	NSMutableArray *ingredients;
-}
+@interface Recipe : NSObject
+
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, copy) NSString *description;
 @property (nonatomic, copy) NSString *prepTime;
 @property (nonatomic, copy) NSString *instructions;
-@property (nonatomic, retain) UIImage *image;
-@property (nonatomic, retain) UIImage *thumbnailImage;
+@property (nonatomic, strong) UIImage *image;
+@property (nonatomic, strong) UIImage *thumbnailImage;
 @property (nonatomic, copy) NSMutableArray *ingredients;
 
 - (NSString *)htmlRepresentation;

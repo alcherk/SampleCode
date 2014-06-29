@@ -2,7 +2,7 @@
 /*
      File: AppDelegate.h
  Abstract: A simple application delegate to display the application's window.
-  Version: 1.0
+  Version: 1.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -42,21 +42,16 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2011 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
 */
 
 #import <UIKit/UIKit.h>
 
-@class RootViewController;
+@interface AppDelegate : UIResponder <UIApplicationDelegate>
 
-@interface AppDelegate : NSObject <UIApplicationDelegate> {
-    UIWindow *window;
-    RootViewController *viewController;
-}
-
-@property (nonatomic, retain) IBOutlet UIWindow *window;
-@property (nonatomic, retain) IBOutlet RootViewController *viewController;
+@property (strong, nonatomic) UIWindow *window;
 
 @end
+
 

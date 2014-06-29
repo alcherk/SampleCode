@@ -1,7 +1,7 @@
 /* 
      File: DITableViewController.h
  Abstract: The table view that display docs of different types.
-  Version: 1.4
+  Version: 1.6
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2012 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
@@ -50,18 +50,5 @@
 
 #import "DirectoryWatcher.h"
 
-@interface DITableViewController : UITableViewController <QLPreviewControllerDataSource,
-                                                          QLPreviewControllerDelegate,
-                                                          DirectoryWatcherDelegate,
-                                                          UIDocumentInteractionControllerDelegate>
-{
-    DirectoryWatcher *docWatcher;
-    NSMutableArray *documentURLs;
-    UIDocumentInteractionController *docInteractionController;
-}
-
-@property (nonatomic, retain) DirectoryWatcher *docWatcher;
-@property (nonatomic, retain) NSMutableArray *documentURLs;
-@property (nonatomic, retain) UIDocumentInteractionController *docInteractionController;
-
+@interface DITableViewController : UITableViewController 
 @end

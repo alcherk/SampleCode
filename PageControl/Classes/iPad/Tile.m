@@ -1,7 +1,7 @@
 /*
      File: Tile.m 
  Abstract: Tile view for drawing our number content. 
-  Version: 1.4 
+  Version: 1.5 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2010 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
  */
 
@@ -55,12 +55,12 @@
     
 	UIFont *fontToUse = [UIFont boldSystemFontOfSize:100.0];
 	
-	NSString *strToDraw = [NSString stringWithFormat:@"%ld", self.tag]; 
+	NSString *strToDraw = [NSString stringWithFormat:@"%ld", (long)self.tag];
 	
     CGSize size = [strToDraw sizeWithFont:fontToUse];
     
-    CGRect textBounds = CGRectMake(self.bounds.origin.x + (self.bounds.size.width - size.width) / 2,
-                                   self.bounds.origin.y + (self.bounds.size.height - size.height) / 2,
+    CGRect textBounds = CGRectMake(self.bounds.origin.x + (CGRectGetWidth(self.bounds) - size.width) / 2,
+                                   self.bounds.origin.y + (CGRectGetHeight(self.bounds) - size.height) / 2,
                                    size.width, size.height);
     [strToDraw drawInRect:textBounds withFont:fontToUse]; 
 }

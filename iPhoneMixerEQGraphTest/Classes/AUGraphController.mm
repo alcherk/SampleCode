@@ -1,7 +1,7 @@
 /*
     File: AUGraphController.mm
 Abstract: Sets up the AUGraph, loading up the audio data using ExtAudioFile, the input render procedure and so on.
- Version: 1.2
+ Version: 1.2.2
 
 Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
 Inc. ("Apple") in consideration of your agreement to the following
@@ -41,7 +41,7 @@ AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE),
 STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
-Copyright (C) 2010 Apple Inc. All Rights Reserved.
+Copyright (C) 2014 Apple Inc. All Rights Reserved.
 
 */
 
@@ -79,7 +79,7 @@ static OSStatus renderInput(void *inRefCon, AudioUnitRenderActionFlags *ioAction
             memcpy(out, &in[sample], ((inNumberFrames - offset) * userData->soundBuffer[inBusNumber].asbd.mBytesPerFrame));
             return noErr;
         } else {
-            // got no source data
+            // we have no source data
             SilenceData(ioData);
             *ioActionFlags |= kAudioUnitRenderAction_OutputIsSilence;
             return noErr;
@@ -88,7 +88,7 @@ static OSStatus renderInput(void *inRefCon, AudioUnitRenderActionFlags *ioAction
 	
     memcpy(out, &in[sample], ioData->mBuffers[0].mDataByteSize);
     
-    //printf("render input bus %ld sample %ld\n", inBusNumber, sample);
+    //printf("render input bus %ld from sample %ld\n", inBusNumber, sample);
     
     return noErr;
 }
@@ -181,15 +181,16 @@ static OSStatus renderNotification(void *inRefCon, AudioUnitRenderActionFlags *i
 	OSStatus result = noErr;
     
     // load up the audio data
-    [self performSelectorInBackground:@selector(loadFiles) withObject:nil];
+    printf("load up audio data\n");
+    [self loadFiles];
     
-    printf("new AUGraph\n");
+    printf("\nnew AUGraph\n");
     
     // create a new AUGraph
 	result = NewAUGraph(&mGraph);
     if (result) { printf("NewAUGraph result %ld %08X %4.4s\n", result, (unsigned int)result, (char*)&result); return; }
 	
-    // create three CAComponentDescription for the AUs we want in the graph
+    // create three Audio Component Descriptons for the AUs we want in the graph using the CAComponentDescription helper class
     
     // output unit
     CAComponentDescription output_desc(kAudioUnitType_Output, kAudioUnitSubType_RemoteIO, kAudioUnitManufacturer_Apple);
@@ -239,7 +240,7 @@ static OSStatus renderNotification(void *inRefCon, AudioUnitRenderActionFlags *i
     result = AudioUnitSetProperty(mMixer, kAudioUnitProperty_ElementCount, kAudioUnitScope_Input, 0, &numbuses, sizeof(numbuses));
     if (result) { printf("AudioUnitSetProperty result %ld %08X %4.4s\n", result, (unsigned int)result, (char*)&result); return; }
 
-	for (int i = 0; i < numbuses; ++i) {
+	for (UInt32 i = 0; i < numbuses; ++i) {
 		// setup render callback struct
 		AURenderCallbackStruct rcbs;
 		rcbs.inputProc = &renderInput;
@@ -251,7 +252,7 @@ static OSStatus renderNotification(void *inRefCon, AudioUnitRenderActionFlags *i
         result = AUGraphSetNodeInputCallback(mGraph, mixerNode, i, &rcbs);
         if (result) { printf("AUGraphSetNodeInputCallback result %ld %08X %4.4s\n", result, (unsigned int)result, (char*)&result); return; }
 		
-		printf("set input bus %d, client kAudioUnitProperty_StreamFormat\n", i);
+		printf("set input bus %d, client kAudioUnitProperty_StreamFormat\n", (unsigned int)i);
         
         // set the input stream format, this is the format of the audio for mixer input
 		result = AudioUnitSetProperty(mMixer, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, i, &mClientFormat, sizeof(mClientFormat));
@@ -275,9 +276,14 @@ static OSStatus renderNotification(void *inRefCon, AudioUnitRenderActionFlags *i
     }*/
     
     printf("set output kAudioUnitProperty_StreamFormat\n");
+    mOutputFormat.Print();
     
     // set the output stream format of the mixer
 	result = AudioUnitSetProperty(mMixer, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Output, 0, &mOutputFormat, sizeof(mOutputFormat));
+    if (result) { printf("AudioUnitSetProperty result %ld %08X %4.4s\n", result, (unsigned int)result, (char*)&result); return; }
+    
+    // set the output stream format of the iPodEQ audio unit
+    result = AudioUnitSetProperty(mEQ, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Output, 0, &mOutputFormat, sizeof(mOutputFormat));
     if (result) { printf("AudioUnitSetProperty result %ld %08X %4.4s\n", result, (unsigned int)result, (char*)&result); return; }
 
     printf("set render notification\n");
@@ -309,7 +315,7 @@ static OSStatus renderNotification(void *inRefCon, AudioUnitRenderActionFlags *i
         
         // open one of the two source files
         OSStatus result = ExtAudioFileOpenURL(sourceURL[i], &xafref);
-        if (result || !xafref) { printf("ExtAudioFileOpenURL result %ld %08X %4.4s\n", result, (unsigned int)result, (char*)&result); return; }
+        if (result || 0 == xafref) { printf("ExtAudioFileOpenURL result %ld %08X %4.4s\n", result, (unsigned int)result, (char*)&result); return; }
         
         // get the file data format, this represents the file's actual data format
         // for informational purposes only -- the client format set on ExtAudioFile is what we really want back
@@ -331,7 +337,7 @@ static OSStatus renderNotification(void *inRefCon, AudioUnitRenderActionFlags *i
         UInt64 numFrames = 0;
         propSize = sizeof(numFrames);
         result = ExtAudioFileGetProperty(xafref, kExtAudioFileProperty_FileLengthFrames, &propSize, &numFrames);
-        if (result) { printf("ExtAudioFileGetProperty kExtAudioFileProperty_FileLengthFrames result %ld %08X %4.4s\n", result, (unsigned int)result, (char*)&result); return; }
+        if (result || numFrames == 0) { printf("ExtAudioFileGetProperty kExtAudioFileProperty_FileLengthFrames result %ld %08X %4.4s\n", result, (unsigned int)result, (char*)&result); return; }
                
         // keep track of the largest number of source frames
         if (numFrames > mUserData.maxNumFrames) mUserData.maxNumFrames = numFrames;

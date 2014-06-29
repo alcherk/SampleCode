@@ -1,7 +1,7 @@
 /*
      File: MyViewController.h 
  Abstract: The root view controller for the iPhone design of this app. 
-  Version: 1.4 
+  Version: 1.5 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,27 +41,19 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2010 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
  */
 
 #import <UIKit/UIKit.h>
 
-
 @interface MyViewController : UIViewController
-{
-    UILabel *pageNumberLabel;
-    int pageNumber;
-    
-    UILabel *numberTitle;
-    UIImageView *numberImage;
-}
 
-@property (nonatomic, retain) IBOutlet UILabel *pageNumberLabel;
+@property (nonatomic, strong) IBOutlet UILabel *pageNumberLabel;
 
-@property (nonatomic, retain) IBOutlet UILabel *numberTitle;
-@property (nonatomic, retain) IBOutlet UIImageView *numberImage;
+@property (nonatomic, strong) IBOutlet UILabel *numberTitle;
+@property (nonatomic, strong) IBOutlet UIImageView *numberImage;
 
-- (id)initWithPageNumber:(int)page;
+- (id)initWithPageNumber:(NSUInteger)page;
 
 @end

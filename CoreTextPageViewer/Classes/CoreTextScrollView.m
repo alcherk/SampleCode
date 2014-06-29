@@ -3,7 +3,7 @@
  Abstract: Manages the display of pages for a given document to display. This is the view that you will use in Interface Builder or create directly to display and interact with an AttributedStringDoc in an application. 
  It is also fair to say that this view acts as a controller for CoreTextViews. You can change the page to display, manage text selection, and change font parameters for the document.
 
-  Version: 1.0
+  Version: 1.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -43,7 +43,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2011 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
 */
 
@@ -146,17 +146,16 @@
 }
 
 - (CoreTextViewFrameInfo*)initWithFrameType:(ASDFrameType)type path:(CGPathRef)thePath {
-    [super init];
-	
-	frameType = type;
-	path = CGPathRetain(thePath);
-	setter = NULL;
-	frame = NULL;
-	value = nil;
-	stringRange.location = 0;
-	stringRange.length = 0;
-    stringOffsetForSetter = 0;
-
+    if (self = [super init]) {
+        frameType = type;
+        path = CGPathRetain(thePath);
+        setter = NULL;
+        frame = NULL;
+        value = nil;
+        stringRange.location = 0;
+        stringRange.length = 0;
+        stringOffsetForSetter = 0;
+    }
     return self;    
 }
 
@@ -183,12 +182,13 @@
 			CGRect iBoundRect;
 			CTFontGetBoundingRectsForGlyphs(font, kCTFontHorizontalOrientation, &iGlyph, &iBoundRect, 1);
 			iWidth = iBoundRect.size.width;
-            CFRelease(font);
 		}
 		else
 			iWidth = 3.0;	// should have found the glyph width - be conservative and assume something small
 			
 		helveticaLineHeight = CTFontGetAscent(font) + CTFontGetDescent(font) + CTFontGetLeading(font);
+        
+        CFRelease(font);
 	}
 	
 	NSUInteger maxLength = [document.attributedString length] - stringOffset;
@@ -347,33 +347,31 @@
 @synthesize lastFreeFlowFrame;
 
 - (CoreTextViewPageInfo*)initWithFramesToDraw:(NSArray*)frames pageNumber:(NSInteger)page rangeStart:(NSUInteger)start rangeEnd:(NSUInteger)end layer:(CALayer*)layer {
-    [super init];
-
-	pageNumber = page;
-    framesToDraw = [frames retain];
-	rangeStart = start;
-	rangeEnd = end;
-	pageLayer = [layer retain];
-	needsRedrawOnLoad = NO;
-	needsReLayout = NO;
-    lastFreeFlowFrame = nil;
-
-    return self;    
+    if (self = [super init]) {
+        pageNumber = page;
+        framesToDraw = [frames retain];
+        rangeStart = start;
+        rangeEnd = end;
+        pageLayer = [layer retain];
+        needsRedrawOnLoad = NO;
+        needsReLayout = NO;
+        lastFreeFlowFrame = nil;
+    }
+    return self;
 }
 
 - (CoreTextViewPageInfo*)initWithLayer:(CALayer*)layer pageNumber:(NSInteger)page {
-    [super init];
-
-	pageNumber = page;
-    framesToDraw = nil;
-	rangeStart = 0;
-	rangeEnd = 0;
-	pageLayer = [layer retain];
-	needsRedrawOnLoad = NO;
-	needsReLayout = NO;
-    lastFreeFlowFrame = nil;
-
-    return self;    
+    if (self = [super init]) {
+        pageNumber = page;
+        framesToDraw = nil;
+        rangeStart = 0;
+        rangeEnd = 0;
+        pageLayer = [layer retain];
+        needsRedrawOnLoad = NO;
+        needsReLayout = NO;
+        lastFreeFlowFrame = nil;
+    }
+    return self;
 }
 
 - (NSString*)description {

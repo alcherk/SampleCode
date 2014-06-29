@@ -1,7 +1,7 @@
 /*
      File: TapView.h
  Abstract: UIView subclass that can highlight itself when locally or remotely tapped.
-  Version: 1.8
+  Version: 2.0
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,19 +41,32 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
 
 #import <UIKit/UIKit.h>
 
-@interface TapView : UIView
-{
-	BOOL localTouch;
-	BOOL remoteTouch;
-}
+@protocol TapViewDelegate;
 
-- (void) touchDown:(BOOL)remote;
-- (void) touchUp:(BOOL)remote;
+@interface TapView : UIView
+
+@property (nonatomic, assign, readonly ) BOOL   localTouch;     // observable
+@property (nonatomic, assign, readwrite) BOOL   remoteTouch;    // observable
+
+@property (nonatomic, weak,   readwrite) id<TapViewDelegate> delegate;
+
+- (void)resetTouches;
+    // cleans localTouch and remoteTouch, triggering a redraw and KVO, but 
+    // not calling the delegate
+
+@end
+
+@protocol TapViewDelegate <NSObject>
+
+@optional
+
+- (void)tapViewLocalTouchDown:(TapView *)tapView;
+- (void)tapViewLocalTouchUp:(TapView *)tapView;
 
 @end

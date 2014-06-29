@@ -1,8 +1,7 @@
-
 /*
      File: EditingViewController.m
  Abstract: The table view controller responsible for editing a field of data -- either text or a date.
-  Version: 2
+  Version: 1.5
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -42,12 +41,11 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2012 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
 #import "EditingViewController.h"
-
 
 @interface EditingViewController ()
 
@@ -59,17 +57,15 @@
 @end
 
 
+#pragma mark -
 
 @implementation EditingViewController
 {
-    BOOL hasDeterminedWhetherEditingDate;
+    BOOL _hasDeterminedWhetherEditingDate;
+    BOOL _editingDate;
 }
 
-@synthesize textField=_textField, editedObject=_editedObject, editedFieldKey=_editedFieldKey, editedFieldName=_editedFieldName, editingDate=_editingDate, datePicker=_datePicker;
-
-
-#pragma mark -
-#pragma mark View lifecycle
+#pragma mark - View lifecycle
 
 - (void)viewDidLoad
 {
@@ -104,8 +100,7 @@
 }
 
 
-#pragma mark -
-#pragma mark Save and cancel operations
+#pragma mark - Save and cancel operations
 
 - (IBAction)save:(id)sender
 {
@@ -132,13 +127,12 @@
 }
 
 
-#pragma mark -
-#pragma mark Manage whether editing a date
+#pragma mark - Manage whether editing a date
 
 - (void)setEditedFieldKey:(NSString *)editedFieldKey
 {
     if (![_editedFieldKey isEqualToString:editedFieldKey]) {
-        hasDeterminedWhetherEditingDate = NO;
+        _hasDeterminedWhetherEditingDate = NO;
         _editedFieldKey = editedFieldKey;
     }
 }
@@ -146,12 +140,12 @@
 
 - (BOOL)isEditingDate
 {
-    if (hasDeterminedWhetherEditingDate == YES) {
+    if (_hasDeterminedWhetherEditingDate == YES) {
         return _editingDate;
     }
     
     NSEntityDescription *entity = [self.editedObject entity];
-    NSAttributeDescription *attribute = [[entity attributesByName] objectForKey:self.editedFieldKey];
+    NSAttributeDescription *attribute = [entity attributesByName][self.editedFieldKey];
     NSString *attributeClassName = [attribute attributeValueClassName];
     
     if ([attributeClassName isEqualToString:@"NSDate"]) {
@@ -161,7 +155,7 @@
         _editingDate = NO;
     }
     
-    hasDeterminedWhetherEditingDate = YES;
+    _hasDeterminedWhetherEditingDate = YES;
     return _editingDate;
 }
 

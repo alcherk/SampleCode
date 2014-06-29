@@ -2,7 +2,7 @@
      File: ElementsTableViewController.h
  Abstract: Coordinates the tableviews and element data sources. It also responds
  to changes of selection in the table view and provides the cells.
-  Version: 1.11
+  Version: 1.12
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -42,26 +42,15 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
 
 #import <UIKit/UIKit.h>
 #import "ElementsDataSourceProtocol.h"
 
-@class AtomicElement;
+@interface ElementsTableViewController : UITableViewController
 
- 
-@interface ElementsTableViewController : UIViewController <UITableViewDelegate> {
-	UITableView *theTableView;
-	id<ElementsDataSource,UITableViewDataSource> dataSource;
-	
-}
-
-@property (nonatomic,retain) UITableView *theTableView;
-@property (nonatomic,retain) id<ElementsDataSource,UITableViewDataSource> dataSource;
-
-- (id)initWithDataSource:(id<ElementsDataSource,UITableViewDataSource>)theDataSource;
-
+@property (nonatomic,strong) id<ElementsDataSource, UITableViewDataSource> dataSource;
 
 @end

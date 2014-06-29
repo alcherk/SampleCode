@@ -2,7 +2,7 @@
      File: ImperialPickerController.h
  Abstract: Controller to managed a picker view displaying imperial weights.
  
-  Version: 1.4
+  Version: 1.5
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -42,17 +42,11 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
-@interface ImperialPickerController : NSObject <UIPickerViewDataSource, UIPickerViewDelegate> {
-    UIPickerView *pickerView;
-    UILabel *label;
-}
-
-@property (nonatomic, retain) IBOutlet UIPickerView *pickerView;
-@property (nonatomic, retain) IBOutlet UILabel *label;
+@interface ImperialPickerController : NSObject
 
 - (void)updateLabel;
 

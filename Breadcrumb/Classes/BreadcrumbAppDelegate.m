@@ -1,7 +1,7 @@
 /*
      File: BreadcrumbAppDelegate.m 
  Abstract: Template delegate for the application. 
-  Version: 1.5 
+  Version: 1.6 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,29 +41,32 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2011 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2012 Apple Inc. All Rights Reserved. 
   
  */
 
 #import "BreadcrumbAppDelegate.h"
 #import "BreadcrumbViewController.h"
 
+@interface BreadcrumbAppDelegate ()
+@property (nonatomic, strong) IBOutlet UINavigationController *navController;
+@end
+
 @implementation BreadcrumbAppDelegate
 
-@synthesize window;
-@synthesize navController;
 
-
-#pragma mark -
-#pragma mark Application lifecycle
+#pragma mark - Application lifecycle
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // Override point for customization after application launch.
-
+    // override point for customization after application launch
+    //
+    CGRect screenBounds = [[UIScreen mainScreen] bounds];
+    _window = [[UIWindow alloc] initWithFrame:screenBounds];
+    
     // Add the view controller's view to the window and display.
-    [window addSubview:navController.view];
-    [window makeKeyAndVisible];
+    self.window.rootViewController = self.navController;
+    [self.window makeKeyAndVisible];
 
     return YES;
 }
@@ -114,21 +117,12 @@
 }
 
 
-#pragma mark -
-#pragma mark Memory management
+#pragma mark - Memory management
 
 - (void)applicationDidReceiveMemoryWarning:(UIApplication *)application
 {
     // Free up as much memory as possible by purging cached data objects that can be recreated
     // (or reloaded from disk) later.
-}
-
-- (void)dealloc
-{
-    [navController release];
-    [window release];
-    
-    [super dealloc];
 }
 
 @end

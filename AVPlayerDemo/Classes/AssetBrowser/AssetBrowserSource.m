@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2011 Apple Inc. All Rights Reserved.
+ Copyright (C) 2011-2013 Apple Inc. All Rights Reserved.
  
 */
 
@@ -202,7 +202,7 @@
 		 if (group) {
 			 [group setAssetsFilter:[ALAssetsFilter allVideos]];
 			 [group enumerateAssetsUsingBlock:
-			  ^(ALAsset *asset, NSUInteger index, BOOL *stop)
+			  ^(ALAsset *asset, NSUInteger index, BOOL *stopIt)
 			  {
 				  if (asset) {
 					  ALAssetRepresentation *defaultRepresentation = [asset defaultRepresentation];

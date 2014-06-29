@@ -1,7 +1,7 @@
 /*
      File: PlacemarkViewController.h
  Abstract: UITableViewController that displays the propeties of a CLPlacemark.
-  Version: 1.2
+  Version: 1.3
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,42 +41,18 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2012 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
 
 #import <UIKit/UIKit.h>
 #import <MapKit/MapKit.h>
 
-extern NSInteger const PlacemarkViewControllerNumberOfSections;
-
 @interface PlacemarkViewController : UITableViewController <MKAnnotation>
-{
-    CLPlacemark *_placemark;
-    UITableViewCell *_mapCell;
-    BOOL _preferCoord;
-}
-
-@property (nonatomic, strong) CLPlacemark *placemark;
 
 // designated initilizers
-- (id)initWithPlacemark:(CLPlacemark*)placemark preferCoord:(BOOL)shouldPreferCoord; // show the map and coord. above the address info.
-- (id)initWithPlacemark:(CLPlacemark*)placemark;
-
-- (id)init;
-
-
-// cell generators
-- (UITableViewCell *)blankCell;
-- (UITableViewCell *)cellForAddressDictionaryIndex:(NSInteger)index; // 10
-- (UITableViewCell *)cellForLocationIndex:(NSInteger)index; // 8
-- (UITableViewCell *)cellForRegionIndex:(NSInteger)index; // 4
-- (UITableViewCell *)cellForMapView;
-- (UITableViewCell *)cellForMapURL;
-
-// display utilities
-- (double)doubleForObject:(id)object andSelector:(SEL)selector;
-- (NSString *)displayStringForDouble:(double)aDouble;
+- (id)initWithPlacemark:(CLPlacemark *)placemark preferCoord:(BOOL)shouldPreferCoord; // show the map and coord. above the address info.
+- (id)initWithPlacemark:(CLPlacemark *)placemark;
 
 
 #pragma mark - MKAnnotation Protocol (for map pin)

@@ -1,7 +1,7 @@
 /*
      File: RecipePhotoViewController.m 
  Abstract: A UIViewController for showing a Recipe's photo 
-  Version: 1.1 
+  Version: 1.2 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2011 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2014 Apple Inc. All Rights Reserved. 
   
  */ 
 
@@ -51,14 +51,12 @@
 
 @implementation RecipePhotoViewController
 
-@synthesize recipe;
-@synthesize imageView;
-
 /*
  Set the title navigation bar title.
  */
 - (id)init {
-    if ((self = [super init])) {
+    self = [super init];
+    if (self) {
         self.title = @"Photo";
     }
     return self;
@@ -67,12 +65,6 @@
 /*
  Release ownership.
  */
-- (void)dealloc {
-    [imageView release];
-    [recipe release];
-    //--
-    [super dealloc];
-}
 
 #pragma mark -
 #pragma mark UIViewController
@@ -85,13 +77,13 @@
  shortly after it is instatiated by it's owner. 
  */
 - (void)loadView {
-    imageView = [[UIImageView alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];
-    imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-    imageView.contentMode = UIViewContentModeScaleAspectFit;
-    imageView.backgroundColor = [UIColor blackColor];
+    _imageView = [[UIImageView alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];
+    _imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    _imageView.contentMode = UIViewContentModeScaleAspectFit;
+    _imageView.backgroundColor = [UIColor blackColor];
     
-    imageView.image = recipe.image;
-    self.view = imageView;
+    _imageView.image = _recipe.image;
+    self.view = _imageView;
 }
 
 // Since the imageView property has the retain attribute, setting self.imageView = nil releases ownership of the imageView. 

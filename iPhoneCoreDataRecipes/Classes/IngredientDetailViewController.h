@@ -2,7 +2,7 @@
      File: IngredientDetailViewController.h
  Abstract: Table view controller to manage editing details of a recipe ingredient -- its name and amount.
  
-  Version: 1.4
+  Version: 1.5
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -42,23 +42,15 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
-@class Recipe, Ingredient, EditingTableViewCell;
+@class Recipe, Ingredient;
 
-@interface IngredientDetailViewController : UITableViewController {
-    @private
-        Recipe *recipe;
-        Ingredient *ingredient;
-        
-        EditingTableViewCell *editingTableViewCell;
-}
+@interface IngredientDetailViewController : UITableViewController
 
-@property (nonatomic, retain) Recipe *recipe;
-@property (nonatomic, retain) Ingredient *ingredient;
-
-@property (nonatomic, assign) IBOutlet EditingTableViewCell *editingTableViewCell;
+@property (nonatomic, strong) Recipe *recipe;
+@property (nonatomic, strong) Ingredient *ingredient;
 
 @end

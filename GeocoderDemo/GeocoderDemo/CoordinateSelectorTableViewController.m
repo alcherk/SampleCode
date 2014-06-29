@@ -1,7 +1,7 @@
 /*
      File: CoordinateSelectorTableViewController.m 
  Abstract: UITableViewController that allows for the selection of a CLCoordinate2D. 
-  Version: 1.2 
+  Version: 1.3 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2012 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
  */
 
@@ -71,43 +71,12 @@
 
 @property (readonly) NSInteger selectedIndex;
 
-// setup
-- (void)loadNibCells;
-
-// update selected cell
-- (void)updateSelectedName;
-- (void)updateSelectedCoordinate;
-
-// current location
-- (void)startUpdatingCurrentLocation;
-- (void)stopUpdatingCurrentLocation;
-
-- (void)lockSearch;
-- (void)unlockSearch;
-
 @end
 
 
+#pragma mark -
+
 @implementation CoordinateSelectorTableViewController
-
-@synthesize searchPlacemarksCache = _searchPlacemarksCache;
-
-@synthesize locationManager = _locationManager;
-@synthesize selectedIndex = _selectedIndex;
-@synthesize selectedType = _selectedType;
-@synthesize selectedCoordinate = _selectedCoordinate;
-@synthesize selectedName = _selectedName;
-@synthesize checkedIndexPath = _checkedIndexPath;
-
-// custom nib cells
-@synthesize searchCell = _searchCell;
-@synthesize searchTextField = _searchTextField;
-@synthesize searchSpinner = _searchSpinner;
-
-@synthesize currentLocationCell = _currentLocationCell;
-@synthesize currentLocationLabel = _currentLocationLabel;
-@synthesize currentLocationActivityIndicatorView = _currentLocationActivityIndicatorView;
-
 
 - (id)init
 {
@@ -123,14 +92,6 @@
     return self;
 }
 
-- (void)dealloc
-{
-    [_locationManager release];
-    [_checkedIndexPath release];
-    [_selectedName release];
-    
-    [super dealloc];
-}
 
 
 #pragma mark - Setup
@@ -141,12 +102,6 @@
     [[NSBundle mainBundle] loadNibNamed:@"CoordinateSelectorTableViewCells" 
                                   owner:self 
                                 options:nil];
-}
-
-- (void)didReceiveMemoryWarning
-{
-    // releases the view if it doesn't have a superview
-    [super didReceiveMemoryWarning];
 }
 
 
@@ -164,6 +119,7 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
+    
     [self updateSelectedCoordinate];
     
     // stop updating, we don't care no more…
@@ -184,11 +140,10 @@
     }    
 }
 
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-}
-
+// rotation support for iOS 5.x and earlier, note for iOS 6.0 and later all you need is
+// "UISupportedInterfaceOrientations" defined in your Info.plist
+//
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // return YES for supported orientations
@@ -201,9 +156,10 @@
         return YES;
     }
 }
+#endif
 
 
-#pragma mark - Table view data source
+#pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -231,7 +187,7 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil)
     {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
         
     // configure the cell...
@@ -242,18 +198,19 @@
         //
         // load the custom cell from the Nib
         cell = _currentLocationCell;
-        cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+        //cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
         if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied || 
             [CLLocationManager authorizationStatus] == kCLAuthorizationStatusRestricted)
         {
             _currentLocationLabel.text = @"Location Services Disabled";
-            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            //cell.selectionStyle = UITableViewCellSelectionStyleNone;
         }
 
     }
     else if ((section) == 0)
-    { 
+    {
         // Search
         //
         if (indexPath.row == 0)
@@ -261,9 +218,10 @@
             return _searchCell;
         }
         // otherwise display the list of results
-        CLPlacemark *placemark = [_searchPlacemarksCache objectAtIndex:indexPath.row - 1];
+        CLPlacemark *placemark = _searchPlacemarksCache[indexPath.row - 1];
         
-        cell.textLabel.text = ABCreateStringWithAddressDictionary(placemark.addressDictionary, NO);
+        NSString *addressStr = ABCreateStringWithAddressDictionary(placemark.addressDictionary, NO);
+        cell.textLabel.text = addressStr;
         
         CLLocationDegrees latitude = placemark.location.coordinate.latitude;
         CLLocationDegrees longitude = placemark.location.coordinate.longitude;
@@ -329,8 +287,7 @@
     // set this row to be checked on next reload
     if (_checkedIndexPath != indexPath)
     {
-        [_checkedIndexPath release];
-        _checkedIndexPath = [indexPath retain];
+        _checkedIndexPath = indexPath;
     }
         
     // set the selected name based on the selected type
@@ -358,8 +315,6 @@
 // keys off selectedType and selectedCoordinates 
 - (void)updateSelectedName
 {
-    [_selectedName release]; // release the old string
-    
     switch (_selectedType)
     {
         case CoordinateSelectorLastSelectedTypeCurrent:
@@ -370,7 +325,7 @@
             
         case CoordinateSelectorLastSelectedTypeSearch:
         {
-            CLPlacemark *placemark = [_searchPlacemarksCache objectAtIndex:_selectedIndex - 1]; // take into account the first 'search' cell
+            CLPlacemark *placemark = _searchPlacemarksCache[_selectedIndex - 1]; // take into account the first 'search' cell
             _selectedName = ABCreateStringWithAddressDictionary(placemark.addressDictionary, NO);
             break;
         }
@@ -381,8 +336,6 @@
             break;
         }
     }
-    
-    [_selectedName retain]; // retain the new string
 }
 
 // keys off selectedType and selectedCoordinates 
@@ -394,7 +347,7 @@
         { 
             // allow for the selection of search results,
             // take into account the first 'search' cell
-            CLPlacemark *placemark = [_searchPlacemarksCache objectAtIndex:_selectedIndex - 1];
+            CLPlacemark *placemark = _searchPlacemarksCache[_selectedIndex - 1];
             _selectedCoordinate = placemark.location.coordinate;
             break;
         }
@@ -478,25 +431,32 @@
     _currentLocationCell.accessoryType = UITableViewCellAccessoryNone;
     
     // show an alert
-    UIAlertView *alert = [[[UIAlertView alloc] init] autorelease];
+    UIAlertView *alert = [[UIAlertView alloc] init];
     alert.title = @"Error updating location";
     alert.message = [error localizedDescription];
     [alert addButtonWithTitle:@"OK"];
     [alert show];
 }
 
+// invoked when the authorization status changes for this application
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
 { }
 
 
 #pragma mark - placemarks search
 
+- (void)lockSearch:(BOOL)lock
+{
+    self.searchTextField.enabled = !lock;
+    self.searchSpinner.hidden = !lock;
+}
+
 - (void)performPlacemarksSearch
 {
-    [self lockSearch];
+    [self lockSearch:YES];
     
     // perform geocode
-    CLGeocoder *geocoder = [[[CLGeocoder alloc] init] autorelease];
+    CLGeocoder *geocoder = [[CLGeocoder alloc] init];
     
     [geocoder geocodeAddressString:self.searchTextField.text completionHandler:^(NSArray *placemarks, NSError *error) {
         // There is no guarantee that the CLGeocodeCompletionHandler will be invoked on the main thread.
@@ -507,37 +467,23 @@
             if (_checkedIndexPath.section == 0)
             {
                 // clear any current selections if they are search result selections
-                [_checkedIndexPath release];
                 _checkedIndexPath = nil;
             }
             
-            [_searchPlacemarksCache release];
-            _searchPlacemarksCache = [placemarks retain]; // might be nil
+            _searchPlacemarksCache = placemarks; // might be nil
             [[self tableView] reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
-            [self unlockSearch];
+            [self lockSearch:NO];
             
             if (placemarks.count == 0)
             {
                 // show an alert if no results were found
-                UIAlertView *alert = [[[UIAlertView alloc] init] autorelease];
+                UIAlertView *alert = [[UIAlertView alloc] init];
                 alert.title = @"No places were found.";
                 [alert addButtonWithTitle:@"OK"];
                 [alert show];
             }
         });
     }];
-}
-
-- (void)lockSearch
-{
-    self.searchTextField.enabled = NO;
-    self.searchSpinner.hidden = NO;
-}
-
-- (void)unlockSearch
-{
-    self.searchTextField.enabled = YES;
-    self.searchSpinner.hidden = YES;
 }
 
 

@@ -1,7 +1,7 @@
 /*
         File: ExtAudioFileConvert.cpp
     Abstract: Demonstrates converting audio using ExtAudioFile.
-     Version: 1.0
+     Version: 1.2.1
     
     Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
     Inc. ("Apple") in consideration of your agreement to the following
@@ -41,7 +41,7 @@
     STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
     
-    Copyright (C) 2010 Apple Inc. All Rights Reserved.
+    Copyright (C) 2014 Apple Inc. All Rights Reserved.
     
 */
 
@@ -63,7 +63,7 @@ Offline format conversion requires interruption handling. Specifically, you must
 
 By way of background, you can use a hardware assisted-codec—on certain devices—to encode linear PCM audio to AAC format.
 The codec is available on the iPhone 3GS and on the iPod touch (2nd generation), but not on older models. You use the codec as part
-of an audio converter object (of type AudioConverterRef), which in turn is part of an extended audio file object (of type ExtAudioFileRef).
+of an audio converter object (of type AudioConverterRef), which in turn is part of an extended audio file object (of type ExtAudioFileRef). iPhone 5s does not have a hardware encoder and only one encoder will be listed.
 For information on these opaque types, refer to Audio Converter Services Reference and Extended Audio File Services Reference.
 
 To handle an interruption during hardware-assisted encoding, take two things into account:
@@ -253,7 +253,7 @@ OSStatus DoConvertFile(CFURLRef sourceURL, CFURLRef destinationURL, OSType outpu
 		UInt32 size = sizeof(srcFormat);
 		XThrowIfError(ExtAudioFileGetProperty(sourceFile, kExtAudioFileProperty_FileDataFormat, &size, &srcFormat), "couldn't get source data format");
 		
-		printf("Source file format: "); srcFormat.Print();
+		printf("\nSource file format: "); srcFormat.Print();
 
         // setup the output file format
         dstFormat.mSampleRate = (outputSampleRate == 0 ? srcFormat.mSampleRate : outputSampleRate); // set sample rate
@@ -275,7 +275,7 @@ OSStatus DoConvertFile(CFURLRef sourceURL, CFURLRef destinationURL, OSType outpu
             XThrowIfError(AudioFormatGetProperty(kAudioFormatProperty_FormatInfo, 0, NULL, &size, &dstFormat), "couldn't create destination data format");
         }
         
-        printf("Destination file format: "); dstFormat.Print();
+        printf("\nDestination file format: "); dstFormat.Print();
         
         // create the destination file 
         XThrowIfError(ExtAudioFileCreateWithURL(destinationURL, kAudioFileCAFType, &dstFormat, NULL, kAudioFileFlags_EraseFile, &destinationFile), "ExtAudioFileCreateWithURL failed!");
@@ -290,6 +290,9 @@ OSStatus DoConvertFile(CFURLRef sourceURL, CFURLRef destinationURL, OSType outpu
             clientFormat.SetCanonical(srcFormat.NumberChannels(), true);
             clientFormat.mSampleRate = srcFormat.mSampleRate;
         }
+        
+        printf("\nClient data format: "); clientFormat.Print();
+        printf("\n");
         
         size = sizeof(clientFormat);
         XThrowIfError(ExtAudioFileSetProperty(sourceFile, kExtAudioFileProperty_ClientDataFormat, size, &clientFormat), "couldn't set source client format");
@@ -351,7 +354,9 @@ OSStatus DoConvertFile(CFURLRef sourceURL, CFURLRef destinationURL, OSType outpu
                 
             // client format is always linear PCM - so here we determine how many frames of lpcm
             // we can read/write given our buffer size
-            UInt32 numFrames = clientFormat.BytesToFrames(bufferByteSize); // (bufferByteSize / clientFormat.mBytesPerFrame);
+            UInt32 numFrames;
+            if (clientFormat.mBytesPerFrame > 0) // rids bogus analyzer div by zero warning mBytesPerFrame can't be 0 and is protected by an Assert
+                numFrames = clientFormat.BytesToFrames(bufferByteSize); // (bufferByteSize / clientFormat.mBytesPerFrame);
 
             XThrowIfError(ExtAudioFileRead(sourceFile, &numFrames, &fillBufList), "ExtAudioFileRead failed!");	
             if (!numFrames) {
@@ -382,7 +387,7 @@ OSStatus DoConvertFile(CFURLRef sourceURL, CFURLRef destinationURL, OSType outpu
                         Returned when ExtAudioFileWrite was interrupted. You must stop calling
                         ExtAudioFileWrite. If the underlying audio converter can resume after an
                         interruption (see kAudioConverterPropertyCanResumeFromInterruption), you must
-                        wait for an EndInterruption notification from AudioSession, and call AudioSessionSetActive(true)
+                        wait for an EndInterruption notification from AudioSession, then activate the session
                         before resuming. In this situation, the buffer you provided to ExtAudioFileWrite was successfully
                         consumed and you may proceed to the next buffer
                     */
@@ -395,7 +400,7 @@ OSStatus DoConvertFile(CFURLRef sourceURL, CFURLRef destinationURL, OSType outpu
                         Returned when ExtAudioFileWrite was interrupted. You must stop calling
                         ExtAudioFileWrite. If the underlying audio converter can resume after an
                         interruption (see kAudioConverterPropertyCanResumeFromInterruption), you must
-                        wait for an EndInterruption notification from AudioSession, and call AudioSessionSetActive(true)
+                        wait for an EndInterruption notification from AudioSession, then activate the session
                         before resuming. In this situation, the buffer you provided to ExtAudioFileWrite was not
                         successfully consumed and you must try to write it again
                     */

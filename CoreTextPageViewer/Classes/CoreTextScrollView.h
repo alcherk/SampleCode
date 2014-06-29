@@ -3,7 +3,7 @@
  Abstract: Manages the display of pages for a given document to display. This is the view that you will use in Interface Builder or create directly to display and interact with an AttributedStringDoc in an application. 
  It is also fair to say that this view acts as a controller for CoreTextViews. You can change the page to display, manage text selection, and change font parameters for the document.
 
-  Version: 1.0
+  Version: 1.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -43,7 +43,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2011 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
 */
 

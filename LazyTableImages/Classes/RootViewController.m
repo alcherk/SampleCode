@@ -13,7 +13,7 @@
     Images are scaled to the desired height.
     If rapid scrolling is in progress, downloads do not begin until scrolling has ended.
   
-  Version: 1.3 
+  Version: 1.4 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -53,48 +53,40 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2012 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
  */
 
 #import "RootViewController.h"
 #import "AppRecord.h"
+#import "IconDownloader.h"
 
-#define kCustomRowHeight    60.0
 #define kCustomRowCount     7
 
-#pragma mark -
 
-@interface RootViewController ()
-
-- (void)startIconDownload:(AppRecord *)appRecord forIndexPath:(NSIndexPath *)indexPath;
-
+@interface RootViewController () <UIScrollViewDelegate>
+// the set of IconDownloader objects for each app
+@property (nonatomic, strong) NSMutableDictionary *imageDownloadsInProgress;
 @end
+
 
 @implementation RootViewController
 
-@synthesize entries;
-@synthesize imageDownloadsInProgress;
-
-
 #pragma mark 
 
+// -------------------------------------------------------------------------------
+//	viewDidLoad
+// -------------------------------------------------------------------------------
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
     self.imageDownloadsInProgress = [NSMutableDictionary dictionary];
-    self.tableView.rowHeight = kCustomRowHeight;
 }
 
-- (void)dealloc
-{
-    [entries release];
-	[imageDownloadsInProgress release];
-    
-    [super dealloc];
-}
-
+// -------------------------------------------------------------------------------
+//	didReceiveMemoryWarning
+// -------------------------------------------------------------------------------
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -102,17 +94,33 @@
     // terminate all pending download connections
     NSArray *allDownloads = [self.imageDownloadsInProgress allValues];
     [allDownloads makeObjectsPerformSelector:@selector(cancelDownload)];
+    
+    [self.imageDownloadsInProgress removeAllObjects];
 }
 
-#pragma mark -
-#pragma mark Table view creation (UITableViewDataSource)
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0
+// -------------------------------------------------------------------------------
+//	shouldAutorotateToInterfaceOrientation:
+//  Rotation support for iOS 5.x and earlier, note for iOS 6.0 and later all you
+//  need is "UISupportedInterfaceOrientations" defined in your Info.plist.
+// -------------------------------------------------------------------------------
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
+}
+#endif
 
-// customize the number of rows in the table view
+#pragma mark - UITableViewDataSource
+
+// -------------------------------------------------------------------------------
+//	tableView:numberOfRowsInSection:
+//  Customize the number of rows in the table view.
+// -------------------------------------------------------------------------------
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	int count = [entries count];
+	NSUInteger count = [self.entries count];
 	
-	// ff there's no data yet, return enough rows to fill the screen
+	// if there's no data yet, return enough rows to fill the screen
     if (count == 0)
 	{
         return kCustomRowCount;
@@ -120,6 +128,9 @@
     return count;
 }
 
+// -------------------------------------------------------------------------------
+//	tableView:cellForRowAtIndexPath:
+// -------------------------------------------------------------------------------
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	// customize the appearance of table view cells
@@ -128,18 +139,11 @@
     static NSString *PlaceholderCellIdentifier = @"PlaceholderCell";
     
     // add a placeholder cell while waiting on table data
-    int nodeCount = [self.entries count];
+    NSUInteger nodeCount = [self.entries count];
 	
 	if (nodeCount == 0 && indexPath.row == 0)
 	{
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:PlaceholderCellIdentifier];
-        if (cell == nil)
-		{
-            cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle
-										   reuseIdentifier:PlaceholderCellIdentifier] autorelease];   
-            cell.detailTextLabel.textAlignment = UITextAlignmentCenter;
-			cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        }
 
 		cell.detailTextLabel.text = @"Loading…";
 		
@@ -147,12 +151,6 @@
     }
 	
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil)
-	{
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle
-									   reuseIdentifier:CellIdentifier] autorelease];
-		cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    }
 
     // Leave cells empty if there's no data yet
     if (nodeCount > 0)
@@ -183,26 +181,40 @@
     return cell;
 }
 
+#pragma mark - Table cell image support
 
-#pragma mark -
-#pragma mark Table cell image support
-
+// -------------------------------------------------------------------------------
+//	startIconDownload:forIndexPath:
+// -------------------------------------------------------------------------------
 - (void)startIconDownload:(AppRecord *)appRecord forIndexPath:(NSIndexPath *)indexPath
 {
-    IconDownloader *iconDownloader = [imageDownloadsInProgress objectForKey:indexPath];
+    IconDownloader *iconDownloader = [self.imageDownloadsInProgress objectForKey:indexPath];
     if (iconDownloader == nil) 
     {
         iconDownloader = [[IconDownloader alloc] init];
         iconDownloader.appRecord = appRecord;
-        iconDownloader.indexPathInTableView = indexPath;
-        iconDownloader.delegate = self;
-        [imageDownloadsInProgress setObject:iconDownloader forKey:indexPath];
-        [iconDownloader startDownload];
-        [iconDownloader release];   
+        [iconDownloader setCompletionHandler:^{
+            
+            UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+            
+            // Display the newly loaded image
+            cell.imageView.image = appRecord.appIcon;
+            
+            // Remove the IconDownloader from the in progress list.
+            // This will result in it being deallocated.
+            [self.imageDownloadsInProgress removeObjectForKey:indexPath];
+            
+        }];
+        [self.imageDownloadsInProgress setObject:iconDownloader forKey:indexPath];
+        [iconDownloader startDownload];  
     }
 }
 
-// this method is used in case the user scrolled into a set of cells that don't have their app icons yet
+// -------------------------------------------------------------------------------
+//	loadImagesForOnscreenRows
+//  This method is used in case the user scrolled into a set of cells that don't
+//  have their app icons yet.
+// -------------------------------------------------------------------------------
 - (void)loadImagesForOnscreenRows
 {
     if ([self.entries count] > 0)
@@ -212,7 +224,8 @@
         {
             AppRecord *appRecord = [self.entries objectAtIndex:indexPath.row];
             
-            if (!appRecord.appIcon) // avoid the app icon download if the app already has an icon
+            if (!appRecord.appIcon)
+            // Avoid the app icon download if the app already has an icon
             {
                 [self startIconDownload:appRecord forIndexPath:indexPath];
             }
@@ -220,28 +233,12 @@
     }
 }
 
-// called by our ImageDownloader when an icon is ready to be displayed
-- (void)appImageDidLoad:(NSIndexPath *)indexPath
-{
-    IconDownloader *iconDownloader = [imageDownloadsInProgress objectForKey:indexPath];
-    if (iconDownloader != nil)
-    {
-        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:iconDownloader.indexPathInTableView];
-        
-        // Display the newly loaded image
-        cell.imageView.image = iconDownloader.appRecord.appIcon;
-    }
-    
-    // Remove the IconDownloader from the in progress list.
-    // This will result in it being deallocated.
-    [imageDownloadsInProgress removeObjectForKey:indexPath];
-}
+#pragma mark - UIScrollViewDelegate
 
-
-#pragma mark -
-#pragma mark Deferred image loading (UIScrollViewDelegate)
-
-// Load images for all onscreen rows when scrolling is finished
+// -------------------------------------------------------------------------------
+//	scrollViewDidEndDragging:willDecelerate:
+//  Load images for all onscreen rows when scrolling is finished.
+// -------------------------------------------------------------------------------
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
 {
     if (!decelerate)
@@ -250,6 +247,9 @@
     }
 }
 
+// -------------------------------------------------------------------------------
+//	scrollViewDidEndDecelerating:
+// -------------------------------------------------------------------------------
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
     [self loadImagesForOnscreenRows];

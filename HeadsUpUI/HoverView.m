@@ -1,7 +1,7 @@
 /*
      File: HoverView.m
  Abstract: This view contains the UI or controls that hover or appear over the main view.
-  Version: 1.1
+  Version: 1.2
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
 
@@ -49,34 +49,12 @@
 
 @implementation HoverView
 
-- (void)fillRoundedRect:(CGRect)rect inContext:(CGContextRef)context
-{
-    float radius = 5.0f;
-    
-    CGContextBeginPath(context);
-	CGContextSetGrayFillColor(context, 0.8, 0.5);
-	CGContextMoveToPoint(context, CGRectGetMinX(rect) + radius, CGRectGetMinY(rect));
-    CGContextAddArc(context, CGRectGetMaxX(rect) - radius, CGRectGetMinY(rect) + radius, radius, 3 * M_PI / 2, 0, 0);
-    CGContextAddArc(context, CGRectGetMaxX(rect) - radius, CGRectGetMaxY(rect) - radius, radius, 0, M_PI / 2, 0);
-    CGContextAddArc(context, CGRectGetMinX(rect) + radius, CGRectGetMaxY(rect) - radius, radius, M_PI / 2, M_PI, 0);
-    CGContextAddArc(context, CGRectGetMinX(rect) + radius, CGRectGetMinY(rect) + radius, radius, M_PI, 3 * M_PI / 2, 0);
-	
-    CGContextClosePath(context);
-    CGContextFillPath(context);
-}
-
 - (void)drawRect:(CGRect)rect
 {
-	// draw a box with rounded corners to fill the view -
-	CGRect boxRect = self.bounds;
-    CGContextRef ctxt = UIGraphicsGetCurrentContext();	
-	boxRect = CGRectInset(boxRect, 1.0f, 1.0f);
-    [self fillRoundedRect:boxRect inContext:ctxt];
-}
-
-- (void)dealloc
-{
-	[super dealloc];
+    // draw a box with rounded corners to fill the view -
+    UIBezierPath *roundedRect = [UIBezierPath bezierPathWithRoundedRect:self.bounds cornerRadius:5.0f];
+    [[UIColor colorWithWhite:0.8 alpha:0.5] setFill];
+    [roundedRect fillWithBlendMode:kCGBlendModeNormal alpha:1];
 }
 
 @end

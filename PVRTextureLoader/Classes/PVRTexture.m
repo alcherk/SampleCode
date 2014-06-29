@@ -2,7 +2,7 @@
 
     File: PVRTexture.m
 Abstract: The PVRTexture class is responsible for loading .pvr files.
- Version: 1.5
+ Version: 1.6
 
 Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
 Inc. ("Apple") in consideration of your agreement to the following
@@ -42,7 +42,7 @@ AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE),
 STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
-Copyright (C) 2010 Apple Inc. All Rights Reserved.
+Copyright (C) 2014 Apple Inc. All Rights Reserved.
 
 
 */
@@ -198,7 +198,7 @@ typedef struct _PVRTexHeader
 	for (int i=0; i < [_imageData count]; i++)
 	{
 		data = [_imageData objectAtIndex:i];
-		glCompressedTexImage2D(GL_TEXTURE_2D, i, _internalFormat, width, height, 0, [data length], [data bytes]);
+		glCompressedTexImage2D(GL_TEXTURE_2D, i, _internalFormat, width, height, 0, (int)[data length], [data bytes]);
 		
 		err = glGetError();
 		if (err != GL_NO_ERROR)

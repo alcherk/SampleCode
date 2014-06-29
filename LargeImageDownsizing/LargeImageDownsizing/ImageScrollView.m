@@ -1,7 +1,7 @@
 /*
      File: ImageScrollView.m 
  Abstract: This scroll view allows the user to inspect the resulting image's levels of detail. 
-  Version: 1.0 
+  Version: 1.1 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2011 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2014 Apple Inc. All Rights Reserved. 
   
 */
 
@@ -61,7 +61,7 @@
     //--
     [super dealloc];
 }
--(id)initWithFrame:(CGRect)frame image:(UIImage*)_image {
+-(id)initWithFrame:(CGRect)frame image:(UIImage*)img {
     if((self = [super initWithFrame:frame])) {		
 		// Set up the UIScrollView
         self.showsVerticalScrollIndicator = NO;
@@ -73,7 +73,7 @@
 		self.minimumZoomScale = 0.25f;
 		self.backgroundColor = [UIColor colorWithRed:0.4f green:0.2f blue:0.2f alpha:1.0f];
 		// determine the size of the image
-        self.image = _image;
+        self.image = img;
         CGRect imageRect = CGRectMake(0.0f,0.0f,CGImageGetWidth(image.CGImage),CGImageGetHeight(image.CGImage));
         imageScale = self.frame.size.width/imageRect.size.width;
         minimumScale = imageScale * 0.75f;
@@ -136,7 +136,7 @@
 }
 // A UIScrollView delegate callback, called when the user stops zooming.  When the user stops zooming
 // we create a new TiledImageView based on the new zoom level and draw it on top of the old TiledImageView.
-- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(float)scale {
+- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(CGFloat)scale {
 	// set the new scale factor for the TiledImageView
 	imageScale *=scale;
     if( imageScale < minimumScale ) imageScale = minimumScale;

@@ -1,7 +1,7 @@
 /*
      File: ElementsSortedByStateDataSource.m
  Abstract: Provides the table view data for the elements sorted by their standard physical state.
-  Version: 1.11
+  Version: 1.12
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,43 +41,38 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
 
 #import "ElementsSortedByStateDataSource.h"
-#import "TheElementsAppDelegate.h"
 #import "PeriodicElements.h"
-#import "AtomicElement.h"
 #import "AtomicElementTableViewCell.h"
 
 @implementation ElementsSortedByStateDataSource
 
-// ElementsDataSourceProtocol methods
-
+// protocol methods for "ElementsDataSourceProtocol"
 
 // return the data used by the navigation controller and tab bar item
 
 - (NSString *)name {
+    
 	return @"State";
 }
 
 - (NSString *)navigationBarName {
+    
 	return @"Grouped by State";
 }
 
 - (UIImage *)tabBarImage {
+    
 	return [UIImage imageNamed:@"state_gray.png"];
 }
 
-- (BOOL)showDisclosureIcon
-{
-	return YES;
-}
-
-
 // atomic state is displayed in a grouped style tableview
 - (UITableViewStyle)tableViewStyle {
+    
 	return UITableViewStylePlain;
 } 
 
@@ -97,36 +92,32 @@
 }
 
 
-// UITableViewDataSource methods
+#pragma mark - UITableViewDataSource
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-	AtomicElementTableViewCell *cell = (AtomicElementTableViewCell *)[tableView dequeueReusableCellWithIdentifier:@"AtomicElementTableViewCell"];
-	if (cell == nil) {
-		cell = [[[AtomicElementTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"AtomicElementTableViewCell"] autorelease];
-	}
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-	// configure cell contents
-	// all the rows should show the disclosure indicator
-	if ([self showDisclosureIcon])
-		cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-	
+	AtomicElementTableViewCell *cell =
+        (AtomicElementTableViewCell *)[tableView dequeueReusableCellWithIdentifier:@"AtomicElementTableViewCell"];
+    
 	// set the element for this cell as specified by the datasource. The atomicElementForIndexPath: is declared
 	// as part of the ElementsDataSource Protocol and will return the appropriate element for the index row
+    //
 	cell.element = [self atomicElementForIndexPath:indexPath];
 	
 	return cell;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView  {
+    
 	// this table has multiple sections. One for each physical state
 	// [solid, liquid, gas, artificial]
 	// return the number of items in the states array
+    //
 	return [[[PeriodicElements sharedPeriodicElements] elementPhysicalStatesArray] count];
 }
 
-
 - (NSInteger)tableView:(UITableView *)tableView  numberOfRowsInSection:(NSInteger)section {
+    
 	// this table has multiple sections. One for each physical state
 	// [solid, liquid, gas, artificial]
 	
@@ -137,16 +128,15 @@
 	return [[[PeriodicElements sharedPeriodicElements] elementsWithPhysicalState:stateKey] count];
 }
 
-
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    
 	// this table has multiple sections. One for each physical state
 	
 	// [solid, liquid, gas, artificial]
 	// return the state that represents the requested section
 	// this is actually a delegate method, but we forward the request to the datasource in the view controller
-	
+	//
 	return [[[PeriodicElements sharedPeriodicElements] elementPhysicalStatesArray] objectAtIndex:section];
 }
-
 
 @end

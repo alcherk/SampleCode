@@ -44,7 +44,7 @@ AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE),
 STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
-Copyright (C) 2010-2011 Apple Inc. All Rights Reserved.
+Copyright (C) 2010-2013 Apple Inc. All Rights Reserved.
 
 */
 
@@ -85,7 +85,7 @@ Copyright (C) 2010-2011 Apple Inc. All Rights Reserved.
 	[mTitleLabel setText:@"<Title metadata not found>"];
 	[mCopyrightLabel setText:@"<Copyright metadata not found>"];
 	
-	for (AVMetadataItem* item in mMetadata)
+	for (AVMetadataItem* item in self->mMetadata)
 	{
 		NSString* commonKey = [item commonKey];
 		
@@ -111,7 +111,7 @@ Copyright (C) 2010-2011 Apple Inc. All Rights Reserved.
 
 - (void)dealloc 
 {
-	[mMetadata release];
+	[self->mMetadata release];
 	[mTitleLabel release];
 	[mCopyrightLabel release];
 
@@ -120,20 +120,28 @@ Copyright (C) 2010-2011 Apple Inc. All Rights Reserved.
 
 - (NSArray*)metadata
 {
-	return mMetadata;
+	return self->mMetadata;
 }
 
 - (void)setMetadata:(NSArray*)metadata
 {
-	[mMetadata release];
-	mMetadata = [metadata copy];
+	[self->mMetadata release];
+	self->mMetadata = [metadata copy];
 	
 	[self syncLabels];
 }
 
 - (void)goAway:(id)sender
 {
-	[[self parentViewController] dismissModalViewControllerAnimated:YES];
+    if ([self respondsToSelector:@selector(presentingViewController)])
+    {
+        [[self presentingViewController] dismissViewControllerAnimated:YES completion:NULL];
+    }
+    else
+    {
+        [[self parentViewController] dismissViewControllerAnimated:YES completion:NULL];
+    }
+
 }
 
 @end

@@ -1,7 +1,7 @@
 /*
      File: CAComponent.cpp 
  Abstract:  CAComponent.h  
-  Version: 1.01 
+  Version: 1.0.4 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2012 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
 */
 #include "CAComponent.h"
@@ -132,8 +132,8 @@ void 		CAComponent::SetCompNames () const
 			CFArrayRef splitStrArray = CFStringCreateArrayBySeparatingStrings(NULL, compName, CFSTR(":"));
 			
 			// we need to retain these values so the strings are not lost when the array is released
-			CFRetain(CFArrayGetValueAtIndex(splitStrArray, 0));
 			const_cast<CAComponent*>(this)->mManuName = (CFStringRef)CFArrayGetValueAtIndex(splitStrArray, 0);
+            CFRetain(this->mManuName);
 			if (CFArrayGetCount(splitStrArray) > 1)
 			{
 				CFStringRef str = (CFStringRef)CFArrayGetValueAtIndex(splitStrArray, 1);

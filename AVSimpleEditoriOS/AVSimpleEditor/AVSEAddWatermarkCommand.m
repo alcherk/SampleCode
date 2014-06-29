@@ -1,7 +1,7 @@
 /*
      File: AVSEAddWatermarkCommand.m
  Abstract: A subclass of AVSECommand which handles CALayer. This tool adds a title layer (CALayer) on top of an existing AVMutableComposition or an AVAsset.
-  Version: 1.0
+  Version: 1.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2012 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
 
@@ -136,7 +136,6 @@
 	CATextLayer *titleLayer = [CATextLayer layer];
 	titleLayer.string = @"AVSE";
 	titleLayer.foregroundColor = [[UIColor whiteColor] CGColor];
-	titleLayer.font = (__bridge void*)[UIFont fontWithName:@"Helvetica" size:videoSize.height/4] ;
 	titleLayer.shadowOpacity = 0.5;
 	titleLayer.alignmentMode = kCAAlignmentCenter;
 	titleLayer.bounds = CGRectMake(0, 0, videoSize.width/2, videoSize.height/2);

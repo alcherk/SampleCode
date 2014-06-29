@@ -1,7 +1,7 @@
 /*
      File: ComponentBase.h 
  Abstract:  Part of CoreAudio Utility Classes  
-  Version: 1.01 
+  Version: 1.0.4 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2012 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
 */
 #ifndef __ComponentBase_h__
@@ -291,34 +291,26 @@ public:
 	}
 };
 
-// these are the macros that are used to generate the Entry Points for a given Audio Plugin
-#if CA_USE_AUDIO_PLUGIN_ONLY
-	#define AUDIOCOMPONENT_ENTRY(FactoryType, Class) \
-		extern "C" void * Class##Factory(const AudioComponentDescription *inDesc); \
-		extern "C" void * Class##Factory(const AudioComponentDescription *inDesc) { \
-			return FactoryType<Class>::Factory(inDesc); \
-		}
-#else
-		// you should be using this macros as it registers both
-		// a plugin and a component mgr version. this can and should be used 
-		// with new and existing audio components (backwards compatible to SL)
-	#define AUDIOCOMPONENT_ENTRY(FactoryType, Class) \
-		extern "C" OSStatus Class##Entry(ComponentParameters *params, Class *obj); \
-		extern "C" OSStatus Class##Entry(ComponentParameters *params, Class *obj) { \
-			return ComponentEntryPoint<Class>::Dispatch(params, obj); \
-		} \
-		extern "C" void * Class##Factory(const AudioComponentDescription *inDesc); \
-		extern "C" void * Class##Factory(const AudioComponentDescription *inDesc) { \
-			return FactoryType<Class>::Factory(inDesc); \
-		}
-		// the only component we still support are the carbon based view components
-		// you should be using this macro now to exclusively register those types
-	#define VIEW_COMPONENT_ENTRY(Class) \
-		extern "C" OSStatus Class##Entry(ComponentParameters *params, Class *obj); \
-		extern "C" OSStatus Class##Entry(ComponentParameters *params, Class *obj) { \
-			return ComponentEntryPoint<Class>::Dispatch(params, obj); \
-		}
-#endif	
+// NOTE: Component Mgr is deprecated in ML.
+// this macro should not be used with new audio components
+// it is only for backwards compatibility with Lion and SL.
+// this macro registers both a plugin and a component mgr version.
+#define AUDIOCOMPONENT_ENTRY(FactoryType, Class) \
+    extern "C" OSStatus Class##Entry(ComponentParameters *params, Class *obj); \
+    extern "C" OSStatus Class##Entry(ComponentParameters *params, Class *obj) { \
+        return ComponentEntryPoint<Class>::Dispatch(params, obj); \
+    } \
+    extern "C" void * Class##Factory(const AudioComponentDescription *inDesc); \
+    extern "C" void * Class##Factory(const AudioComponentDescription *inDesc) { \
+        return FactoryType<Class>::Factory(inDesc); \
+    }
+    // the only component we still support are the carbon based view components
+    // you should be using this macro now to exclusively register those types
+#define VIEW_COMPONENT_ENTRY(Class) \
+    extern "C" OSStatus Class##Entry(ComponentParameters *params, Class *obj); \
+    extern "C" OSStatus Class##Entry(ComponentParameters *params, Class *obj) { \
+        return ComponentEntryPoint<Class>::Dispatch(params, obj); \
+    }
 
 	/*! @class ComponentRegistrar */
 template <class Class, OSType Type, OSType Subtype, OSType Manufacturer>
@@ -333,7 +325,14 @@ public:
 #else
 #define COMPONENT_ENTRY(Class)
 #define COMPONENT_REGISTER(Class)
-#define AUDIOCOMPONENT_ENTRY(FactoryType, Class)
+// this macro is used to generate the Entry Point for a given Audio Plugin
+// you should be using this macro now with audio components
+#define AUDIOCOMPONENT_ENTRY(FactoryType, Class) \
+    extern "C" void * Class##Factory(const AudioComponentDescription *inDesc); \
+    extern "C" void * Class##Factory(const AudioComponentDescription *inDesc) { \
+        return FactoryType<Class>::Factory(inDesc); \
+    }
+
 #endif // !CA_USE_AUDIO_PLUGIN_ONLY
 
 

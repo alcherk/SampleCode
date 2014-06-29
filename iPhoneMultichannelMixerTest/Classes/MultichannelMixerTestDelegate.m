@@ -2,7 +2,7 @@
      File: MultichannelMixerTestDelegate.m 
  Abstract: The application delegate class.
   
-  Version: 1.1 
+  Version: 1.1.1 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -42,7 +42,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2010 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
 */
 
@@ -52,86 +52,109 @@
 
 @synthesize window, navigationController, myViewController;
 
-#pragma mark -Audio Session Interruption Listener
+#pragma mark -Audio Session Interruption Notification
 
-static void interruptionListener(void *inClientData, UInt32 inInterruption)
+- (void)handleInterruption:(NSNotification *)notification
 {
-	printf("Session interrupted! --- %s ---", inInterruption == kAudioSessionBeginInterruption ? "Begin Interruption" : "End Interruption");
-	
-	MultichannelMixerTestDelegate *THIS = (MultichannelMixerTestDelegate *)inClientData;
-	
-	if (inInterruption == kAudioSessionEndInterruption) {
-		// make sure we are again the active session
-		AudioSessionSetActive(true);
-	}
-	
-	if (inInterruption == kAudioSessionBeginInterruption) {
-        // session is already set to not active so if we're playing stop
-        [THIS->myViewController stopForInterruption];
+    UInt8 theInterruptionType = [[notification.userInfo valueForKey:AVAudioSessionInterruptionTypeKey] intValue];
+    
+    NSLog(@"Session interrupted > --- %s ---\n", theInterruptionType == AVAudioSessionInterruptionTypeBegan ? "Begin Interruption" : "End Interruption");
+	   
+    if (theInterruptionType == AVAudioSessionInterruptionTypeBegan) {
+        [self->myViewController stopForInterruption];
+    }
+    
+    if (theInterruptionType == AVAudioSessionInterruptionTypeEnded) {
+        // make sure to activate the session
+        NSError *error = nil;
+        [[AVAudioSession sharedInstance] setActive:YES error:&error];
+    
+        if (nil != error) NSLog(@"AVAudioSession set active failed with error: %@", error);
     }
 }
 
-#pragma mark -Audio Session Property Listener
+#pragma mark -Audio Session Route Change Notification
 
-static void propertyListener(void *inClientData, AudioSessionPropertyID inID, UInt32 inDataSize, const void *inData)
+- (void)handleRouteChange:(NSNotification *)notification
 {
-	//MultichannelMixerTestDelegate *THIS = (MultichannelMixerTestDelegate *)inClientData;
+    UInt8 reasonValue = [[notification.userInfo valueForKey:AVAudioSessionRouteChangeReasonKey] intValue];
+    AVAudioSessionRouteDescription *routeDescription = [notification.userInfo valueForKey:AVAudioSessionRouteChangePreviousRouteKey];
     
-	if (inID == kAudioSessionProperty_AudioRouteChange) {
-		try {
-            CFDictionaryRef	routeChangeDictionary = (CFDictionaryRef)inData;
-	
-            UInt32 routeChangeReason;
-            CFNumberRef routeChangeReasonRef = (CFNumberRef)CFDictionaryGetValue(routeChangeDictionary, CFSTR(kAudioSession_AudioRouteChangeKey_Reason));
-            CFNumberGetValue(routeChangeReasonRef, kCFNumberSInt32Type, &routeChangeReason);
-            printf("Audio Route Change, Reason: %d\n", routeChangeReason);
-            
-            CFStringRef routeChangeOldRouteRef = (CFStringRef)CFDictionaryGetValue(routeChangeDictionary, CFSTR(kAudioSession_AudioRouteChangeKey_OldRoute));
-            printf("Old Route: ");
-            CFShow(routeChangeOldRouteRef);
-            
-			CFStringRef newRoute;
-			UInt32 size = sizeof(newRoute);
-			XThrowIfError(AudioSessionGetProperty(kAudioSessionProperty_AudioRoute, &size, &newRoute), "couldn't get new audio route");
-			if (newRoute) {
-                printf("New Route: ");
-				CFShow(newRoute);
-            }
-		} catch (CAXException e) {
-			char buf[256];
-			fprintf(stderr, "Error: %s (%s)\n", e.mOperation, e.FormatError(buf));
-		}
-	}
+    NSLog(@"Route change:");
+    switch (reasonValue) {
+    case AVAudioSessionRouteChangeReasonNewDeviceAvailable:
+        NSLog(@"     NewDeviceAvailable");
+        break;
+    case AVAudioSessionRouteChangeReasonOldDeviceUnavailable:
+        NSLog(@"     OldDeviceUnavailable");
+        break;
+    case AVAudioSessionRouteChangeReasonCategoryChange:
+        NSLog(@"     CategoryChange");
+        NSLog(@" New Category: %@", [[AVAudioSession sharedInstance] category]);
+        break;
+    case AVAudioSessionRouteChangeReasonOverride:
+        NSLog(@"     Override");
+        break;
+    case AVAudioSessionRouteChangeReasonWakeFromSleep:
+        NSLog(@"     WakeFromSleep");
+        break;
+    case AVAudioSessionRouteChangeReasonNoSuitableRouteForCategory:
+        NSLog(@"     NoSuitableRouteForCategory");
+        break;
+    default:
+        NSLog(@"     ReasonUnknown");
+    }
+    
+    NSLog(@"Previous route:\n");
+    NSLog(@"%@", routeDescription);
 }
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application {    
 
     // Override point for customization after application launch
-    [window addSubview:[navigationController view]];
+    self.window.rootViewController = navigationController;
     [window makeKeyAndVisible];
     
     try {
-        // Initialize and configure the audio session
-        XThrowIfError(AudioSessionInitialize(NULL, NULL, interruptionListener, self), "couldn't initialize audio session");
-            
-        UInt32 audioCategory = kAudioSessionCategory_MediaPlayback;
-        XThrowIfError(AudioSessionSetProperty(kAudioSessionProperty_AudioCategory, sizeof(audioCategory), &audioCategory), "couldn't set audio category");
-        XThrowIfError(AudioSessionAddPropertyListener(kAudioSessionProperty_AudioRouteChange, propertyListener, self), "couldn't set property listener");
-            
-        Float32 preferredBufferSize = .005;
-        XThrowIfError(AudioSessionSetProperty(kAudioSessionProperty_PreferredHardwareIOBufferDuration, sizeof(preferredBufferSize), &preferredBufferSize), "couldn't set i/o buffer duration");
+         NSError *error = nil;
         
-        Float64 hwSampleRate = 44100.0;
-        XThrowIfError(AudioSessionSetProperty(kAudioSessionProperty_PreferredHardwareSampleRate, sizeof(hwSampleRate), &hwSampleRate), "couldn't set hw sample rate");
+        // Configure the audio session
+        AVAudioSession *sessionInstance = [AVAudioSession sharedInstance];
         
-        XThrowIfError(AudioSessionSetActive(true), "couldn't set audio session active\n");
+        // our default category -- we change this for conversion and playback appropriately
+        [sessionInstance setCategory:AVAudioSessionCategoryPlayback error:&error];
+        XThrowIfError(error.code, "couldn't set audio category");
+
+        NSTimeInterval bufferDuration = .005;
+        [sessionInstance setPreferredIOBufferDuration:bufferDuration error:&error];
+        XThrowIfError(error.code, "couldn't set IOBufferDuration");
         
-        UInt32 size = sizeof(hwSampleRate);
-        XThrowIfError(AudioSessionGetProperty(kAudioSessionProperty_CurrentHardwareSampleRate, &size, &hwSampleRate), "couldn't get hw sample rate");
-        printf("Hardware Sample Rate: %f\n", hwSampleRate);
+        double hwSampleRate = 44100.0;
+        [sessionInstance setPreferredSampleRate:hwSampleRate error:&error];
+        XThrowIfError(error.code, "couldn't set preferred sample rate");
+        
+        // add interruption handler
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(handleInterruption:) 
+                                                     name:AVAudioSessionInterruptionNotification 
+                                                   object:sessionInstance];
+        
+        // we don't do anything special in the route change notification
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(handleRouteChange:)
+                                                     name:AVAudioSessionRouteChangeNotification 
+                                                   object:sessionInstance];
+        
+        // activate the audio session
+        [sessionInstance setActive:YES error:&error];
+        XThrowIfError(error.code, "couldn't set audio session active\n");
+        
+        // just print out the sample rate
+        printf("Hardware Sample Rate: %.1f Hz\n", sessionInstance.sampleRate);
     } catch (CAXException e) {
         char buf[256];
         fprintf(stderr, "Error: %s (%s)\n", e.mOperation, e.FormatError(buf));
+        printf("You probably want to fix this before continuing!");
     }
 
     // initialize the mixerController object
@@ -146,7 +169,50 @@ static void propertyListener(void *inClientData, AudioSessionPropertyID inID, UI
     self.navigationController = nil;
     self.myViewController = nil;
     
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:AVAudioSessionInterruptionNotification 
+                                                  object:[AVAudioSession sharedInstance]];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:AVAudioSessionRouteChangeNotification 
+                                                  object:[AVAudioSession sharedInstance]];
+    
     [super dealloc];
+}
+
+- (void)applicationDidEnterBackground:(UIApplication *)application {
+    /*
+     Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
+     If your application supports background execution, called instead of applicationWillTerminate: when the user quits.
+     */
+     
+    printf("applicationDidEnterBackground\n");
+}
+
+
+- (void)applicationWillEnterForeground:(UIApplication *)application {
+    /*
+     Called as part of  transition from the background to the inactive state: here you can undo many of the changes made on entering the background.
+     */
+     
+     printf("applicationWillEnterForeground\n");
+}
+
+- (void)applicationWillResignActive:(UIApplication *)application {
+    /*
+     Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
+     Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+     */
+    
+    printf("applicationWillResignActive\n");
+}
+
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+    /*
+     Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+     */
+    
+    printf("applicationDidBecomeActive\n");
 }
 
 @end

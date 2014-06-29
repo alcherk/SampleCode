@@ -5,7 +5,7 @@
     Displays the user location along with the path traveled on an MKMapView.
     Implements the MKMapViewDelegate messages for tracking user location and managing overlays.
      
-  Version: 1.5 
+  Version: 1.6 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -45,29 +45,48 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2011 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2012 Apple Inc. All Rights Reserved. 
   
  */
 
+#import "CrumbPath.h"
+#import "CrumbPathView.h"
 #import "BreadcrumbViewController.h"
 
-#import <AudioToolbox/AudioToolbox.h>
-
-#pragma mark -
 
 @interface BreadcrumbViewController()
-- (void)setSessionActiveWithMixing:(BOOL)duckIfOtherAudioIsPlaying;
-- (void)playSound;
-- (void)flipAction:(id)sender;
-static void interruptionListener(void *inClientData, UInt32 inInterruption);
+
+@property (nonatomic, strong) CLLocationManager *locationManager;
+
+@property (nonatomic, strong) AVAudioPlayer *audioPlayer;
+
+@property (nonatomic, strong) IBOutlet MKMapView *map;
+
+@property (nonatomic, strong) UIBarButtonItem *flipButton;
+@property (nonatomic, strong) UIBarButtonItem *doneButton;
+
+@property (nonatomic, strong) UIView *containerView;
+@property (nonatomic, strong) IBOutlet UIView *instructionsView;
+
+@property (nonatomic, strong) CrumbPath *crumbs;
+@property (nonatomic, strong) CrumbPathView *crumbView;
+
+@property (nonatomic, strong) IBOutlet UISwitch *toggleBackgroundButton;
+@property (nonatomic, strong) IBOutlet UISwitch *toggleNavigationAccuracyButton;
+@property (nonatomic, strong) IBOutlet UISwitch *toggleAudioButton;
+@property (nonatomic, strong) IBOutlet UISwitch *trackUserButton;
+@property (nonatomic, strong) IBOutlet UILabel *trackUserLabel;
+
+@property (atomic, assign) BOOL okToPlaySound;
+
+- (IBAction)toggleBestAccuracy:(id)sender;
+
 @end
 
 
-@implementation BreadcrumbViewController
+#pragma mark -
 
-@synthesize flipButton, doneButton, containerView, map,
-            instructionsView, toggleBackgroundButton, toggleNavigationAccuracyButton, toggleAudioButton,
-            locationManager, audioPlayer, trackUserButton, trackUserLabel;
+@implementation BreadcrumbViewController
 
 - (void)viewDidLoad
 {
@@ -81,16 +100,16 @@ static void interruptionListener(void *inClientData, UInt32 inInterruption);
 	[self setSessionActiveWithMixing:NO];
 	
 	NSURL *url = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Hero" ofType:@"aiff"]];
-    audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:url error:nil];
+    _audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:url error:nil];
     self.audioPlayer.delegate = self;	// so we know when the sound finishes playing
 	
-	okToPlaySound = YES;
+	_okToPlaySound = YES;
 	
     // Note: we are using Core Location directly to get the user location updates.
     // We could normally use MKMapView's user location update delegation but this does not work in
     // the background.  Plus we want "kCLLocationAccuracyBestForNavigation" which gives us a better accuracy.
     //
-    self.locationManager = [[[CLLocationManager alloc] init] autorelease];
+    self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.delegate = self; // Tells the location manager to send updates to this object
     
     // By default use the best accuracy setting (kCLLocationAccuracyBest)
@@ -105,15 +124,15 @@ static void interruptionListener(void *inClientData, UInt32 inInterruption);
         (navigationAccuracy ? kCLLocationAccuracyBestForNavigation : kCLLocationAccuracyBest);
     
     // hide the prefs UI for user tracking mode - if MKMapView is not capable of it
-    if (![map respondsToSelector:@selector(setUserTrackingMode:animated:)])
+    if (![self.map respondsToSelector:@selector(setUserTrackingMode:animated:)])
     {
-        trackUserButton.hidden = trackUserLabel.hidden = YES;
+        self.trackUserButton.hidden = self.trackUserLabel.hidden = YES;
     }
 
     [self.locationManager startUpdatingLocation];
     
     // create the container view which we will use for flip animation (centered horizontally)
-	containerView = [[UIView alloc] initWithFrame:self.view.bounds];
+	_containerView = [[UIView alloc] initWithFrame:self.view.bounds];
 	[self.view addSubview:self.containerView];
     
     [self.containerView addSubview:self.map];
@@ -124,70 +143,26 @@ static void interruptionListener(void *inClientData, UInt32 inInterruption);
     frame.size.width = 40.0f;
     infoButton.frame = frame;
 	[infoButton addTarget:self action:@selector(flipAction:) forControlEvents:UIControlEventTouchUpInside];
-	flipButton = [[UIBarButtonItem alloc] initWithCustomView:infoButton];
-	self.navigationItem.rightBarButtonItem = flipButton;
+	_flipButton = [[UIBarButtonItem alloc] initWithCustomView:infoButton];
+	self.navigationItem.rightBarButtonItem = self.flipButton;
 	
 	// create our done button as the nav bar's custom right view for the flipped view (used later)
-	doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+	_doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
                                                                target:self
                                                                action:@selector(flipAction:)];
 }
 
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    
-    self.map = nil;
-    self.instructionsView = nil;
-    
-    self.containerView = nil;
-    
-    self.locationManager.delegate = nil;
-    self.locationManager = nil;
-    
-	self.flipButton = nil;
-	self.doneButton = nil;
-	
-	self.audioPlayer = nil;
-	
-	self.toggleBackgroundButton = nil;
-	self.toggleNavigationAccuracyButton = nil;
-	self.toggleAudioButton = nil;
-    
-    self.trackUserButton = nil;
-    self.trackUserLabel = nil;
-}
-
 - (void)dealloc
 {
-    [crumbView release];
-    [crumbs release];
-    
-    [containerView release];
-    [map release];
-    
-    [flipButton release];
-    [doneButton release];
-    
-    [trackUserButton release];
-    [trackUserLabel release];
-    
     self.locationManager.delegate = nil;
-    [locationManager release];
-    
-	[audioPlayer release];
-	
-	[instructionsView release];
-	[toggleBackgroundButton release];
-	[toggleNavigationAccuracyButton release];
-	[toggleAudioButton release];
-	
-    [super dealloc];
 }
 
+- (NSUInteger)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskPortrait;
+}
 
-#pragma mark -
-#pragma mark Actions
+#pragma mark - Actions
 
 // called when the app is moved to the background (user presses the home button) or to the foreground 
 //
@@ -232,11 +207,11 @@ static void interruptionListener(void *inClientData, UInt32 inInterruption);
     if (trackHeaderSwitch.isOn)
     {
         // track the user (the map follows the user's location and heading)
-        [map setUserTrackingMode:MKUserTrackingModeFollowWithHeading animated:NO];
+        [self.map setUserTrackingMode:MKUserTrackingModeFollowWithHeading animated:NO];
     }
     else
     {
-        [map setUserTrackingMode:MKUserTrackingModeNone animated:NO];
+        [self.map setUserTrackingMode:MKUserTrackingModeNone animated:NO];
     }
 }
 
@@ -249,34 +224,33 @@ static void interruptionListener(void *inClientData, UInt32 inInterruption);
 	
     // since the user can turn off user tracking by simply moving the map,
     // we want to make sure our UISwitch reflects that change.
-    [trackUserButton setOn:([map userTrackingMode] == MKUserTrackingModeFollowWithHeading ? YES : NO)];
+    [self.trackUserButton setOn:([self.map userTrackingMode] == MKUserTrackingModeFollowWithHeading ? YES : NO)];
     
 	[UIView setAnimationTransition:([self.map superview] ?
 									UIViewAnimationTransitionFlipFromLeft : UIViewAnimationTransitionFlipFromRight)
-                           forView:containerView cache:YES];
-	if ([instructionsView superview])
+                           forView:self.containerView cache:YES];
+	if ([self.instructionsView superview])
 	{
-		[instructionsView removeFromSuperview];
-		[containerView addSubview:self.map];
+		[self.instructionsView removeFromSuperview];
+		[self.containerView addSubview:self.map];
 	}
 	else
 	{
 		[self.map removeFromSuperview];
-		[containerView addSubview:instructionsView];
+		[self.containerView addSubview:self.instructionsView];
 	}
 	
 	[UIView commitAnimations];
 	
 	// adjust our done/info buttons accordingly
-	if ([instructionsView superview])
-		self.navigationItem.rightBarButtonItem = doneButton;
+	if ([self.instructionsView superview])
+		self.navigationItem.rightBarButtonItem = self.doneButton;
 	else
-		self.navigationItem.rightBarButtonItem = flipButton;
+		self.navigationItem.rightBarButtonItem = self.flipButton;
 }
 
 
-#pragma mark -
-#pragma mark MapKit
+#pragma mark - MapKit
 
 - (void)locationManager:(CLLocationManager *)manager
     didUpdateToLocation:(CLLocation *)newLocation
@@ -294,18 +268,18 @@ static void interruptionListener(void *inClientData, UInt32 inInterruption);
         if ((oldLocation.coordinate.latitude != newLocation.coordinate.latitude) &&
             (oldLocation.coordinate.longitude != newLocation.coordinate.longitude))
         {    
-            if (!crumbs)
+            if (!self.crumbs)
             {
                 // This is the first time we're getting a location update, so create
                 // the CrumbPath and add it to the map.
                 //
-                crumbs = [[CrumbPath alloc] initWithCenterCoordinate:newLocation.coordinate];
-                [map addOverlay:crumbs];
+                _crumbs = [[CrumbPath alloc] initWithCenterCoordinate:newLocation.coordinate];
+                [self.map addOverlay:self.crumbs];
                 
                 // On the first location update only, zoom map to user location
                 MKCoordinateRegion region = 
 					MKCoordinateRegionMakeWithDistance(newLocation.coordinate, 2000, 2000);
-                [map setRegion:region animated:YES];
+                [self.map setRegion:region animated:YES];
             }
             else
             {
@@ -318,18 +292,18 @@ static void interruptionListener(void *inClientData, UInt32 inInterruption);
                 // so you may experience spikes in location data (in small time intervals)
                 // due to 3G tower triangulation.
                 // 
-                MKMapRect updateRect = [crumbs addCoordinate:newLocation.coordinate];
+                MKMapRect updateRect = [self.crumbs addCoordinate:newLocation.coordinate];
                 
                 if (!MKMapRectIsNull(updateRect))
                 {
                     // There is a non null update rect.
                     // Compute the currently visible map zoom scale
-                    MKZoomScale currentZoomScale = (CGFloat)(map.bounds.size.width / map.visibleMapRect.size.width);
+                    MKZoomScale currentZoomScale = (CGFloat)(self.map.bounds.size.width / self.map.visibleMapRect.size.width);
                     // Find out the line width at this zoom scale and outset the updateRect by that amount
                     CGFloat lineWidth = MKRoadWidthAtZoomScale(currentZoomScale);
                     updateRect = MKMapRectInset(updateRect, -lineWidth, -lineWidth);
                     // Ask the overlay view to update just the changed area.
-                    [crumbView setNeedsDisplayInMapRect:updateRect];
+                    [self.crumbView setNeedsDisplayInMapRect:updateRect];
                 }
             }
         }
@@ -338,16 +312,15 @@ static void interruptionListener(void *inClientData, UInt32 inInterruption);
 
 - (MKOverlayView *)mapView:(MKMapView *)mapView viewForOverlay:(id <MKOverlay>)overlay
 {
-    if (!crumbView)
+    if (!self.crumbView)
     {
-        crumbView = [[CrumbPathView alloc] initWithOverlay:overlay];
+        _crumbView = [[CrumbPathView alloc] initWithOverlay:overlay];
     }
-    return crumbView;
+    return self.crumbView;
 }
 
 
-#pragma mark -
-#pragma mark Audio Support
+#pragma mark - Audio Support
 
 static void interruptionListener(void *inClientData, UInt32 inInterruption)
 {
@@ -377,9 +350,9 @@ static void interruptionListener(void *inClientData, UInt32 inInterruption)
 
 - (void)playSound
 {
-	if (self.audioPlayer && okToPlaySound)
+	if (self.audioPlayer && self.okToPlaySound)
     {
-        okToPlaySound = NO;
+        _okToPlaySound = NO;
 		[self.audioPlayer prepareToPlay];
 		[self.audioPlayer play];
     }
@@ -388,7 +361,7 @@ static void interruptionListener(void *inClientData, UInt32 inInterruption)
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag
 {
     AudioSessionSetActive(NO);
-	okToPlaySound = YES;
+	_okToPlaySound = YES;
 }
 
 @end

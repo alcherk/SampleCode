@@ -2,7 +2,7 @@
      File: AppDelegate.h
  Abstract: The delegate for the Application. This manages which view controller is added to the window at launch.
  
-  Version: 1.2
+  Version: 1.3
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following

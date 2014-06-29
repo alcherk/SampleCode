@@ -1,7 +1,7 @@
 /*
     File: MixerEQGraphTestDelegate.m  
 Abstract: The application delegate class.  
- Version: 1.2  
+ Version: 1.2.2  
   
 Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple  
 Inc. ("Apple") in consideration of your agreement to the following  
@@ -41,7 +41,7 @@ AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE),
 STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE  
 POSSIBILITY OF SUCH DAMAGE.  
   
-Copyright (C) 2010 Apple Inc. All Rights Reserved.  
+Copyright (C) 2014 Apple Inc. All Rights Reserved.  
   
 */
 
@@ -51,95 +51,111 @@ Copyright (C) 2010 Apple Inc. All Rights Reserved.
 
 @synthesize window, navigationController, myViewController;
 
-#pragma mark -Audio Session Interruption Listener
+#pragma mark -Audio Session Interruption Notification
 
-static void interruptionListener(void *inClientData, UInt32 inInterruption)
+- (void)handleInterruption:(NSNotification *)notification
 {
-	printf("Session interrupted! --- %s ---", inInterruption == kAudioSessionBeginInterruption ? "Begin Interruption" : "End Interruption");
-	
-	MixerEQGraphTestDelegate *THIS = (MixerEQGraphTestDelegate *)inClientData;
-	
-	if (inInterruption == kAudioSessionEndInterruption) {
-		// make sure we are again the active session
-		AudioSessionSetActive(true);
-	}
-	
-	if (inInterruption == kAudioSessionBeginInterruption) {
-        // session is already set to not active so if we're playing stop
-        [THIS->myViewController stopForInterruption];
+    UInt8 theInterruptionType = [[notification.userInfo valueForKey:AVAudioSessionInterruptionTypeKey] intValue];
+    
+    NSLog(@"Session interrupted > --- %s ---\n", theInterruptionType == AVAudioSessionInterruptionTypeBegan ? "Begin Interruption" : "End Interruption");
+	   
+    if (theInterruptionType == AVAudioSessionInterruptionTypeBegan) {
+        [self->myViewController stopForInterruption];
+    }
+    
+    if (theInterruptionType == AVAudioSessionInterruptionTypeEnded) {
+        // make sure to activate the session
+        NSError *error = nil;
+        [[AVAudioSession sharedInstance] setActive:YES error:&error];
+    
+        if (nil != error) NSLog(@"AVAudioSession set active failed with error: %d", error.code);
     }
 }
 
-#pragma mark -Audio Session Property Listener
+#pragma mark -Audio Session Route Change Notification
 
-static void propertyListener(void *inClientData, AudioSessionPropertyID inID, UInt32 inDataSize, const void *inData)
-{    
-	if (inID == kAudioSessionProperty_AudioRouteChange) {
-		try {
-            CFDictionaryRef	routeChangeDictionary = (CFDictionaryRef)inData;
-	
-            UInt32 routeChangeReason;
-            CFNumberRef routeChangeReasonRef = (CFNumberRef)CFDictionaryGetValue(routeChangeDictionary, CFSTR(kAudioSession_AudioRouteChangeKey_Reason));
-            CFNumberGetValue(routeChangeReasonRef, kCFNumberSInt32Type, &routeChangeReason);
-            printf("Audio Route Change, Reason: %ld\n", routeChangeReason);
-            
-            CFStringRef routeChangeOldRouteRef = (CFStringRef)CFDictionaryGetValue(routeChangeDictionary, CFSTR(kAudioSession_AudioRouteChangeKey_OldRoute));
-            printf("Old Route: ");
-            CFShow(routeChangeOldRouteRef);
-            
-			CFStringRef newRoute;
-			UInt32 size = sizeof(newRoute);
-			XThrowIfError(AudioSessionGetProperty(kAudioSessionProperty_AudioRoute, &size, &newRoute), "couldn't get new audio route");
-			if (newRoute) {
-                printf("New Route: ");
-				CFShow(newRoute);
-            }
-		} catch (CAXException e) {
-			char buf[256];
-			fprintf(stderr, "Error: %s (%s)\n", e.mOperation, e.FormatError(buf));
-		}
-	}
+- (void)handleRouteChange:(NSNotification *)notification
+{
+    UInt8 reasonValue = [[notification.userInfo valueForKey:AVAudioSessionRouteChangeReasonKey] intValue];
+    AVAudioSessionRouteDescription *routeDescription = [notification.userInfo valueForKey:AVAudioSessionRouteChangePreviousRouteKey];
+    
+    NSLog(@"Route change:");
+    switch (reasonValue) {
+    case AVAudioSessionRouteChangeReasonNewDeviceAvailable:
+        NSLog(@"     NewDeviceAvailable");
+        break;
+    case AVAudioSessionRouteChangeReasonOldDeviceUnavailable:
+        NSLog(@"     OldDeviceUnavailable");
+        break;
+    case AVAudioSessionRouteChangeReasonCategoryChange:
+        NSLog(@"     CategoryChange");
+        NSLog(@" New Category: %@", [[AVAudioSession sharedInstance] category]);
+        break;
+    case AVAudioSessionRouteChangeReasonOverride:
+        NSLog(@"     Override");
+        break;
+    case AVAudioSessionRouteChangeReasonWakeFromSleep:
+        NSLog(@"     WakeFromSleep");
+        break;
+    case AVAudioSessionRouteChangeReasonNoSuitableRouteForCategory:
+        NSLog(@"     NoSuitableRouteForCategory");
+        break;
+    default:
+        NSLog(@"     ReasonUnknown");
+    }
+    
+    NSLog(@"Previous route:\n");
+    NSLog(@"%@", routeDescription);
 }
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application {    
 
     // Override point for customization after application launch
-    [window addSubview:[navigationController view]];
+    self.window.rootViewController = navigationController;
     [window makeKeyAndVisible];
     
     try {
-        // initialize and configure the audio session
-        XThrowIfError(AudioSessionInitialize(NULL, NULL, interruptionListener, self), "couldn't initialize audio session");
-            
-        UInt32 audioCategory = kAudioSessionCategory_MediaPlayback;
-        XThrowIfError(AudioSessionSetProperty(kAudioSessionProperty_AudioCategory, sizeof(audioCategory), &audioCategory), "couldn't set audio category");
-        XThrowIfError(AudioSessionAddPropertyListener(kAudioSessionProperty_AudioRouteChange, propertyListener, self), "couldn't set property listener");
+        NSError *error = nil;
         
-        // 5ms preferred buffer size
-        Float32 bufferDuration = .005;
-        XThrowIfError(AudioSessionSetProperty(kAudioSessionProperty_PreferredHardwareIOBufferDuration, sizeof(bufferDuration), &bufferDuration), "couldn't set i/o buffer duration");
+        // Configure the audio session
+        AVAudioSession *sessionInstance = [AVAudioSession sharedInstance];
         
-        // 44.1kHz preferred hardware sample rate
-        Float64 hwSampleRate = 44100.0;
-        XThrowIfError(AudioSessionSetProperty(kAudioSessionProperty_PreferredHardwareSampleRate, sizeof(hwSampleRate), &hwSampleRate), "couldn't set hw sample rate");
+        // our default category -- we change this for conversion and playback appropriately
+        [sessionInstance setCategory:AVAudioSessionCategoryPlayback error:&error];
+        XThrowIfError(error.code, "couldn't set audio category");
+
+        NSTimeInterval bufferDuration = .005;
+        [sessionInstance setPreferredIOBufferDuration:bufferDuration error:&error];
+        XThrowIfError(error.code, "couldn't set IOBufferDuration");
         
-        XThrowIfError(AudioSessionSetActive(true), "couldn't set audio session active\n");
+        double hwSampleRate = 44100.0;
+        [sessionInstance setPreferredSampleRate:hwSampleRate error:&error];
+        XThrowIfError(error.code, "couldn't set preferred sample rate");
         
-        UInt32 size = sizeof(bufferDuration);
-        XThrowIfError(AudioSessionGetProperty(kAudioSessionProperty_CurrentHardwareIOBufferDuration, &size, &bufferDuration), "couldn't get iobuffer duration");
-        printf("Current IOBufferDuration: %fms\n", bufferDuration * 1000);
+        // add interruption handler
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(handleInterruption:) 
+                                                     name:AVAudioSessionInterruptionNotification 
+                                                   object:sessionInstance];
         
-        size = sizeof(hwSampleRate);
-        XThrowIfError(AudioSessionGetProperty(kAudioSessionProperty_CurrentHardwareSampleRate, &size, &hwSampleRate), "couldn't get hw sample rate");
-        printf("Current Hardware Sample Rate: %.fHz\n", hwSampleRate);
+        // we don't do anything special in the route change notification
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(handleRouteChange:)
+                                                     name:AVAudioSessionRouteChangeNotification 
+                                                   object:sessionInstance];
         
-        Float32 outputLatency;
-        size = sizeof(outputLatency);
-        XThrowIfError(AudioSessionGetProperty(kAudioSessionProperty_CurrentHardwareOutputLatency, &size, &outputLatency), "couldn't get output latency");
-        printf("Current Hardware Output Latency: %fms\n", outputLatency * 1000);
+        // activate the audio session
+        [sessionInstance setActive:YES error:&error];
+        XThrowIfError(error.code, "couldn't set audio session active\n");
+        
+        // just print out some info
+        printf("Current IOBufferDuration: %fms\n", sessionInstance.IOBufferDuration * 1000);
+        printf("Hardware Sample Rate: %.1fHz\n", sessionInstance.sampleRate);
+        printf("Current Hardware Output Latency: %fms\n", sessionInstance.outputLatency * 1000);
     } catch (CAXException e) {
         char buf[256];
         fprintf(stderr, "Error: %s (%s)\n", e.mOperation, e.FormatError(buf));
+        printf("You probably want to fix this before continuing!");
     }
 
     // initialize the graphController object
@@ -153,6 +169,14 @@ static void propertyListener(void *inClientData, AudioSessionPropertyID inID, UI
     self.window = nil;
     self.navigationController = nil;
     self.myViewController = nil;
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:AVAudioSessionInterruptionNotification 
+                                                  object:[AVAudioSession sharedInstance]];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:AVAudioSessionRouteChangeNotification 
+                                                  object:[AVAudioSession sharedInstance]];
     
     [super dealloc];
 }

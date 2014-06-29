@@ -1,7 +1,7 @@
 /*
     File: MyViewController.m 
 Abstract: The main view controller. 
- Version: 1.2 
+ Version: 1.2.2 
  
 Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
 Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@ AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE),
 STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
 POSSIBILITY OF SUCH DAMAGE. 
  
-Copyright (C) 2010 Apple Inc. All Rights Reserved. 
+Copyright (C) 2014 Apple Inc. All Rights Reserved. 
  
 */
 
@@ -70,6 +70,7 @@ Copyright (C) 2010 Apple Inc. All Rights Reserved.
 	[startButton setBackgroundImage:redImage forState:UIControlStateSelected];
     
     // add the subview
+    [self.view addSubview:instructionsView];
 	[self.view addSubview:contentView];
 	
 	// add our custom buttons as the nav bars custom views
@@ -152,72 +153,69 @@ Copyright (C) 2010 Apple Inc. All Rights Reserved.
 // do the info button flip
 - (void)flipInfoAction:(id)sender
 {
-	[UIView setAnimationDelegate:self];
-	[UIView setAnimationDidStopSelector:@selector(animationDidStop:animationIDfinished:finished:context:)];
-	[UIView beginAnimations:nil context:nil];
-	[UIView setAnimationDuration:kTransitionDuration];
-	
-	[UIView setAnimationTransition:([self.contentView superview] ? UIViewAnimationTransitionFlipFromLeft : UIViewAnimationTransitionFlipFromRight)
-                                    forView:self.view
-                                    cache:YES];
-    
-	if ([self.instructionsView superview]) {
-		[self.instructionsView removeFromSuperview];
-		[self.view addSubview:contentView];
-        self.navigationItem.title = @"MixerEQGraph Test";
-	} else {
-		[self.contentView removeFromSuperview];
-		[self.view addSubview:instructionsView];
+    if ([self.contentView superview]) {
+        // flip to readme info view
         self.navigationItem.title = @"Read Me eh?";
-	}
-	
-	[UIView commitAnimations];
-	
-	// adjust our done/info buttons accordingly
-	if ([instructionsView superview]) {
-		self.navigationItem.leftBarButtonItem = doneButtonItem;
-        self.navigationItem.rightBarButtonItem = nil;
-	} else {
-		self.navigationItem.leftBarButtonItem = infoButtonItem;
-        if (eqSwitch.isOn) {
-            self.navigationItem.rightBarButtonItem = eqButtonItem;
-        }
+        self.navigationItem.rightBarButtonItem = self.navigationItem.leftBarButtonItem = nil;
+        
+        [UIView transitionFromView:self.contentView
+                            toView:self.instructionsView
+                          duration:kTransitionDuration
+                           options:UIViewAnimationOptionTransitionFlipFromLeft
+                        completion:^(BOOL finished){
+                                self.navigationItem.leftBarButtonItem = doneButtonItem;
+                        }];
+    } else {
+        // flip back to main content view
+        self.navigationItem.title = @"MixerEQGraph Test";
+        self.navigationItem.rightBarButtonItem = self.navigationItem.leftBarButtonItem = nil;
+        
+        [UIView transitionFromView:self.instructionsView
+                            toView:self.contentView
+                          duration:kTransitionDuration
+                           options:UIViewAnimationOptionTransitionFlipFromRight
+                        completion:^(BOOL finished){
+                                self.navigationItem.leftBarButtonItem = infoButtonItem;
+                                if (eqSwitch.isOn) {
+                                    self.navigationItem.rightBarButtonItem = eqButtonItem;
+                                }
+
+                        }];
     }
     
     doneButtonItem.action = @selector(flipInfoAction:);
 }
 
 // do the eq button flip
-- (void)flipEQAction:(id)sender
+- (void)flipEQAction:(id)sende
 {
-	[UIView setAnimationDelegate:self];
-	[UIView setAnimationDidStopSelector:@selector(animationDidStop:animationIDfinished:finished:context:)];
-	[UIView beginAnimations:nil context:nil];
-	[UIView setAnimationDuration:kTransitionDuration];
-	
-	[UIView setAnimationTransition:([self.contentView superview] ? UIViewAnimationTransitionFlipFromRight : UIViewAnimationTransitionFlipFromLeft)
-                                    forView:self.view
-                                    cache:YES];
-    
-	if ([self.eqView superview]) {
-		[self.eqView removeFromSuperview];
-		[self.view addSubview:contentView];
-        self.navigationItem.title = @"MixerEQGraph Test";
-	} else {
-		[self.contentView removeFromSuperview];
-		[self.view addSubview:eqView];
+    if ([self.contentView superview]) {
+        // flip to eq view
         self.navigationItem.title = @"iPod Equalizer";
-	}
-	
-	[UIView commitAnimations];
-	
-	// adjust our done/eq buttons accordingly
-	if ([eqView superview]) {
-		self.navigationItem.leftBarButtonItem = nil;
-        self.navigationItem.rightBarButtonItem = doneButtonItem;
-	} else {
-		self.navigationItem.leftBarButtonItem = infoButtonItem;
-        self.navigationItem.rightBarButtonItem = eqButtonItem;
+        self.navigationItem.rightBarButtonItem = self.navigationItem.leftBarButtonItem = nil;
+        
+        [UIView transitionFromView:self.contentView
+                            toView:self.eqView
+                          duration:kTransitionDuration
+                           options:UIViewAnimationOptionTransitionFlipFromRight
+                        completion:^(BOOL finished){
+                                self.navigationItem.rightBarButtonItem = doneButtonItem;
+                        }];
+    } else {
+        // flip back to main content view
+        self.navigationItem.title = @"MixerEQGraph Test";
+        self.navigationItem.rightBarButtonItem = self.navigationItem.leftBarButtonItem = nil;
+        
+        [UIView transitionFromView:self.eqView
+                            toView:self.contentView
+                          duration:kTransitionDuration
+                           options:UIViewAnimationOptionTransitionFlipFromLeft
+                        completion:^(BOOL finished){
+                                self.navigationItem.leftBarButtonItem = infoButtonItem;
+                                if (eqSwitch.isOn) {
+                                    self.navigationItem.rightBarButtonItem = eqButtonItem;
+                                }
+                        }];
     }
     
     doneButtonItem.action = @selector(flipEQAction:);

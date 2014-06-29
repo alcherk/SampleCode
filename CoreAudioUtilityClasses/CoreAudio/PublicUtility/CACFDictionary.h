@@ -1,7 +1,7 @@
 /*
      File: CACFDictionary.h 
  Abstract:  Part of CoreAudio Utility Classes  
-  Version: 1.01 
+  Version: 1.0.4 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2012 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
 */
 #if !defined(__CACFDictionary_h__)
@@ -124,6 +124,7 @@ public:
 	bool					GetFloat64(const CFStringRef inKey, Float64& outValue) const;
 	bool					GetFixed32(const CFStringRef inKey, Float32& outValue) const;
 	bool					GetFixed64(const CFStringRef inKey, Float64& outValue) const;
+	bool					Get4CC(const CFStringRef inKey, UInt32& outValue) const;
 	bool					GetString(const CFStringRef inKey, CFStringRef& outValue) const;	
 	bool					GetArray(const CFStringRef inKey, CFArrayRef& outValue) const;	
 	bool					GetDictionary(const CFStringRef inKey, CFDictionaryRef& outValue) const;	

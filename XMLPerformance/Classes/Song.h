@@ -1,7 +1,7 @@
 /*
      File: Song.h
  Abstract: Contains the parsed information about a song.
-  Version: 1.3
+  Version: 1.4
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,19 +41,13 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
 */
 
 #import <UIKit/UIKit.h>
 
-@interface Song : NSObject {
-    NSString *title;
-    NSString *artist;
-    NSString *album;
-    NSDate *releaseDate;
-    NSString *category;
-}
+@interface Song : NSObject
 
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, copy) NSString *artist;

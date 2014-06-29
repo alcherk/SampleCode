@@ -2,7 +2,7 @@
      File: DistanceViewController.m 
  Abstract: View controller in charge of measuring distance between 2 locations.
   
-  Version: 1.2 
+  Version: 1.3 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -42,7 +42,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2012 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
  */
 
@@ -64,63 +64,26 @@
 
 @implementation DistanceViewController
 
-@synthesize toCoordinateSelector = _toCoordinateSelector;
-@synthesize fromCoordinateSelector = _fromCoordinateSelector;
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self)
-    {
-        self.title = @"Distance";
-        self.tabBarItem.image = [UIImage imageNamed:@"distance"];
-        
-        // custom initialization
-        _toCoordinateSelector = [[CoordinateSelectorTableViewController alloc] init];
-        _fromCoordinateSelector = [[CoordinateSelectorTableViewController alloc] init];
-    }
-    return self;
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-}
-
-
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
+    
+    _toCoordinateSelector = [[CoordinateSelectorTableViewController alloc] init];
+    _fromCoordinateSelector = [[CoordinateSelectorTableViewController alloc] init];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    [self.tableView reloadData];
     [super viewWillAppear:animated];
+    [self.tableView reloadData];
 }
 
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-	[super viewWillDisappear:animated];
-}
-
-- (void)viewDidDisappear:(BOOL)animated
-{
-	[super viewDidDisappear:animated];
-}
-
+// rotation support for iOS 5.x and earlier, note for iOS 6.0 and later all you need is
+// "UISupportedInterfaceOrientations" defined in your Info.plist
+//
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // return YES for supported orientations
@@ -133,7 +96,7 @@
         return YES;
     }
 }
-
+#endif
 
 #pragma mark - Distance Calculation
 
@@ -143,16 +106,19 @@
     
     latitude = self.toCoordinateSelector.selectedCoordinate.latitude;
     longitude = self.toCoordinateSelector.selectedCoordinate.longitude;
-    CLLocation *to = [[[CLLocation alloc] initWithLatitude:latitude longitude:longitude] autorelease];
+    CLLocation *to = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
     
     latitude = self.fromCoordinateSelector.selectedCoordinate.latitude;
     longitude = self.fromCoordinateSelector.selectedCoordinate.longitude;
-    CLLocation *from = [[[CLLocation alloc] initWithLatitude:latitude longitude:longitude] autorelease];
+    CLLocation *from = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
     
     CLLocationDistance distance = [to distanceFromLocation:from];
     
     return distance;
 }
+
+
+#pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -175,7 +141,7 @@
     {
         cell = [tableView dequeueReusableCellWithIdentifier:@"selectorCell"];
         if (!cell)
-            cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"selectorCell"] autorelease];
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"selectorCell"];
         
         CoordinateSelectorTableViewController *selector;
         switch (indexPath.section)
@@ -241,14 +207,6 @@
     {
         [[self navigationController] pushViewController:self.fromCoordinateSelector animated:YES];
     }
-}
-
-- (void)dealloc
-{
-    [_toCoordinateSelector release];
-    [_fromCoordinateSelector release];     
-    
-    [super dealloc];
 }
 
 @end

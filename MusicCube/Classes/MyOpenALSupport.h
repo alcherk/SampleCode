@@ -1,7 +1,7 @@
 /*
      File: MyOpenALSupport.h
- Abstract: 
-  Version: 1.2
+ Abstract: Provides helper functions for various common OpenAL-related tasks (opening files for data read, creating devices and context objects, etc.)
+  Version: 1.3
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
@@ -75,11 +75,11 @@ void* MyGetOpenALAudioData(CFURLRef inFileURL, ALsizei *outDataSize, ALenum *out
 	
 	// Open a file with ExtAudioFileOpen()
 	err = AudioFileOpenURL(inFileURL, kAudioFileReadPermission, 0, &afid);
-	if(err) { printf("MyGetOpenALAudioData: AudioFileOpenURL FAILED, Error = %ld\n", err); goto Exit; }
+	if(err) { printf("MyGetOpenALAudioData: AudioFileOpenURL FAILED, Error = %d\n", (int)err); goto Exit; }
 	
 	// Get the audio data format
 	err = AudioFileGetProperty(afid, kAudioFilePropertyDataFormat, &thePropertySize, &theFileFormat);
-	if(err) { printf("MyGetOpenALAudioData: AudioFileGetProperty(kAudioFileProperty_DataFormat) FAILED, Error = %ld\n", err); goto Exit; }
+	if(err) { printf("MyGetOpenALAudioData: AudioFileGetProperty(kAudioFileProperty_DataFormat) FAILED, Error = %d\n", (int)err); goto Exit; }
 	
 	if (theFileFormat.mChannelsPerFrame > 2)  { 
 		printf("MyGetOpenALAudioData - Unsupported Format, channel count is greater than stereo\n"); goto Exit;
@@ -96,10 +96,10 @@ void* MyGetOpenALAudioData(CFURLRef inFileURL, ALsizei *outDataSize, ALenum *out
 	
 	thePropertySize = sizeof(fileDataSize);
 	err = AudioFileGetProperty(afid, kAudioFilePropertyAudioDataByteCount, &thePropertySize, &fileDataSize);
-	if(err) { printf("MyGetOpenALAudioData: AudioFileGetProperty(kAudioFilePropertyAudioDataByteCount) FAILED, Error = %ld\n", err); goto Exit; }
+	if(err) { printf("MyGetOpenALAudioData: AudioFileGetProperty(kAudioFilePropertyAudioDataByteCount) FAILED, Error = %d\n", (int)err); goto Exit; }
 	
 	// Read all the data into memory
-	UInt32		dataSize = fileDataSize;
+	UInt32		dataSize = (UInt32)fileDataSize;
 	theData = malloc(dataSize);
 	if (theData)
 	{
@@ -116,7 +116,7 @@ void* MyGetOpenALAudioData(CFURLRef inFileURL, ALsizei *outDataSize, ALenum *out
 			// failure
 			free (theData);
 			theData = NULL; // make sure to return NULL
-			printf("MyGetOpenALAudioData: ExtAudioFileRead FAILED, Error = %ld\n", err); goto Exit;
+			printf("MyGetOpenALAudioData: ExtAudioFileRead FAILED, Error = %d\n", (int)err); goto Exit;
 		}	
 	}
 	

@@ -3,7 +3,7 @@
  Abstract: View controller to allow the user to add a new recipe and choose its picture using the image picker.
  If the user taps Save, the recipe detail view controller is pushed so that the user can edit the new item.
  
-  Version: 1.4
+  Version: 1.5
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -43,31 +43,26 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
 @protocol RecipeAddDelegate;
+
 @class Recipe;
 
-@interface RecipeAddViewController : UIViewController <UITextFieldDelegate> {
-    @private
-        Recipe *recipe;
-        UITextField *nameTextField;
-        id <RecipeAddDelegate> delegate;
-}
+@interface RecipeAddViewController : UIViewController
 
-@property(nonatomic, retain) Recipe *recipe;
-@property(nonatomic, retain) IBOutlet UITextField *nameTextField;
-@property(nonatomic, assign) id <RecipeAddDelegate> delegate;
-
-- (void)save;
-- (void)cancel;
+@property (nonatomic, strong) Recipe *recipe;
+@property (nonatomic, unsafe_unretained) id <RecipeAddDelegate> delegate;
 
 @end
 
 
+#pragma mark -
+
 @protocol RecipeAddDelegate <NSObject>
+
 // recipe == nil on cancel
 - (void)recipeAddViewController:(RecipeAddViewController *)recipeAddViewController didAddRecipe:(Recipe *)recipe;
 

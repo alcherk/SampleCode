@@ -1,45 +1,19 @@
-Popovers
+# Popovers
 
-================================================================================
-ABSTRACT:
+This sample demonstrates how to use popovers using UIPopoverController in iOS, including presentation, dismissal, and rotation.
+The sample uses a UISplitViewController to show how to present popovers from bar button items. It also demonstrates how you can ensure that multiple popovers are not presented at the same time.
 
-This sample demonstrates proper use of UIPopoverController in iOS.
-UIPopoverController presentation, dismissing, and rotation handling are covered.
-The sample is provided using a UISplitViewController in order to show proper handling of UIPopoverControllers being presented from UIBarButtonItems.
-Additional handling ensures that multiple UIPopoverControllers are never presented at the same time.
+## Main classes
 
-================================================================================
-BUILD REQUIREMENTS:
-
-iOS 4.1 or later
-
-================================================================================
-RUNTIME REQUIREMENTS:
-
-iOS 3.2 or later
-
-================================================================================
-PACKAGING LIST:
-
-PopoversAppDelegate
-The application delegate sets up the initial view and makes the window visible.
-
-RootViewController
+### APLMasterTableViewController
 Acts as the master list view controller for the split view controller and adds rows of placeholder items to the table view.
 
-DetailViewController
-Displays the detail view of the split view controller. This also contains buttons and a bar button item that all present popovers.
-The detail view responds to orientation changes when popovers are visible and re-displays them in the new orientation.
-The detail view is also responsible for ensuring that there are never multiple popovers visible at the same time.
+### APLDetailViewController
+Displays the detail view of the split view controller. This also contains buttons and a toolbar that all present popovers. The controller responds to orientation changes when popovers are visible and re-displays them in the new orientation; it is also responsible for ensuring that there are never multiple popovers visible at the same time.
 
-PopoverContentViewController
-A view controller that is the contents of the popovers in this sample. In this example, the view controller only contains a label with text.
+### APLPopoverContentViewController
+A view controller that manages the contents of the popovers in this sample. In this example, the view  only contains a label with text.
 
-================================================================================
-CHANGES FROM PREVIOUS VERSIONS:
 
-Version 1.0
-- First version.
-
-================================================================================
-Copyright (C) 2010 Apple Inc. All rights reserved.
+----
+Copyright (C) 2010-2013 Apple Inc. All rights reserved.

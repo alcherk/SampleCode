@@ -1,7 +1,11 @@
 /*
      File: ES2Renderer.h
- Abstract: The ES2Renderer class creates an OpenGL ES 2.0 context and delegates to its super class, OpenGLRenderer, for creating and drawing the shaders.
-  Version: 1.0
+ Abstract: 
+ The ES2Renderer class creates an OpenGL ES 2.0 context and delegates
+ to its OS independent super class, OpenGLRenderer, for creating and 
+ drawing objects.
+ 
+  Version: 1.7
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,9 +45,10 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010~2011 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
+
 
 #import <QuartzCore/QuartzCore.h>
 

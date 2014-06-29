@@ -2,7 +2,7 @@
      File: Recipe.h
  Abstract: Model class to represent a recipe.
  
-  Version: 1.4
+  Version: 1.5
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -42,35 +42,33 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
-@interface ImageToDataTransformer : NSValueTransformer {
-}
+@interface ImageToDataTransformer : NSValueTransformer
 @end
 
+@interface Recipe : NSManagedObject
 
-@interface Recipe : NSManagedObject {
-}
+@property (nonatomic, strong) NSString *instructions;
+@property (nonatomic, strong) NSString *name;
+@property (nonatomic, strong) NSString *overview;
+@property (nonatomic, strong) NSString *prepTime;
+@property (nonatomic, strong) NSSet *ingredients;
+@property (nonatomic, strong) UIImage *thumbnailImage;
 
-@property (nonatomic, retain) NSString *instructions;
-@property (nonatomic, retain) NSString *name;
-@property (nonatomic, retain) NSString *overview;
-@property (nonatomic, retain) NSString *prepTime;
-@property (nonatomic, retain) NSSet *ingredients;
-@property (nonatomic, retain) UIImage *thumbnailImage;
-
-@property (nonatomic, retain) NSManagedObject *image;
-@property (nonatomic, retain) NSManagedObject *type;
+@property (nonatomic, strong) NSManagedObject *image;
+@property (nonatomic, strong) NSManagedObject *type;
 
 @end
-
 
 @interface Recipe (CoreDataGeneratedAccessors)
+
 - (void)addIngredientsObject:(NSManagedObject *)value;
 - (void)removeIngredientsObject:(NSManagedObject *)value;
 - (void)addIngredients:(NSSet *)value;
 - (void)removeIngredients:(NSSet *)value;
+
 @end
 

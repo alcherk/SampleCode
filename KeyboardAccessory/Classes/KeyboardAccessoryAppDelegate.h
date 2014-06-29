@@ -1,9 +1,8 @@
-
 /*
      File: KeyboardAccessoryAppDelegate.h
  Abstract: Simple application delegate that displays the application's window. 
  
-  Version: 1.3
+  Version: 1.5
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -43,21 +42,15 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
 #import <UIKit/UIKit.h>
 
-@class ViewController;
+@interface KeyboardAccessoryAppDelegate : NSObject <UIApplicationDelegate>
 
-@interface KeyboardAccessoryAppDelegate : NSObject <UIApplicationDelegate> {
-    UIWindow *window;
-    ViewController *viewController;
-}
-
-@property (nonatomic, retain) IBOutlet UIWindow *window;
-@property (nonatomic, retain) IBOutlet ViewController *viewController;
+@property (nonatomic, strong) UIWindow *window;
 
 @end
 

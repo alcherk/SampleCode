@@ -3,10 +3,8 @@
  Abstract: Helper object for managing the downloading of a particular app's icon.
  As a delegate "NSURLConnectionDelegate" is downloads the app icon in the background if it does not
  yet exist and works in conjunction with the RootViewController to manage which apps need their icon.
- 
- A simple BOOL tracks whether or not a download is already in progress to avoid redundant requests.
   
-  Version: 1.3 
+  Version: 1.4 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -46,7 +44,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2012 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
  */
 
@@ -55,39 +53,26 @@
 
 #define kAppIconSize 48
 
+@interface IconDownloader ()
+@property (nonatomic, strong) NSMutableData *activeDownload;
+@property (nonatomic, strong) NSURLConnection *imageConnection;
+@end
+
 
 @implementation IconDownloader
 
-@synthesize appRecord;
-@synthesize indexPathInTableView;
-@synthesize delegate;
-@synthesize activeDownload;
-@synthesize imageConnection;
-
 #pragma mark
-
-- (void)dealloc
-{
-    [appRecord release];
-    [indexPathInTableView release];
-    
-    [activeDownload release];
-    
-    [imageConnection cancel];
-    [imageConnection release];
-    
-    [super dealloc];
-}
 
 - (void)startDownload
 {
     self.activeDownload = [NSMutableData data];
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:self.appRecord.imageURLString]];
+    
     // alloc+init and start an NSURLConnection; release on completion/failure
-    NSURLConnection *conn = [[NSURLConnection alloc] initWithRequest:
-                             [NSURLRequest requestWithURL:
-                              [NSURL URLWithString:appRecord.imageURLString]] delegate:self];
+    NSURLConnection *conn = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    
     self.imageConnection = conn;
-    [conn release];
 }
 
 - (void)cancelDownload
@@ -97,9 +82,7 @@
     self.activeDownload = nil;
 }
 
-
-#pragma mark -
-#pragma mark Download support (NSURLConnectionDelegate)
+#pragma mark - NSURLConnectionDelegate
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
 {
@@ -123,7 +106,7 @@
     if (image.size.width != kAppIconSize || image.size.height != kAppIconSize)
 	{
         CGSize itemSize = CGSizeMake(kAppIconSize, kAppIconSize);
-		UIGraphicsBeginImageContext(itemSize);
+		UIGraphicsBeginImageContextWithOptions(itemSize, NO, 0.0f);
 		CGRect imageRect = CGRectMake(0.0, 0.0, itemSize.width, itemSize.height);
 		[image drawInRect:imageRect];
 		self.appRecord.appIcon = UIGraphicsGetImageFromCurrentImageContext();
@@ -135,13 +118,13 @@
     }
     
     self.activeDownload = nil;
-    [image release];
     
     // Release the connection now that it's finished
     self.imageConnection = nil;
         
     // call our delegate and tell it that our icon is ready for display
-    [delegate appImageDidLoad:self.indexPathInTableView];
+    if (self.completionHandler)
+        self.completionHandler();
 }
 
 @end

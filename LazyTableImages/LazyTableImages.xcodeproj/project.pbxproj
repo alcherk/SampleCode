@@ -14,17 +14,14 @@
 		2892E4100DC94CBA00A64D0F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */; };
 		28C286E10D94DF7D0034E888 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C286E00D94DF7D0034E888 /* RootViewController.m */; };
 		532AABAE109B9F2E00C10F64 /* IconDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 532AABAD109B9F2E00C10F64 /* IconDownloader.m */; };
-		53989D6611D5526E00B3D482 /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = 53989D6511D5526E00B3D482 /* iTunesArtwork */; };
 		539BBBA1109106B600DC7154 /* ParseOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 539BBBA0109106B600DC7154 /* ParseOperation.m */; };
-		539E57BF11C932B40080E0B4 /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = 539E57BA11C932B40080E0B4 /* Icon-Small.png */; };
-		539E57C011C932B40080E0B4 /* Icon-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 539E57BB11C932B40080E0B4 /* Icon-Small@2x.png */; };
-		539E57C111C932B40080E0B4 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 539E57BC11C932B40080E0B4 /* Icon.png */; };
-		539E57C211C932B40080E0B4 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 539E57BD11C932B40080E0B4 /* Icon@2x.png */; };
 		539E57C711C932D50080E0B4 /* Placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 539E57C611C932D50080E0B4 /* Placeholder.png */; };
 		539E57C911C932EB0080E0B4 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 539E57C811C932EB0080E0B4 /* Default.png */; };
 		53D642AC106AA2C200DAA9B9 /* AppRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 53D642AB106AA2C200DAA9B9 /* AppRecord.m */; };
-		53FC8A411003E3520064E2E7 /* RootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 53FC8A3D1003E3520064E2E7 /* RootViewController.xib */; };
-		53FC8A421003E3520064E2E7 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 53FC8A3F1003E3520064E2E7 /* MainWindow.xib */; };
+		D09A9EC917175B1E00C15A46 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D09A9EC717175B1E00C15A46 /* Default-568h@2x.png */; };
+		D09A9ECA17175B1E00C15A46 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D09A9EC817175B1E00C15A46 /* Default@2x.png */; };
+		D09A9ECB17177DEF00C15A46 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D09A9ECD17177DEF00C15A46 /* MainStoryboard.storyboard */; };
+		D0C2AA16170F573C005F02B3 /* Placeholder@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D0C2AA15170F573C005F02B3 /* Placeholder@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,20 +37,18 @@
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		532AABAC109B9F2E00C10F64 /* IconDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IconDownloader.h; sourceTree = "<group>"; };
 		532AABAD109B9F2E00C10F64 /* IconDownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IconDownloader.m; sourceTree = "<group>"; };
-		53989D6511D5526E00B3D482 /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; path = iTunesArtwork; sourceTree = "<group>"; };
 		539BBB9F109106B600DC7154 /* ParseOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParseOperation.h; sourceTree = "<group>"; };
 		539BBBA0109106B600DC7154 /* ParseOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParseOperation.m; sourceTree = "<group>"; };
-		539E57BA11C932B40080E0B4 /* Icon-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small.png"; sourceTree = "<group>"; };
-		539E57BB11C932B40080E0B4 /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small@2x.png"; sourceTree = "<group>"; };
-		539E57BC11C932B40080E0B4 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
-		539E57BD11C932B40080E0B4 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
 		539E57C611C932D50080E0B4 /* Placeholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Placeholder.png; sourceTree = "<group>"; };
 		539E57C811C932EB0080E0B4 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		53D642AA106AA2C200DAA9B9 /* AppRecord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppRecord.h; sourceTree = "<group>"; };
 		53D642AB106AA2C200DAA9B9 /* AppRecord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppRecord.m; sourceTree = "<group>"; };
-		53FC8A3E1003E3520064E2E7 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/RootViewController.xib; sourceTree = "<group>"; };
-		53FC8A401003E3520064E2E7 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainWindow.xib; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D021FFB1170E44B60060B02B /* ReadMe.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = ReadMe.txt; sourceTree = "<group>"; };
+		D09A9EC717175B1E00C15A46 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		D09A9EC817175B1E00C15A46 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
+		D09A9ECC17177DEF00C15A46 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
+		D0C2AA15170F573C005F02B3 /* Placeholder@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Placeholder@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +93,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				D021FFB1170E44B60060B02B /* ReadMe.txt */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -120,8 +116,7 @@
 			isa = PBXGroup;
 			children = (
 				539E57B911C932B40080E0B4 /* images */,
-				53FC8A3D1003E3520064E2E7 /* RootViewController.xib */,
-				53FC8A3F1003E3520064E2E7 /* MainWindow.xib */,
+				D09A9ECD17177DEF00C15A46 /* MainStoryboard.storyboard */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 			);
 			name = Resources;
@@ -140,13 +135,11 @@
 		539E57B911C932B40080E0B4 /* images */ = {
 			isa = PBXGroup;
 			children = (
+				D09A9EC717175B1E00C15A46 /* Default-568h@2x.png */,
+				D09A9EC817175B1E00C15A46 /* Default@2x.png */,
 				539E57C811C932EB0080E0B4 /* Default.png */,
 				539E57C611C932D50080E0B4 /* Placeholder.png */,
-				539E57BA11C932B40080E0B4 /* Icon-Small.png */,
-				539E57BB11C932B40080E0B4 /* Icon-Small@2x.png */,
-				539E57BC11C932B40080E0B4 /* Icon.png */,
-				539E57BD11C932B40080E0B4 /* Icon@2x.png */,
-				53989D6511D5526E00B3D482 /* iTunesArtwork */,
+				D0C2AA15170F573C005F02B3 /* Placeholder@2x.png */,
 			);
 			path = images;
 			sourceTree = "<group>";
@@ -204,15 +197,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				53FC8A411003E3520064E2E7 /* RootViewController.xib in Resources */,
-				53FC8A421003E3520064E2E7 /* MainWindow.xib in Resources */,
-				539E57BF11C932B40080E0B4 /* Icon-Small.png in Resources */,
-				539E57C011C932B40080E0B4 /* Icon-Small@2x.png in Resources */,
-				539E57C111C932B40080E0B4 /* Icon.png in Resources */,
-				539E57C211C932B40080E0B4 /* Icon@2x.png in Resources */,
 				539E57C711C932D50080E0B4 /* Placeholder.png in Resources */,
 				539E57C911C932EB0080E0B4 /* Default.png in Resources */,
-				53989D6611D5526E00B3D482 /* iTunesArtwork in Resources */,
+				D09A9ECB17177DEF00C15A46 /* MainStoryboard.storyboard in Resources */,
+				D0C2AA16170F573C005F02B3 /* Placeholder@2x.png in Resources */,
+				D09A9EC917175B1E00C15A46 /* Default-568h@2x.png in Resources */,
+				D09A9ECA17175B1E00C15A46 /* Default@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -235,20 +225,12 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		53FC8A3D1003E3520064E2E7 /* RootViewController.xib */ = {
+		D09A9ECD17177DEF00C15A46 /* MainStoryboard.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				53FC8A3E1003E3520064E2E7 /* en */,
+				D09A9ECC17177DEF00C15A46 /* en */,
 			);
-			name = RootViewController.xib;
-			sourceTree = "<group>";
-		};
-		53FC8A3F1003E3520064E2E7 /* MainWindow.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				53FC8A401003E3520064E2E7 /* en */,
-			);
-			name = MainWindow.xib;
+			name = MainStoryboard.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -257,7 +239,6 @@
 		1D6058940D05DD3E006BFB54 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -269,8 +250,6 @@
 				GCC_WARN_SHADOW = YES;
 				GCC_WARN_SIGN_COMPARE = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_LABEL = YES;
 				INFOPLIST_FILE = Info.plist;
 				PRODUCT_NAME = LazyTable;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
@@ -281,7 +260,6 @@
 		1D6058950D05DD3E006BFB54 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -291,8 +269,6 @@
 				GCC_WARN_SHADOW = YES;
 				GCC_WARN_SIGN_COMPARE = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_LABEL = YES;
 				INFOPLIST_FILE = Info.plist;
 				PRODUCT_NAME = LazyTable;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
@@ -304,15 +280,23 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -321,14 +305,22 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
 			};
 			name = Release;

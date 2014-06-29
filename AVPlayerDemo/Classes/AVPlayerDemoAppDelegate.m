@@ -44,7 +44,7 @@ AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE),
 STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
-Copyright (C) 2010-2011 Apple Inc. All Rights Reserved.
+Copyright (C) 2010-2013 Apple Inc. All Rights Reserved.
 
 */
 
@@ -63,7 +63,7 @@ typedef void (^AlertViewCompletionHandler)(void);
 
 @implementation AVPlayerDemoAppDelegate
 
-@synthesize cachedAssetBrowser;
+@synthesize cachedAssetBrowser, playbackViewController;
 
 - (UINavigationController*)assetBrowserControllerWithSourceType:(AssetBrowserSourceType)sourceType delegate:(id <AssetBrowserControllerDelegate>)delegate
 {
@@ -100,48 +100,56 @@ typedef void (^AlertViewCompletionHandler)(void);
 
 - (BOOL)application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions
 {
-    alertCompletionHandlers = [[NSMutableArray alloc] initWithCapacity:0];
+    self->tabBarController = [self tabbedAssetBrowserControllerWithSourceType:AssetBrowserSourceTypeAll delegate:self];
 
-    tabBarController = [self tabbedAssetBrowserControllerWithSourceType:AssetBrowserSourceTypeAll delegate:self];
-
-	[window setRootViewController:self.cachedAssetBrowser];
-    [window addSubview:self.cachedAssetBrowser.view];
+	[self->window setRootViewController:self.cachedAssetBrowser];
+    [self->window addSubview:self.cachedAssetBrowser.view];
     
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
     // Restore saved tab bar item from the defaults system.
     // The UITabBarItem 'tag' value is used to identify the saved tab bar item.
     NSInteger tabBarItemIndex = [defaults integerForKey:AVPlayerDemoPickerViewControllerSourceTypeUserDefaultsKey];
-    NSArray *viewControllers = tabBarController.viewControllers;
-    if (tabBarItemIndex > [viewControllers count])
+    NSArray *viewControllers = self->tabBarController.viewControllers;
+    if (tabBarItemIndex < 0)
     {
         // If saved tab bar item does not match any existing item, then default to the first item.
-        tabBarController.selectedIndex = 0;
+        self->tabBarController.selectedIndex = 0;
     }
     else
     {
-        tabBarController.selectedIndex = tabBarItemIndex;
+        NSUInteger tempTabBarItemIndex = (NSUInteger)tabBarItemIndex;
+        if (tempTabBarItemIndex > [viewControllers count])
+        {
+            // If saved tab bar item does not match any existing item, then default to the first item.
+            self->tabBarController.selectedIndex = 0;
+        }
+        else
+        {
+            self->tabBarController.selectedIndex = tabBarItemIndex;
+        }
+
     }
     
     // Add the tab bar controller's current view as a subview of the window
-    [self.cachedAssetBrowser pushViewController:tabBarController animated:NO];
+    [self.cachedAssetBrowser pushViewController:self->tabBarController animated:NO];
 
-    [window makeKeyAndVisible];	
+    [self->window makeKeyAndVisible];	
     
     // Restore saved media from the defaults system.
 	NSURL* URL = [defaults URLForKey:AVPlayerDemoContentURLUserDefaultsKey];
 	if (URL)
 	{
-		if (!playbackViewController)
+		if (!self.playbackViewController)
 		{
-			playbackViewController = [[AVPlayerDemoPlaybackViewController alloc] init];
+			self->playbackViewController = [[AVPlayerDemoPlaybackViewController alloc] init];
 		}
 		
-		[playbackViewController setURL:URL];
+		[self.playbackViewController setURL:URL];
         
 		/* Restore saved media time value from defaults system. */
-		[[playbackViewController player] seekToTime:CMTimeMakeWithSeconds([defaults doubleForKey:AVPlayerDemoContentTimeUserDefaultsKey], NSEC_PER_SEC)]; 
+		[[self.playbackViewController player] seekToTime:CMTimeMakeWithSeconds([defaults doubleForKey:AVPlayerDemoContentTimeUserDefaultsKey], NSEC_PER_SEC)]; 
         
-		[self.cachedAssetBrowser pushViewController:playbackViewController animated:NO];
+		[self.cachedAssetBrowser pushViewController:self.playbackViewController animated:NO];
 	}
 	
 	[[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:NULL];
@@ -151,10 +159,9 @@ typedef void (^AlertViewCompletionHandler)(void);
 
 - (void)applicationDidReceiveMemoryWarning:(UIApplication *)application
 {
-	if (playbackViewController && ![playbackViewController URL])
+	if (self.playbackViewController && ![self.playbackViewController URL])
 	{
-		[playbackViewController release];
-		playbackViewController = nil;
+		self.playbackViewController = nil;
 	}
 }
 
@@ -162,14 +169,14 @@ typedef void (^AlertViewCompletionHandler)(void);
  to the application preferences. */
 - (void)applicationDidEnterBackground:(UIApplication*)application
 {
-	if (playbackViewController)
+	if (self.playbackViewController)
 	{
 		NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
-		NSURL* URL = [playbackViewController URL];
+		NSURL* URL = [self.playbackViewController URL];
 		
 		if (URL)
 		{
-			NSTimeInterval time = CMTimeGetSeconds([[playbackViewController player] currentTime]);
+			NSTimeInterval time = CMTimeGetSeconds([[self.playbackViewController player] currentTime]);
 			
 			[defaults setURL:URL forKey:AVPlayerDemoContentURLUserDefaultsKey];
 			[defaults setDouble:time forKey:AVPlayerDemoContentTimeUserDefaultsKey];
@@ -191,18 +198,18 @@ typedef void (^AlertViewCompletionHandler)(void);
 {
 	if (urlAsset)
 	{
-		if (!playbackViewController)
+		if (!self.playbackViewController)
 		{
-			playbackViewController = [[AVPlayerDemoPlaybackViewController alloc] init];
+			self->playbackViewController = [[AVPlayerDemoPlaybackViewController alloc] init];
 		}
 		
-		[playbackViewController setURL:urlAsset.URL];
+		[self.playbackViewController setURL:urlAsset.URL];
 		
-		[self.cachedAssetBrowser pushViewController:playbackViewController animated:YES];
+		[self.cachedAssetBrowser pushViewController:self.playbackViewController animated:YES];
 	}
-	else if (playbackViewController)
+	else if (self.playbackViewController)
 	{
-		[playbackViewController setURL:nil];
+		[self.playbackViewController setURL:nil];
 	}
 }
 
@@ -215,7 +222,7 @@ typedef void (^AlertViewCompletionHandler)(void);
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
     /* Don't show the navigation bar when displaying the assets browser view */
-    if (viewController == tabBarController) {
+    if (viewController == self->tabBarController) {
         navigationController.navigationBarHidden = YES;
     }
     else
@@ -223,5 +230,6 @@ typedef void (^AlertViewCompletionHandler)(void);
         navigationController.navigationBarHidden = NO;        
     }
 }
+
 
 @end

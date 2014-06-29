@@ -2,7 +2,7 @@
      File: AppDelegate.m
  Abstract: Displays the application window.
  
-  Version: 1.2
+  Version: 1.4
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -42,29 +42,12 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
 
 #import "AppDelegate.h"
-#import "MapViewController.h"
 
 @implementation AppDelegate
-
-@synthesize window, viewController;
-
-
-- (void)applicationDidFinishLaunching:(UIApplication *)application
-{    
-    [window addSubview:viewController.view];
-    [window makeKeyAndVisible];
-}
-
-- (void)dealloc
-{
-    [viewController release];
-    [window release];
-    [super dealloc];
-}
 
 @end

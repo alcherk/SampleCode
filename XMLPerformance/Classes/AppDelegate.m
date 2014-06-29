@@ -1,7 +1,7 @@
 /*
      File: AppDelegate.m
  Abstract: Adds the main UITabBarController's view to the application's window.
-  Version: 1.3
+  Version: 1.4
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,27 +41,22 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
 */
 
 #import "AppDelegate.h"
 #import "Statistics.h"
 
+@interface AppDelegate ()
+@property (nonatomic, strong) IBOutlet UITabBarController *tabBarController;
+@end
+
 @implementation AppDelegate
-
-@synthesize window;
-@synthesize tabBarController;
-
-- (void)dealloc {
-	[tabBarController release];
-	[window release];
-	[super dealloc];
-}
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application {	
 	// Add the tab bar controller's current view as a subview of the window
-	[window addSubview:tabBarController.view];
+	self.window.rootViewController = self.tabBarController;
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {

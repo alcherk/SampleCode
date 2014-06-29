@@ -1,7 +1,8 @@
 /*
      File: AppDelegate.m
- Abstract: The application delegate class used for installing our navigation controller.
-  Version: 1.11
+ Abstract: The application delegate class.
+ 
+  Version: 1.12
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,29 +42,37 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2012 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
 #import "AppDelegate.h"
 
+@interface AppDelegate () <UINavigationControllerDelegate>
+@end
+
+
 @implementation AppDelegate
 
-@synthesize navigationController, window;
-
-- (void)dealloc
+//| ----------------------------------------------------------------------------
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-	[navigationController release];
-	[window release];
-	
-    [super dealloc];
+    [(UINavigationController*)self.window.rootViewController setDelegate:self];
+    
+    return YES;
 }
 
-- (void)applicationDidFinishLaunching:(UIApplication *)application
+#pragma mark -
+#pragma mark UINavigationControllerDelegate
+
+//| ----------------------------------------------------------------------------
+//  Force the navigation controller to defer to the topViewController for
+//  its supportedInterfaceOrientations.  This allows some of the demos
+//  to rotate into landscape while keeping others in portrait.
+//
+- (NSUInteger)navigationControllerSupportedInterfaceOrientations:(UINavigationController *)navigationController
 {
-	// add the navigation controller's view to the window
-	[window addSubview:navigationController.view];
-	[window makeKeyAndVisible];
+    return navigationController.topViewController.supportedInterfaceOrientations;
 }
 
 @end

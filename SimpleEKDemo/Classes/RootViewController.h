@@ -1,8 +1,9 @@
 /*
      File: RootViewController.h 
- Abstract: Table view controller used to display the events associated with the default calendar.
+ Abstract: Table view controller that displays events occuring within the next 24 hours. Prompts a user
+ for access to their Calendar, then updates its UI according to their response.
   
-  Version: 1.0 
+  Version: 1.1 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -42,30 +43,9 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2010 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
  */
 
-
-#import <UIKit/UIKit.h>
-#import <EventKit/EventKit.h>
-#import <EventKitUI/EventKitUI.h>
-
-@interface RootViewController : UITableViewController <UINavigationBarDelegate, UITableViewDelegate, 
-EKEventEditViewDelegate, UINavigationControllerDelegate, UIActionSheetDelegate> {
-
-	EKEventViewController *detailViewController;
-	EKEventStore *eventStore;
-	EKCalendar *defaultCalendar;
-	NSMutableArray *eventsList;
-}
-
-@property (nonatomic, retain) EKEventStore *eventStore;
-@property (nonatomic, retain) EKCalendar *defaultCalendar;
-@property (nonatomic, retain) NSMutableArray *eventsList;
-@property (nonatomic, retain) EKEventViewController *detailViewController;
-
-- (NSArray *) fetchEventsForToday;
-- (IBAction) addEvent:(id)sender;
-
+@interface RootViewController : UITableViewController 
 @end

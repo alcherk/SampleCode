@@ -1,7 +1,9 @@
 /*
- File: vectorUtil.h
- Abstract: Functions for performing vector math.
- Version: 1.0
+     File: vectorUtil.c
+ Abstract: 
+ Functions for performing vector math.
+ 
+  Version: 1.7
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,7 +43,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010~2011 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
 
@@ -125,9 +127,9 @@ float vec4DotProduct(const float* lhs, const float* rhs)
 
 void vec3CrossProduct(float* vec, const float* lhs, const float* rhs)
 {
-	vec[0] = lhs[1] * rhs[2] - rhs[1] * lhs[2];
-	vec[1] = lhs[0] * rhs[2] - rhs[0] * lhs[2];
-	vec[2] = lhs[1] * rhs[1] - rhs[1] * lhs[1];
+	vec[0] = lhs[1] * rhs[2] - lhs[2] * rhs[1];
+	vec[1] = lhs[2] * rhs[0] - lhs[0] * rhs[2];
+	vec[2] = lhs[0] * rhs[1] - lhs[1] * rhs[0];
 }
 
 float vec3Length(const float* vec)

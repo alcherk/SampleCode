@@ -1,7 +1,7 @@
 /*
      File: AUPlugInDispatch.cpp 
  Abstract:  AUPlugInDispatch.h  
-  Version: 1.01 
+  Version: 1.0.4 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2012 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
 */
 #include "AUPlugInDispatch.h"
@@ -137,7 +137,7 @@ static OSStatus AUMethodGetProperty(void *self, AudioUnitPropertyID inID, AudioU
 		result = AUI->DispatchGetProperty(inID, inScope, inElement, destBuffer);
 		
 		if (result == noErr) {
-			if (clientBufferSize < actualPropertySize) 
+			if (tempBuffer && clientBufferSize < actualPropertySize) 
 			{
 				memcpy(outData, tempBuffer, clientBufferSize);
 				delete[] tempBuffer;

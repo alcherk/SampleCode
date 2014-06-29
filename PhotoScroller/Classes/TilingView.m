@@ -1,7 +1,7 @@
 /*
      File: TilingView.m
  Abstract: The main view controller for this application.
-  Version: 1.2
+  Version: 1.3
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following

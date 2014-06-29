@@ -4,7 +4,7 @@
  Object used to monitor the contents of a given directory by using
  "kqueue": a kernel event notification mechanism.
   
-  Version: 1.4 
+  Version: 1.6 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -44,7 +44,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2012 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2014 Apple Inc. All Rights Reserved. 
   
  */
 
@@ -59,14 +59,14 @@
 
 @interface DirectoryWatcher : NSObject 
 {
-	id <DirectoryWatcherDelegate> delegate;
+	id <DirectoryWatcherDelegate> __weak delegate;
     
 	int dirFD;
     int kq;
 
 	CFFileDescriptorRef dirKQRef;
 }
-@property (nonatomic, assign) id <DirectoryWatcherDelegate> delegate;
+@property (nonatomic, weak) id <DirectoryWatcherDelegate> delegate;
 
 + (DirectoryWatcher *)watchFolderWithPath:(NSString *)watchPath delegate:(id<DirectoryWatcherDelegate>)watchDelegate;
 - (void)invalidate;

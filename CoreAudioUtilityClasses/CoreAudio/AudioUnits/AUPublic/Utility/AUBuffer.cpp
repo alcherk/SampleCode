@@ -1,7 +1,7 @@
 /*
      File: AUBuffer.cpp 
  Abstract:  AUBuffer.h  
-  Version: 1.01 
+  Version: 1.0.4 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2012 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
 */
 #include "AUBuffer.h"
@@ -68,13 +68,10 @@ static UInt32 SafeMultiplyAddUInt32(UInt32 a, UInt32 b, UInt32 c)
 void				AUBufferList::Allocate(const CAStreamBasicDescription &format, UInt32 nFrames)
 {
 	UInt32 nStreams;
-	UInt32 channelsPerStream;
 	if (format.IsInterleaved()) {
 		nStreams = 1;
-		channelsPerStream = format.mChannelsPerFrame;
 	} else {
 		nStreams = format.mChannelsPerFrame;
-		channelsPerStream = 1;
 	}
 
 	// careful -- the I/O thread could be running!

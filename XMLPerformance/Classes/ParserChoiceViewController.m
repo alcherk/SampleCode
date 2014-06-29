@@ -1,7 +1,7 @@
 /*
      File: ParserChoiceViewController.m
  Abstract: Provides an interface for choosing and running one of the two available parsers.
-  Version: 1.3
+  Version: 1.4
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
 */
 
@@ -50,64 +50,80 @@
 #import "LibXMLParser.h"
 #import "CocoaXMLParser.h"
 
+@interface ParserChoiceViewController ()
+
+@property (nonatomic, weak) IBOutlet UITableView *tableView;
+@property (nonatomic, strong) UINavigationController *songsNavigationController;
+@property (nonatomic, strong) SongsViewController *songsViewController;
+@property (nonatomic, strong) NSIndexPath *parserSelection;
+
+@end
+
+#pragma mark -
+
 @implementation ParserChoiceViewController
 
-@synthesize parserSelection, startButton;
-
-- (void)dealloc {
-    [songsNavigationController release];
-    [songsViewController release];
-    [parserSelection release];
-    [startButton release];
-	[super dealloc];
-}
-
 - (void)viewDidLoad {
-    // Set the background for the main view to match the table view.
-    self.view.backgroundColor = [UIColor groupTableViewBackgroundColor];
-    // Set an initial selection.
+    
+    // set an initial parser selection
     self.parserSelection = [NSIndexPath indexPathForRow:0 inSection:0];
+    
+    _songsViewController = [[SongsViewController alloc] initWithStyle:UITableViewStylePlain];
+    _songsNavigationController = [[UINavigationController alloc] initWithRootViewController:self.songsViewController];
+    
+    // place the start button in the table's footer view
+    //
+    // first create the header view
+    UIView *footerView = [[UIView alloc] initWithFrame:CGRectZero];
+    footerView.backgroundColor = [UIColor clearColor];
+    UIButton *startButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [startButton setTitle:@"Start" forState:UIControlStateNormal];
+    [startButton addTarget:self action:@selector(startParser:) forControlEvents:UIControlEventTouchUpInside];
+    [startButton sizeToFit];
+    startButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
+    [footerView addSubview:startButton];
+    CGRect newFrame = footerView.frame;
+    newFrame.size.height = startButton.frame.size.height;
+    footerView.frame = newFrame;
+    self.tableView.tableFooterView = footerView;
+    
+    // now center the button within the header view
+    newFrame = startButton.frame;
+    newFrame.origin.x = (footerView.frame.size.width - newFrame.size.width) / 2;
+    newFrame.origin.y = 8.0;
+    startButton.frame = newFrame;
 }
 
-- (void)viewDidUnload {
-    self.startButton = nil;
-}
-
-- (SongsViewController *)songsViewController {
-    if (songsViewController == nil) {
-        songsViewController = [[SongsViewController alloc] initWithStyle:UITableViewStylePlain];
-    }
-    return songsViewController;
-}
-
-- (UINavigationController *)songsNavigationController {
-    if (songsNavigationController == nil) {
-        songsNavigationController = [[UINavigationController alloc] initWithRootViewController:self.songsViewController];
-    }
-    return songsNavigationController;
-}
-
-- (IBAction)startParser {
+- (IBAction)startParser:(id)sender {
+    
     [self.navigationController presentModalViewController:self.songsNavigationController animated:YES];
     [self.songsViewController parseWithParserType:self.parserSelection.row];
 }
+
+
+#pragma mark - UITableViewDataSource
 
 - (NSUInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSUInteger)section {
     return 2;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
     static NSString * const kCellIdentifier = @"MyCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kCellIdentifier] autorelease];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kCellIdentifier];
     }
     cell.textLabel.text = (indexPath.row == 0) ? [CocoaXMLParser parserName] : [LibXMLParser parserName];
-    cell.accessoryType = ([indexPath isEqual:parserSelection]) ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
+    cell.accessoryType = ([indexPath isEqual:self.parserSelection]) ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
     return cell;
 }
 
+
+#pragma mark - UITableViewDelegate
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
     self.parserSelection = indexPath;
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     [tableView reloadData];

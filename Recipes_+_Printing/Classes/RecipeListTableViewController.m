@@ -1,7 +1,7 @@
 /*
      File: RecipeListTableViewController.m 
  Abstract: The UITableViewController for displaying a list of recipes 
-  Version: 1.1 
+  Version: 1.2 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2011 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2014 Apple Inc. All Rights Reserved. 
   
  */ 
 
@@ -57,16 +57,20 @@
 @interface RecipeListTableViewController()
 
 - (void)printSelectedRecipes:(id)sender;
-@property (nonatomic, retain) RecipesController *recipesController;
+@property (nonatomic, strong) RecipesController *recipesController;
+
 @end
 
-@implementation RecipeListTableViewController
-@synthesize recipesController;
 
-// Custom initializer that makes the recipes/model controller available to the table view controller 
+
+@implementation RecipeListTableViewController
+
+// Custom initializer that makes the recipes/model controller available to the table view controller.
 - (id)initWithStyle:(UITableViewStyle)style recipesController:(RecipesController *)aRecipesController {
-	if ((self = [super initWithStyle:style])) {
-        self.recipesController = aRecipesController;
+	
+    self = [super initWithStyle:style];
+    if (self) {
+        _recipesController = aRecipesController;
         
         self.title = NSLocalizedString(@"Recipes",@"");
 
@@ -78,20 +82,15 @@
         // Set the Print button as the right side button item of this view controller's navigation bar
         self.navigationItem.rightBarButtonItem = addButtonItem;
         
-        // Since self.navigationItem retains the button, release this scope's ownership of it
-        [addButtonItem release];
 
-        // Increase the height of the table rows - 1 pixel higher than the recipe thumbnails displayed in the table cells
+        // Increase the height of the table rows - 1 pixel higher than the recipe thumbnails displayed in the table cells.
         self.tableView.rowHeight = 43.0;
 	}
 	return self;
 }
 
 // Release ownership.
-- (void)dealloc {
-    self.recipesController = nil;
-	[super dealloc];
-}
+
 
 #pragma mark -
 #pragma mark Printing
@@ -99,18 +98,15 @@
 // Print button handler that sends our print instructions to the OS
 - (void)printSelectedRecipes:(id)sender {
     
-    // Throw all recipes into an array to hand off to the printing code.
-    NSMutableArray *recipes = [NSMutableArray array];
-    for(int i = 0; i < [recipesController countOfRecipes]; i++){
-        [recipes addObject:[recipesController objectInRecipesAtIndex:i]];
-    }
-    
     // Get a reference to the singleton iOS printing concierge
     UIPrintInteractionController *printController = [UIPrintInteractionController sharedPrintController];
 
+    // Throw all recipes into an array to hand off to the printing code.
+    NSArray *recipes = [self.recipesController.recipes copy];
+    
     // Instruct the printing concierge to use our custom UIPrintPageRenderer subclass when printing this job
-    printController.printPageRenderer = [[[RecipePrintPageRenderer alloc] initWithRecipes:recipes] autorelease];
-
+    printController.printPageRenderer = [[RecipePrintPageRenderer alloc] initWithRecipes:recipes];
+    
     // Ask for a print job object and configure its settings to tailor the print request
     UIPrintInfo *info = [UIPrintInfo printInfo];
     
@@ -136,6 +132,7 @@
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
+
 #pragma mark -
 #pragma mark UITableView Delegate/Datasource
 
@@ -145,11 +142,13 @@
 	return 1; 
 }
 
+
 // Determines the number of rows for the argument section number
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    // Since this sample has only one section, assume we were passed section = 1, and return the number of recipes
-	return recipesController.countOfRecipes;
+    // Since this sample has only one section, assume we were passed section = 1, and return the number of recipes.
+	return self.recipesController.countOfRecipes;
 }
+
 
 // Create or Access and return appropriate cell identified by the argument indexPath (i.e. Section number and Row number combination)
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -163,11 +162,11 @@
     // If no cached cells are available, create one. Depending on your table row height, we only need to create enough to fill one screen.
     // After that, the above call will start working to give us the cell that got scrolled off the screen.
 	if (recipeCell == nil) {
-		recipeCell = [[[RecipeTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:recipeIdentifier] autorelease];
+		recipeCell = [[RecipeTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:recipeIdentifier];
 	}
 
 	// Provide to the cell its corresponding recipe depending on the argument row
-    recipeCell.recipe = [recipesController objectInRecipesAtIndex:indexPath.row];
+    recipeCell.recipe = [self.recipesController objectInRecipesAtIndex:indexPath.row];
     
     // Right arrow-looking indicator on the right side of the table view cell
     recipeCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -179,12 +178,12 @@
 - (void)showRecipe:(Recipe *)recipe animated:(BOOL)animated {
     RecipeDetailViewController *detailViewController = [[RecipeDetailViewController alloc] initWithRecipe:recipe];
     [self.navigationController pushViewController:detailViewController animated:animated];
-    [detailViewController release];
 }
+
 
 // Call the cell touch handler and pass in the recipe associated with the argument section/row
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    Recipe *recipe = [recipesController objectInRecipesAtIndex:indexPath.row];
+    Recipe *recipe = [self.recipesController objectInRecipesAtIndex:indexPath.row];
     [self showRecipe:recipe animated:YES];
 }
 

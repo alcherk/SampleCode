@@ -11,9 +11,9 @@ loaded in.  It creates a texture for the model from image data and GLSL shaders
 from source also loaded in.   It also creates an FBO and texture to render a 
 reflection of the model.  It uses an environment mapping GLSL program to apply 
 the reflection texture to a plane.  This sample also demonstrates sharing of 
-OpenGL ES source code for iPhone OS and OpenGL source code for Mac OS X.  
-Additionally, it demonstrates how to obtain and use an OpenGL 3.2 rendering 
-context on Mac OS X Lion.
+OpenGL ES source code for iPhone OS and OpenGL source code for OS X.  
+Additionally, it implement fullscreen rendering, retina display support, and
+demonstrates how to obtain and use an OpenGL 3.2 rendering context on OS X.
 
 ================================================================================
 BUILD REQUIREMENTS:
@@ -29,4 +29,4 @@ Mac version: Mac OS X Lion or later to use OpenGL 3.2
 iOS version: iOS 4.0 or later (with OpenGL ES 2.0 support) 
 
 ================================================================================
-Copyright (C) 2010~2011 Apple Inc. All rights reserved.
+Copyright (C) 2010~2013 Apple Inc. All rights reserved.

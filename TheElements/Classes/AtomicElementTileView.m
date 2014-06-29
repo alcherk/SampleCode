@@ -1,7 +1,7 @@
 /*
      File: AtomicElementTileView.m
  Abstract: Draws the small tile view displayed in the tableview rows.
-  Version: 1.11
+  Version: 1.12
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,33 +41,29 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
 
 #import "AtomicElementTileView.h"
 #import "AtomicElement.h"
 
-
 @implementation AtomicElementTileView
-@synthesize element;
-
-+ (CGSize)preferredViewSize {
-	return CGSizeMake(37,37);
-}
-
 
 - (id)initWithFrame:(CGRect)frame {
+    
     if (self = [super initWithFrame:frame]) {
-		element = nil;
+		_element = nil;
     }
     return self;
 }
  
 - (void)drawRect:(CGRect)rect {
+    
 	CGPoint point;
+    
 	// get the image that represents the element physical state and draw it
-	UIImage *backgroundImage = element.stateImageForAtomicElementTileView;
+	UIImage *backgroundImage = self.element.stateImageForAtomicElementTileView;
 	CGRect elementSymbolRectangle = CGRectMake(0,0, [backgroundImage size].width, [backgroundImage size].height);
 	[backgroundImage drawInRect:elementSymbolRectangle];
 	
@@ -76,21 +72,14 @@
 	// draw the element number
 	UIFont *font = [UIFont boldSystemFontOfSize:11];
 	point = CGPointMake(3,2);
-	[[element.atomicNumber stringValue] drawAtPoint:point withFont:font];
+	[[self.element.atomicNumber stringValue] drawAtPoint:point withFont:font];
 	
 	// draw the element symbol
 	font = [UIFont boldSystemFontOfSize:18];
-	CGSize stringSize = [element.symbol sizeWithFont:font];
-	point = CGPointMake((elementSymbolRectangle.size.width-stringSize.width)/2,14);
+	CGSize stringSize = [self.element.symbol sizeWithFont:font];
+	point = CGPointMake((elementSymbolRectangle.size.width-stringSize.width)/2, 14.0);
 	
-	[element.symbol drawAtPoint:point withFont:font];
+	[self.element.symbol drawAtPoint:point withFont:font];
 }
-
-
-- (void)dealloc {
-	[element release];
-	[super dealloc];
-}
-
 
 @end

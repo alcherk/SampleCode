@@ -42,12 +42,12 @@ None
 ===========================================================================
 BUILD REQUIREMENTS:
 
-iOS 4.0 SDK
+iOS 7.0 SDK
 
 ===========================================================================
 RUNTIME REQUIREMENTS:
 
-iPHone OS 3.2 or later
+iOS 7.0 or later
 
 
 ===========================================================================
@@ -73,10 +73,12 @@ This file implements setting up the AUGraph, loading up the audio data using Ext
 ===========================================================================
 CHANGES FROM PREVIOUS VERSIONS:
 
-Version 1.2, Changed deployment target back to iPhone OS 3.2 and added CFBundleIconFiles in Info.plist.
-Version 1.1, Upgraded project to build with the iOS 4 SDK.
 Version 1.0, Tested with iPhone OS 3.1.3. First public release.
+Version 1.1, Upgraded project to build with the iOS 4 SDK.
+Version 1.2, Changed deployment target back to iPhone OS 3.2 and added CFBundleIconFiles in Info.plist.
+Version 1.2.1, Updated for iOS 6.1 SDK. Migrated to AVAudioSession from AudioSession APIs.
+Version 1.2.2, Updated for iOS 7.0 SDK. Added SetProperty call setting output stream format for iPodAU.
 
 
 ===========================================================================
-Copyright (C) 2010 Apple Inc. All rights reserved.
+Copyright (C) 2010-2014 Apple Inc. All rights reserved.

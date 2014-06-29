@@ -1,7 +1,7 @@
 /*
      File: RecipePhotoViewController.h 
  Abstract: A UIViewController for showing a Recipe's photo 
-  Version: 1.1 
+  Version: 1.2 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2011 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2014 Apple Inc. All Rights Reserved. 
   
  */ 
 
@@ -49,12 +49,9 @@
 
 @class Recipe;
 
-@interface RecipePhotoViewController : UIViewController {
-    Recipe *recipe;
-    UIImageView *imageView;
-}
+@interface RecipePhotoViewController : UIViewController
 
-@property(nonatomic, retain) Recipe *recipe;
-@property(nonatomic, retain) UIImageView *imageView;
+@property(nonatomic, strong) Recipe *recipe;
+@property(nonatomic, strong) UIImageView *imageView;
 
 @end

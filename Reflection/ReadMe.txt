@@ -36,6 +36,7 @@ MyViewController.h/.m - The main UIViewController containing a the UIImageView a
 
 
 Changes from Previous Versions
+1.7 - Minor change to fix a warning related to the Architectures build setting.
 1.6 - Upgraded for iOS 5.0, now using Automatic Reference Counting (ARC)
 1.5 - Changed deployment target back to iPhone OS 3.2 and added CFBundleIconFiles in Info.plist.
 1.4 - Upgraded project to build with the iOS 4 SDK.

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3A0BF472177B8C1F00A6C4D7 /* GLEssentialsWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A0BF471177B8C1F00A6C4D7 /* GLEssentialsWindowController.m */; };
+		3A0BF47A177BC80300A6C4D7 /* GLEssentialsFullscreenWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A0BF479177BC80300A6C4D7 /* GLEssentialsFullscreenWindow.m */; };
 		3A1598CE11B9DDB0001E7AB5 /* vectorUtil.c in Sources */ = {isa = PBXBuildFile; fileRef = 3A1598C411B9DDB0001E7AB5 /* vectorUtil.c */; };
 		3A1598D011B9DDB0001E7AB5 /* modelUtil.c in Sources */ = {isa = PBXBuildFile; fileRef = 3A1598C811B9DDB0001E7AB5 /* modelUtil.c */; };
 		3A1598D111B9DDB0001E7AB5 /* matrixUtil.c in Sources */ = {isa = PBXBuildFile; fileRef = 3A1598CA11B9DDB0001E7AB5 /* matrixUtil.c */; };
@@ -23,19 +25,21 @@
 		3A1598EF11B9DE37001E7AB5 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A1598EE11B9DE37001E7AB5 /* OpenGL.framework */; };
 		3A15990711B9DE6C001E7AB5 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A15990611B9DE6C001E7AB5 /* QuartzCore.framework */; };
 		3A349C9212CAEA1100B73A51 /* sourceUtil.c in Sources */ = {isa = PBXBuildFile; fileRef = 3A349C9112CAEA1100B73A51 /* sourceUtil.c */; };
-		3A4554AB14BE325400837CC3 /* NSGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4554A714BE1FE300837CC3 /* NSGLView.m */; };
-		3A4554AC14BE325900837CC3 /* OSXGLEssentialsAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4554A914BE1FE300837CC3 /* OSXGLEssentialsAppDelegate.m */; };
+		3A4554AB14BE325400837CC3 /* GLEssentialsGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4554A714BE1FE300837CC3 /* GLEssentialsGLView.m */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
-		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		256AC3F00F4B6AF500CF3369 /* OSXGLEssentials_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSXGLEssentials_Prefix.pch; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		3A0BF470177B8C1F00A6C4D7 /* GLEssentialsWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GLEssentialsWindowController.h; path = Classes/OSX/GLEssentialsWindowController.h; sourceTree = "<group>"; };
+		3A0BF471177B8C1F00A6C4D7 /* GLEssentialsWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GLEssentialsWindowController.m; path = Classes/OSX/GLEssentialsWindowController.m; sourceTree = "<group>"; };
+		3A0BF478177BC80300A6C4D7 /* GLEssentialsFullscreenWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GLEssentialsFullscreenWindow.h; path = Classes/OSX/GLEssentialsFullscreenWindow.h; sourceTree = "<group>"; };
+		3A0BF479177BC80300A6C4D7 /* GLEssentialsFullscreenWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GLEssentialsFullscreenWindow.m; path = Classes/OSX/GLEssentialsFullscreenWindow.m; sourceTree = "<group>"; };
 		3A1598C311B9DDB0001E7AB5 /* vectorUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vectorUtil.h; path = UtilSrc/vectorUtil.h; sourceTree = "<group>"; };
 		3A1598C411B9DDB0001E7AB5 /* vectorUtil.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vectorUtil.c; path = UtilSrc/vectorUtil.c; sourceTree = "<group>"; };
 		3A1598C511B9DDB0001E7AB5 /* sourceUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sourceUtil.h; path = UtilSrc/sourceUtil.h; sourceTree = "<group>"; };
@@ -60,10 +64,8 @@
 		3A1598EE11B9DE37001E7AB5 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		3A15990611B9DE6C001E7AB5 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		3A349C9112CAEA1100B73A51 /* sourceUtil.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sourceUtil.c; path = UtilSrc/sourceUtil.c; sourceTree = "<group>"; };
-		3A4554A614BE1FE300837CC3 /* NSGLView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NSGLView.h; path = Classes/OSX/NSGLView.h; sourceTree = "<group>"; };
-		3A4554A714BE1FE300837CC3 /* NSGLView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = NSGLView.m; path = Classes/OSX/NSGLView.m; sourceTree = "<group>"; };
-		3A4554A814BE1FE300837CC3 /* OSXGLEssentialsAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = OSXGLEssentialsAppDelegate.h; path = Classes/OSX/OSXGLEssentialsAppDelegate.h; sourceTree = "<group>"; };
-		3A4554A914BE1FE300837CC3 /* OSXGLEssentialsAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = OSXGLEssentialsAppDelegate.m; path = Classes/OSX/OSXGLEssentialsAppDelegate.m; sourceTree = "<group>"; };
+		3A4554A614BE1FE300837CC3 /* GLEssentialsGLView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GLEssentialsGLView.h; path = Classes/OSX/GLEssentialsGLView.h; sourceTree = "<group>"; };
+		3A4554A714BE1FE300837CC3 /* GLEssentialsGLView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = GLEssentialsGLView.m; path = Classes/OSX/GLEssentialsGLView.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* OSXGLEssentials-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "OSXGLEssentials-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -84,10 +86,12 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				3A4554A614BE1FE300837CC3 /* NSGLView.h */,
-				3A4554A714BE1FE300837CC3 /* NSGLView.m */,
-				3A4554A814BE1FE300837CC3 /* OSXGLEssentialsAppDelegate.h */,
-				3A4554A914BE1FE300837CC3 /* OSXGLEssentialsAppDelegate.m */,
+				3A4554A614BE1FE300837CC3 /* GLEssentialsGLView.h */,
+				3A4554A714BE1FE300837CC3 /* GLEssentialsGLView.m */,
+				3A0BF478177BC80300A6C4D7 /* GLEssentialsFullscreenWindow.h */,
+				3A0BF479177BC80300A6C4D7 /* GLEssentialsFullscreenWindow.m */,
+				3A0BF470177B8C1F00A6C4D7 /* GLEssentialsWindowController.h */,
+				3A0BF471177B8C1F00A6C4D7 /* GLEssentialsWindowController.m */,
 				3A1598D611B9DDC5001E7AB5 /* OpenGLRenderer.h */,
 				3A1598D511B9DDC5001E7AB5 /* OpenGLRenderer.m */,
 			);
@@ -108,7 +112,6 @@
 			isa = PBXGroup;
 			children = (
 				29B97324FDCFA39411CA2CEA /* AppKit.framework */,
-				13E42FB307B3F0F600E4EEF1 /* CoreData.framework */,
 				29B97325FDCFA39411CA2CEA /* Foundation.framework */,
 			);
 			name = "Other Frameworks";
@@ -214,7 +217,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0450;
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "OSXGLEssentials" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -259,14 +262,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
+				3A0BF47A177BC80300A6C4D7 /* GLEssentialsFullscreenWindow.m in Sources */,
 				3A1598CE11B9DDB0001E7AB5 /* vectorUtil.c in Sources */,
 				3A1598D011B9DDB0001E7AB5 /* modelUtil.c in Sources */,
+				3A0BF472177B8C1F00A6C4D7 /* GLEssentialsWindowController.m in Sources */,
 				3A1598D111B9DDB0001E7AB5 /* matrixUtil.c in Sources */,
 				3A1598D211B9DDB0001E7AB5 /* imageUtil.m in Sources */,
 				3A1598DB11B9DDC5001E7AB5 /* OpenGLRenderer.m in Sources */,
 				3A349C9212CAEA1100B73A51 /* sourceUtil.c in Sources */,
-				3A4554AB14BE325400837CC3 /* NSGLView.m in Sources */,
-				3A4554AC14BE325900837CC3 /* OSXGLEssentialsAppDelegate.m in Sources */,
+				3A4554AB14BE325400837CC3 /* GLEssentialsGLView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -277,6 +281,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD)";
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_MODEL_TUNING = G5;
@@ -293,6 +299,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD)";
+				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -306,9 +314,10 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "DEBUG=1";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -319,7 +328,7 @@
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;

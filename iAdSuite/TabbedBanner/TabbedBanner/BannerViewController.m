@@ -1,7 +1,7 @@
 /*
     File: BannerViewController.m
 Abstract: A container view controller that manages an ADBannerView and a content view controller
- Version: 2.1
+ Version: 2.2
 
 Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
 Inc. ("Apple") in consideration of your agreement to the following
@@ -41,7 +41,7 @@ AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE),
 STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
-Copyright (C) 2012 Apple Inc. All Rights Reserved.
+Copyright (C) 2013 Apple Inc. All Rights Reserved.
 
 */
 
@@ -74,6 +74,11 @@ NSString * const BannerViewActionDidFinish = @"BannerViewActionDidFinish";
 
 - (instancetype)initWithContentViewController:(UIViewController *)contentController
 {
+    // If contentController is nil, -loadView is going to throw an exception when it attempts to setup
+    // containment of a nil view controller.  Instead, throw the exception here and make it obvious
+    // what is wrong.
+    NSAssert(contentController != nil, @"Attempting to initialize a BannerViewController with a nil contentController.");
+    
     self = [super init];
     if (self != nil) {
         _contentController = contentController;
@@ -90,9 +95,12 @@ NSString * const BannerViewActionDidFinish = @"BannerViewActionDidFinish";
 - (void)loadView
 {
     UIView *contentView = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    
+    // Setup containment of the _contentController.
     [self addChildViewController:_contentController];
     [contentView addSubview:_contentController.view];
     [_contentController didMoveToParentViewController:self];
+    
     self.view = contentView;
 }
 
@@ -155,8 +163,15 @@ NSString * const BannerViewActionDidFinish = @"BannerViewActionDidFinish";
 - (void)updateLayout
 {
     [UIView animateWithDuration:0.25 animations:^{
+        // -viewDidLayoutSubviews will handle positioning the banner such that it is either visible
+        // or hidden depending upon whether its bannerLoaded property is YES or NO.  We just need our view
+        // to (re)lay itself out so -viewDidLayoutSubviews will be called.
+        // You must not call [self.view layoutSubviews] directly.  However, you can flag the view
+        // as requiring layout...
         [self.view setNeedsLayout];
+        // ...then ask it to lay itself out immediately if it is flagged as requiring layout...
         [self.view layoutIfNeeded];
+        // ...which has the same effect.
     }];
 }
 

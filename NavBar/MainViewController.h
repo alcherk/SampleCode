@@ -1,7 +1,8 @@
 /*
      File: MainViewController.h
- Abstract: The application's main view controller (front page).
-  Version: 1.11
+ Abstract: The application's main (initial) view controller.
+ 
+  Version: 1.12
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,26 +42,12 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2012 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
 #import <UIKit/UIKit.h>
-#import "ModalViewController.h"
 
-@interface MainViewController : UIViewController <UINavigationBarDelegate, UITableViewDelegate,
-												  UITableViewDataSource, UIActionSheetDelegate>
-{
-	UITableView	*myTableView;
-	NSMutableArray *menuList;
-	
-	ModalViewController *myModalViewController;
-}
-
-@property (nonatomic, retain) IBOutlet UITableView *myTableView;
-@property (nonatomic, retain) NSMutableArray *menuList;
-@property (nonatomic, retain) ModalViewController *myModalViewController;
-
-- (IBAction)styleAction:(id)sender;
+@interface MainViewController : UITableViewController
 
 @end

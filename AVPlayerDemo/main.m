@@ -42,16 +42,17 @@ AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE),
 STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
-Copyright (C) 2010-2011 Apple Inc. All Rights Reserved.
+Copyright (C) 2010-2013 Apple Inc. All Rights Reserved.
 
 */
 
 #import <UIKit/UIKit.h>
+#import "AVPlayerDemoAppDelegate.h"
 
 int main(int argc, char *argv[]) {
-    
-    NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-    int retVal = UIApplicationMain(argc, argv, nil, nil);
-    [pool release];
-    return retVal;
+
+    @autoreleasepool {
+        return UIApplicationMain(argc, argv, nil, NSStringFromClass([AVPlayerDemoAppDelegate class]));
+    }
+
 }

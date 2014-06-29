@@ -1,11 +1,9 @@
 /*
      File: QuickContactsViewController.m
- Abstract: Demonstrates how to use ABPeoplePickerNavigationControllerDelegate, ABPersonViewControllerDelegate, 
-           ABNewPersonViewControllerDelegate, and ABUnknownPersonViewControllerDelegate. Shows how to browse a 
-           list of Address Book contacts, display and edit a contact record, create a new contact record, and 
-           update a partial contact record.
- 
-  Version: 1.1
+ Abstract: Demonstrates how to use ABPeoplePickerNavigationControllerDelegate, ABPersonViewControllerDelegate,
+ ABNewPersonViewControllerDelegate, and ABUnknownPersonViewControllerDelegate. Shows how to browse a list of 
+ Address Book contacts, display and edit a contact record, create a new contact record, and update a partial contact record.
+  Version: 1.2
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -45,12 +43,14 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
 */
-#import "QuickContactsViewController.h"
 
-enum TableRowSelected 
+#import <AddressBook/AddressBook.h>
+#import <AddressBookUI/AddressBookUI.h>
+#import "QuickContactsViewController.h"
+enum TableRowSelected
 {
 	kUIDisplayPickerRow = 0,
 	kUICreateNewContactRow,
@@ -58,43 +58,110 @@ enum TableRowSelected
 	kUIEditUnknownContactRow
 };
 
-
 // Height for the Edit Unknown Contact row
 #define kUIEditUnknownContactRowHeight 81.0
 
+@interface QuickContactsViewController () < ABPeoplePickerNavigationControllerDelegate,ABPersonViewControllerDelegate,
+                                            ABNewPersonViewControllerDelegate, ABUnknownPersonViewControllerDelegate>
+@property (nonatomic, assign) ABAddressBookRef addressBook;
+@property (nonatomic, strong) NSMutableArray *menuArray;
+
+@end
+
+
 @implementation QuickContactsViewController
-@synthesize menuArray;
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self)
+    {
+        self.title = @"QuickContacts";
+    }
+    return self;
+}
 
 #pragma mark Load views
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad 
 {
 	[super viewDidLoad];
-	// Load data from the plist file
+    // Create an address book object
+	_addressBook = ABAddressBookCreateWithOptions(NULL, NULL);
+    self.menuArray = [[NSMutableArray alloc] initWithCapacity:0];
+    [self checkAddressBookAccess];
+}
+
+#pragma mark -
+#pragma mark Address Book Access
+// Check the authorization status of our application for Address Book
+-(void)checkAddressBookAccess
+{
+    switch (ABAddressBookGetAuthorizationStatus())
+    {
+        // Update our UI if the user has granted access to their Contacts
+        case  kABAuthorizationStatusAuthorized:
+            [self accessGrantedForAddressBook];
+            break;
+            // Prompt the user for access to Contacts if there is no definitive answer
+        case  kABAuthorizationStatusNotDetermined :
+            [self requestAddressBookAccess];
+            break;
+            // Display a message if the user has denied or restricted access to Contacts
+        case  kABAuthorizationStatusDenied:
+        case  kABAuthorizationStatusRestricted:
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Privacy Warning"
+                                                            message:@"Permission was not granted for Contacts."
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil];
+            [alert show];
+        }
+            break;
+        default:
+            break;
+    }
+}
+
+// Prompt the user for access to their Address Book data
+-(void)requestAddressBookAccess
+{
+    QuickContactsViewController * __weak weakSelf = self;
+    
+    ABAddressBookRequestAccessWithCompletion(self.addressBook, ^(bool granted, CFErrorRef error)
+    {
+        if (granted)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [weakSelf accessGrantedForAddressBook];
+                                                         
+            });
+        }
+    });
+}
+
+// This method is called when the user has granted access to their address book data.
+-(void)accessGrantedForAddressBook
+{
+    // Load data from the plist file
 	NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"Menu" ofType:@"plist"];
 	self.menuArray = [NSMutableArray arrayWithContentsOfFile:plistPath];
+    [self.tableView reloadData];
 }
-
-
-#pragma mark Unload views
-- (void)viewDidUnload 
-{
-	self.menuArray = nil;
-}
-
 
 #pragma mark Table view methods
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-	return [menuArray count];
+	return [self.menuArray count];
 }
-
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section 
 {
     return 1;
 }
+
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath 
 {
@@ -105,26 +172,24 @@ enum TableRowSelected
 		// Make the Display Picker and Create New Contact rows look like buttons
 		if (indexPath.section < 2)
 		{
-			aCell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-			aCell.textLabel.textAlignment = UITextAlignmentCenter;
+			aCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+			aCell.textLabel.textAlignment = NSTextAlignmentCenter;
 		}
 		else
 		{
-			aCell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
+			aCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
 			aCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 			aCell.detailTextLabel.numberOfLines = 0;
 			// Display descriptions for the Edit Unknown Contact and Display and Edit Contact rows 
-			aCell.detailTextLabel.text = [[menuArray objectAtIndex:indexPath.section] valueForKey:@"description"];
+			aCell.detailTextLabel.text = [[self.menuArray objectAtIndex:indexPath.section] valueForKey:@"description"];
 		}
 	}
 	
-	aCell.textLabel.text = [[menuArray objectAtIndex:indexPath.section] valueForKey:@"title"];
-	
+	aCell.textLabel.text = [[self.menuArray objectAtIndex:indexPath.section] valueForKey:@"title"];
 	return aCell;
 }
 
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	switch (indexPath.section)
 	{
@@ -146,14 +211,12 @@ enum TableRowSelected
 	}	
 }
 
-
 #pragma mark TableViewDelegate method
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	// Change the height if Edit Unknown Contact is the row selected
 	return (indexPath.section==kUIEditUnknownContactRow) ? kUIEditUnknownContactRowHeight : tableView.rowHeight;	
 }
-
 
 #pragma mark Show all contacts
 // Called when users tap "Display Picker" in the application. Displays a list of contacts and allows users to select a contact from that list.
@@ -169,11 +232,9 @@ enum TableRowSelected
 	
 	
 	picker.displayedProperties = displayedItems;
-	// Show the picker 
-	[self presentModalViewController:picker animated:YES];
-    [picker release];	
+	// Show the picker
+    [self presentViewController:picker animated:YES completion:nil];
 }
-
 
 #pragma mark Display and edit a person
 // Called when users tap "Display and Edit Contact" in the application. Searches for a contact named "Appleseed" in 
@@ -181,15 +242,13 @@ enum TableRowSelected
 // the search is successful. Shows an alert, otherwise.
 -(void)showPersonViewController
 {
-	// Fetch the address book 
-	ABAddressBookRef addressBook = ABAddressBookCreate();
 	// Search for the person named "Appleseed" in the address book
-	NSArray *people = (NSArray *)ABAddressBookCopyPeopleWithName(addressBook, CFSTR("Appleseed"));
+	NSArray *people = (NSArray *)CFBridgingRelease(ABAddressBookCopyPeopleWithName(self.addressBook, CFSTR("Appleseed")));
 	// Display "Appleseed" information if found in the address book 
 	if ((people != nil) && [people count])
 	{
-		ABRecordRef person = (ABRecordRef)[people objectAtIndex:0];
-		ABPersonViewController *picker = [[[ABPersonViewController alloc] init] autorelease];
+		ABRecordRef person = (__bridge ABRecordRef)[people objectAtIndex:0];
+		ABPersonViewController *picker = [[ABPersonViewController alloc] init];
 		picker.personViewDelegate = self;
 		picker.displayedPerson = person;
 		// Allow users to edit the person’s information
@@ -205,13 +264,8 @@ enum TableRowSelected
 											  cancelButtonTitle:@"Cancel" 
 											  otherButtonTitles:nil];
 		[alert show];
-		[alert release];
 	}
-	
-	[people release];
-	CFRelease(addressBook);
 }
-
 
 #pragma mark Create a new person
 // Called when users tap "Create New Contact" in the application. Allows users to create a new contact.
@@ -221,12 +275,8 @@ enum TableRowSelected
 	picker.newPersonViewDelegate = self;
 	
 	UINavigationController *navigation = [[UINavigationController alloc] initWithRootViewController:picker];
-	[self presentModalViewController:navigation animated:YES];
-	
-	[picker release];
-	[navigation release];	
+    [self presentViewController:navigation animated:YES completion:nil];
 }
-
 
 #pragma mark Add data to an existing person
 // Called when users tap "Edit Unknown Contact" in the application. 
@@ -252,7 +302,6 @@ enum TableRowSelected
 			picker.message = @"Company, Inc";
 			
 			[self.navigationController pushViewController:picker animated:YES];
-			[picker release];
 		}
 		else 
 		{
@@ -262,13 +311,11 @@ enum TableRowSelected
 												  cancelButtonTitle:@"Cancel"
 												  otherButtonTitles:nil];
 			[alert show];
-			[alert release];
 		}
 	}	
 	CFRelease(email);
 	CFRelease(aContact);
 }
-
 
 #pragma mark ABPeoplePickerNavigationControllerDelegate methods
 // Displays the information of a selected person
@@ -277,7 +324,6 @@ enum TableRowSelected
 	return YES;
 }
 
-
 // Does not allow users to perform default actions such as dialing a phone number, when they select a person property.
 - (BOOL)peoplePickerNavigationController:(ABPeoplePickerNavigationController *)peoplePicker shouldContinueAfterSelectingPerson:(ABRecordRef)person 
 								property:(ABPropertyID)property identifier:(ABMultiValueIdentifier)identifier
@@ -285,13 +331,11 @@ enum TableRowSelected
 	return NO;
 }
 
-
-// Dismisses the people picker and shows the application when users tap Cancel. 
+// Dismisses the people picker and shows the application when users tap Cancel.
 - (void)peoplePickerNavigationControllerDidCancel:(ABPeoplePickerNavigationController *)peoplePicker;
 {
-	[self dismissModalViewControllerAnimated:YES];
+	[self dismissViewControllerAnimated:YES completion:NULL];
 }
-
 
 #pragma mark ABPersonViewControllerDelegate methods
 // Does not allow users to perform default actions such as dialing a phone number, when they select a contact property.
@@ -306,31 +350,36 @@ enum TableRowSelected
 // Dismisses the new-person view controller. 
 - (void)newPersonViewController:(ABNewPersonViewController *)newPersonViewController didCompleteWithNewPerson:(ABRecordRef)person
 {
-	[self dismissModalViewControllerAnimated:YES];
+	[self dismissViewControllerAnimated:YES completion:NULL];
 }
-
 
 #pragma mark ABUnknownPersonViewControllerDelegate methods
 // Dismisses the picker when users are done creating a contact or adding the displayed person properties to an existing contact. 
 - (void)unknownPersonViewController:(ABUnknownPersonViewController *)unknownPersonView didResolveToPerson:(ABRecordRef)person
 {
-	[self dismissModalViewControllerAnimated:YES];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
-
 // Does not allow users to perform default actions such as emailing a contact, when they select a contact property.
-- (BOOL)unknownPersonViewController:(ABUnknownPersonViewController *)personViewController shouldPerformDefaultActionForPerson:(ABRecordRef)person 
-						   property:(ABPropertyID)property identifier:(ABMultiValueIdentifier)identifier
+- (BOOL)unknownPersonViewController:(ABUnknownPersonViewController *)personViewController shouldPerformDefaultActionForPerson:(ABRecordRef)person property:(ABPropertyID)property identifier:(ABMultiValueIdentifier)identifier
 {
 	return NO;
 }
 
-
 #pragma mark Memory management
-- (void)dealloc 
+- (void)didReceiveMemoryWarning
 {
-	[menuArray release];
-    [super dealloc];
+    // Release the view if it doesn't have a superview.
+    [super didReceiveMemoryWarning];
 }
+
+- (void)dealloc
+{
+    if(_addressBook)
+    {
+        CFRelease(_addressBook);
+    }
+}
+
 
 @end

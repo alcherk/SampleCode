@@ -1,7 +1,7 @@
 /*
      File: RecipeDetailViewController.m 
  Abstract: The UITableViewController for displaying the details of a Recipe 
-  Version: 1.1 
+  Version: 1.2 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2011 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2014 Apple Inc. All Rights Reserved. 
   
  */ 
 
@@ -54,19 +54,21 @@
 
 
 @interface RecipeDetailViewController ()
-@property (nonatomic, retain) Recipe *recipe;
+
+@property (nonatomic, strong) IBOutlet UIView *tableHeaderView;
+@property (nonatomic, strong) IBOutlet UIButton *photoButton;
+@property (nonatomic, strong) IBOutlet UILabel *nameLabel;
+
+@property (nonatomic, strong) Recipe *recipe;
+
 - (IBAction)showPhoto;
 @end
 
+
 @implementation RecipeDetailViewController
 
-@synthesize recipe;
-@synthesize tableHeaderView;
-@synthesize photoButton;
-@synthesize nameLabel;
-
 // Define constants for the table view sections
-enum{
+enum {
     INGREDIENTS_SECTION, // 0
     INSTRUCTIONS_SECTION, // 1
     TotalNumberOfSections // 2
@@ -84,13 +86,6 @@ enum{
 }
 
 // Release ownership.
-- (void)dealloc {
-	[tableHeaderView release];
-	[photoButton release];
-	[nameLabel release];
-	self.recipe = nil;
-	[super dealloc];
-}
 
 #pragma mark -
 #pragma mark UIViewController
@@ -105,14 +100,14 @@ enum{
 
 
 - (void)viewDidLoad {
-	if (tableHeaderView == nil) {
+	if (_tableHeaderView == nil) {
         
         // Load the header view that shows the recipe name and thumbnail
 		[[NSBundle mainBundle] loadNibNamed:@"DetailHeaderView" owner:self options:nil];
-		tableHeaderView.backgroundColor = [UIColor groupTableViewBackgroundColor];
+		_tableHeaderView.backgroundColor = [UIColor groupTableViewBackgroundColor];
         
         // Set it onto the tables header view property
-		self.tableView.tableHeaderView = tableHeaderView;
+		self.tableView.tableHeaderView = _tableHeaderView;
         self.tableView.allowsSelectionDuringEditing = YES;
 	}
 }
@@ -124,17 +119,16 @@ enum{
 	[self.tableView reloadData]; 
     
     // Skin the photo button with the recipe thumbnail - displayed up in the header view
-	[photoButton setImage:recipe.thumbnailImage forState:UIControlStateNormal];
+	[_photoButton setImage:_recipe.thumbnailImage forState:UIControlStateNormal];
     // Set the header view text
-	nameLabel.text = recipe.name;	
+	_nameLabel.text = _recipe.name;
     
     // Set the recipe name as the nav bar title
-	self.title = recipe.name;
+	self.title = _recipe.name;
     
     // Provide a back button to go back to the recipes
     UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"Recipe" style:UIBarButtonItemStylePlain target:nil action:nil];
     self.navigationItem.backBarButtonItem = backButton;
-    [backButton release];
 }
 
 // Support all orientations except portrait-upside down
@@ -167,7 +161,7 @@ enum{
 		case INSTRUCTIONS_SECTION:
 			return 1;
 		case INGREDIENTS_SECTION:
-			return [recipe.ingredients count];
+			return [_recipe.ingredients count];
 		default:
 			return 0;
 	}
@@ -180,22 +174,20 @@ enum{
         const int AMOUNT_TAG =  1;
 		UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:IngredientsCellIdentifier];
 		if (cell == nil) {
-			cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:IngredientsCellIdentifier] autorelease];
+			cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:IngredientsCellIdentifier];
 			
 			UILabel *amountLabel = [[UILabel alloc] initWithFrame:CGRectZero];
             [amountLabel setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin];
 			amountLabel.tag = AMOUNT_TAG;
-			amountLabel.textAlignment = UITextAlignmentRight;
 			amountLabel.textColor = [UIColor colorWithRed:50.0/255.0 green:79.0/255.0 blue:133.0/255.0 alpha:1.0];
             amountLabel.highlightedTextColor = [UIColor whiteColor];
             [cell.contentView insertSubview:amountLabel aboveSubview:cell.textLabel];
             amountLabel.backgroundColor = [UIColor clearColor];
-			[amountLabel release];
 		}
 		
         UILabel *amountLabel = (UILabel *)[cell viewWithTag:AMOUNT_TAG];
         
-        NSDictionary *ingredients = [recipe.ingredients objectAtIndex:ingredientIdx];
+        NSDictionary *ingredients = [_recipe.ingredients objectAtIndex:ingredientIdx];
         cell.textLabel.text = [ingredients objectForKey:@"name"];
         amountLabel.text = [ingredients objectForKey:@"amount"];        
         
@@ -216,7 +208,7 @@ enum{
 	
 	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
 	if (cell == nil) {
-		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:MyIdentifier] autorelease];
+		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:MyIdentifier];
 	}
 	
 	NSString *text = nil;
@@ -249,9 +241,9 @@ enum{
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     // If the intructions section is tapped, navigate to the instructions view controller
 	if (indexPath.section == INSTRUCTIONS_SECTION) {
-		InstructionsViewController *nextViewController = [[[InstructionsViewController alloc] initWithNibName:@"RecipeInstructionsView" bundle:nil] autorelease];
+		InstructionsViewController *nextViewController = [[InstructionsViewController alloc] initWithNibName:@"RecipeInstructionsView" bundle:nil];
         // pass the recipe to the instructions view controller
-		((InstructionsViewController *)nextViewController).recipe = recipe;
+		((InstructionsViewController *)nextViewController).recipe = _recipe;
         [self.navigationController pushViewController:nextViewController animated:YES];
     }
 }
@@ -260,9 +252,8 @@ enum{
 - (IBAction)showPhoto {
     // Navigate to the recipe photo view controller to show a large photo for the recipe.
 	RecipePhotoViewController *recipePhotoViewController = [[RecipePhotoViewController alloc] init];
-	recipePhotoViewController.recipe = recipe;
+	recipePhotoViewController.recipe = _recipe;
 	[self.navigationController pushViewController:recipePhotoViewController animated:YES];
-	[recipePhotoViewController release];
 }
 
 @end

@@ -1,7 +1,7 @@
 /*
      File: DetailController.m
  Abstract: Displays details of a single parsed song.
-  Version: 1.3
+  Version: 1.4
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,65 +41,70 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
 */
 
 #import "DetailController.h"
 #import "Song.h"
 
+@interface DetailController ()
+
+@property (nonatomic, readonly, strong) NSDateFormatter *dateFormatter;
+
+@end
+
+#pragma mark -
+
 @implementation DetailController
 
-@synthesize song, dateFormatter;
-
-- (void)dealloc {
-    [dateFormatter release];
-    [song release];
-    [super dealloc];
-}
-
-- (NSDateFormatter *)dateFormatter {
-    if (dateFormatter == nil) {
-        dateFormatter = [[NSDateFormatter alloc] init];
-        [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
-        [dateFormatter setTimeStyle:NSDateFormatterNoStyle];
-    }
-    return dateFormatter;
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    _dateFormatter = [[NSDateFormatter alloc] init];
+    [self.dateFormatter setDateStyle:NSDateFormatterMediumStyle];
+    [self.dateFormatter setTimeStyle:NSDateFormatterNoStyle];
 }
 
 // When the view appears, update the title and table contents.
 - (void)viewWillAppear:(BOOL)animated {
-    self.title = song.title;
+    
+    self.title = self.song.title;
     [self.tableView reloadData];
 }
+
+
+#pragma mark - UITableViewDataSource
 
 - (NSInteger)tableView:(UITableView *)tv numberOfRowsInSection:(NSInteger)section {
     return 4;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)table cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
     static NSString *kCellIdentifier = @"SongDetailCell";
     UITableViewCell *cell = (UITableViewCell *)[self.tableView dequeueReusableCellWithIdentifier:kCellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue2 reuseIdentifier:kCellIdentifier] autorelease];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue2 reuseIdentifier:kCellIdentifier];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     switch (indexPath.row) {
         case 0: {
             cell.textLabel.text = NSLocalizedString(@"album", @"album label");
-            cell.detailTextLabel.text = song.album;
+            cell.detailTextLabel.text = self.song.album;
         } break;
         case 1: {
             cell.textLabel.text = NSLocalizedString(@"artist", @"artist label");
-            cell.detailTextLabel.text = song.artist;
+            cell.detailTextLabel.text = self.song.artist;
         } break;
         case 2: {
             cell.textLabel.text = NSLocalizedString(@"category", @"category label");
-            cell.detailTextLabel.text = song.category;
+            cell.detailTextLabel.text = self.song.category;
         } break;
         case 3: {
             cell.textLabel.text = NSLocalizedString(@"released", @"released label");
-            cell.detailTextLabel.text = [self.dateFormatter stringFromDate:song.releaseDate];
+            cell.detailTextLabel.text = [self.dateFormatter stringFromDate:self.song.releaseDate];
         } break;
     }
     return cell;

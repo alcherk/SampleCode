@@ -4,7 +4,7 @@
  Abstract: Contains methods to get the application user preferences settings for the movie scaling 
  mode, control style, background color, repeat mode, application audio session and background image.
   
-  Version: 1.4 
+  Version: 1.5 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -44,7 +44,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2011 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2014 Apple Inc. All Rights Reserved. 
   
  
  */
@@ -60,7 +60,6 @@
 + (MPMovieControlStyle)controlStyleUserSetting;
 + (UIColor *)backgroundColorUserSetting;
 + (MPMovieRepeatMode)repeatModeUserSetting;
-+ (BOOL)audioSessionUserSetting;
 + (BOOL)backgroundImageUserSetting;
 
 @end

@@ -1,7 +1,7 @@
 /*
      File: AtomicElement.h
  Abstract: Simple object that encapsulate the Atomic Element values and images for the states.
-  Version: 1.11
+  Version: 1.12
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,46 +41,26 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
 
 #import <Foundation/Foundation.h>
 
+@interface AtomicElement : NSObject
 
-@interface AtomicElement : NSObject {
-	NSNumber *atomicNumber;
-	NSString *name;
-	NSString *symbol;
-	NSString *state;
-	NSNumber *group;
-	NSNumber *period;
-	NSNumber *vertPos;
-	NSNumber *horizPos;	
-	BOOL radioactive;
-	NSString *atomicWeight;
-	NSString *discoveryYear;
-	
-}
- 
+@property (nonatomic, strong) NSNumber *atomicNumber;
+@property (nonatomic, strong) NSString *name;
+@property (nonatomic, strong) NSString *symbol;
+@property (nonatomic, strong) NSString *state;
+@property (weak, readonly) UIImage *flipperImageForAtomicElementNavigationItem;
+@property (weak, readonly) UIImage *stateImageForAtomicElementTileView;
+@property (weak, readonly) UIImage *stateImageForAtomicElementView;
+@property (nonatomic, strong) NSString *atomicWeight;
+@property (nonatomic, strong) NSNumber *group;
+@property (nonatomic, strong) NSNumber *period;
+@property (nonatomic, strong) NSString *discoveryYear;
+
 - (id)initWithDictionary:(NSDictionary *)aDictionary;
-
-@property (nonatomic, retain) NSNumber *atomicNumber;
-@property (nonatomic, retain) NSString *name;
-@property (nonatomic, retain) NSString *symbol;
-@property (nonatomic, retain) NSString *state;
-@property (nonatomic, retain) NSNumber *group;
-@property (nonatomic, retain) NSNumber *period;
-@property (nonatomic, retain) NSNumber *vertPos;
-@property (nonatomic, retain) NSNumber *horizPos;
-
-@property (readonly) UIImage *stateImageForAtomicElementTileView;
-@property (readonly) UIImage *flipperImageForAtomicElementNavigationItem;
-@property (readonly) UIImage *stateImageForAtomicElementView;
-@property (readonly) CGPoint positionForElement;
-@property  BOOL radioactive;
-@property (nonatomic, retain) NSString *atomicWeight;
-@property (nonatomic, retain) NSString *discoveryYear;
-
 
 @end

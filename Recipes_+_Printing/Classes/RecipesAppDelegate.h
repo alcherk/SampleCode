@@ -1,7 +1,7 @@
 /*
      File: RecipesAppDelegate.h 
  Abstract: The application delegate class used for installing our navigation controller. 
-  Version: 1.1 
+  Version: 1.2 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,18 +41,15 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2011 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2014 Apple Inc. All Rights Reserved. 
   
  */ 
 
 #import <UIKit/UIKit.h>
 
-@interface RecipesAppDelegate : NSObject <UIApplicationDelegate> {
-	UIWindow *window;
-    UINavigationController *navigationController;
-}
+@interface RecipesAppDelegate : NSObject <UIApplicationDelegate> 
 
-@property (nonatomic, retain) IBOutlet UIWindow *window;
+@property (nonatomic, strong) IBOutlet UIWindow *window;
 
 @end
 

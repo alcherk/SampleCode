@@ -8,7 +8,7 @@ Adds and removes an overlay view to the view hierarchy. Handles button presses t
 Adds and removes a background view to hide any underlying user interface controls when playing a movie.
 Gets user movie settings preferences by calling the MoviePlayerUserPref methods. Apply these settings to the movie with the MyMovieController singleton.
  
- Version: 1.4 
+ Version: 1.5 
  
 Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
 Inc. ("Apple") in consideration of your agreement to the following 
@@ -48,7 +48,7 @@ AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE),
 STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
 POSSIBILITY OF SUCH DAMAGE. 
  
-Copyright (C) 2011 Apple Inc. All Rights Reserved. 
+Copyright (C) 2014 Apple Inc. All Rights Reserved. 
  
 
 */
@@ -74,14 +74,14 @@ Copyright (C) 2011 Apple Inc. All Rights Reserved.
 	IBOutlet MyOverlayViewController *overlayController;       
 }
 
-@property (nonatomic, retain) IBOutlet MyImageView *imageView;
-@property (nonatomic, retain) IBOutlet UIImageView *movieBackgroundImageView;
-@property (nonatomic, retain) IBOutlet UIView *backgroundView;
-@property (nonatomic, retain) IBOutlet MyOverlayViewController *overlayController;
+@property (nonatomic, strong) IBOutlet MyImageView *imageView;
+@property (nonatomic, strong) IBOutlet UIImageView *movieBackgroundImageView;
+@property (nonatomic, strong) IBOutlet UIView *backgroundView;
+@property (nonatomic, strong) IBOutlet MyOverlayViewController *overlayController;
 
-@property (nonatomic, retain) IBOutlet MoviePlayerAppDelegate *appDelegate;
+@property (nonatomic, strong) IBOutlet MoviePlayerAppDelegate *appDelegate;
 
-@property (retain) MPMoviePlayerController *moviePlayerController;
+@property (strong) MPMoviePlayerController *moviePlayerController;
 
 - (IBAction)overlayViewCloseButtonPress:(id)sender;
 - (void)viewWillEnterForeground;

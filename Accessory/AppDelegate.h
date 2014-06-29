@@ -1,7 +1,8 @@
 /*
      File: AppDelegate.h
- Abstract: The application delegate class used for installing our table view controller.
-  Version: 1.2
+ Abstract: The application delegate class.
+ 
+  Version: 1.4
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,19 +42,14 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
 #import <UIKit/UIKit.h>
 
-@interface AppDelegate : NSObject <UIApplicationDelegate>
-{
-    UIWindow *window;
-	UINavigationController *myNavController;
-}
+@interface AppDelegate : UIResponder <UIApplicationDelegate>
 
-@property (nonatomic, retain) IBOutlet UIWindow *window;
-@property (nonatomic, retain) IBOutlet UINavigationController *myNavController;
+@property (nonatomic, strong) UIWindow *window;
 
 @end

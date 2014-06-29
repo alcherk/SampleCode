@@ -2,7 +2,7 @@
      File: HazardMapViewController.m 
  Abstract: Main view controller for the application.  Implements MKMapViewDelegate to manage adding
  a HazardMap overlay to a MKMapView and to manage display of a HazardMapView on the MKMapView. 
-  Version: 1.1 
+  Version: 1.2 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -42,14 +42,22 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2010 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2014 Apple Inc. All Rights Reserved. 
   
  */
 
 #import "HazardMapViewController.h"
-
 #import "HazardMap.h"
-#import "HazardMapView.h"
+#import "HazardMapOverlayRenderer.h"
+
+@interface HazardMapViewController ()
+
+@property (nonatomic, weak) IBOutlet MKMapView *map;
+
+@end
+
+
+#pragma mark -
 
 @implementation HazardMapViewController
 
@@ -63,24 +71,19 @@
     HazardMap *hazards = [[HazardMap alloc] initWithHazardMapFile:hazardPath];
     
     // Position and zoom the map to just fit the grid loaded on screen
-    [map setVisibleMapRect:[hazards boundingMapRect]];
+    [self.map setVisibleMapRect:[hazards boundingMapRect]];
     
     // Add the earthquake hazard map to the map view
-    [map addOverlay:hazards];
+    [self.map addOverlay:hazards];
     
     // Let the map view own the hazards model object now
-    [hazards release];
 }
 
-- (MKOverlayView *)mapView:(MKMapView *)mapView viewForOverlay:(id <MKOverlay>)overlay
+// called as a result of calling "addOverlay" (above)
+- (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id <MKOverlay>)overlay
 {
-    HazardMapView *view = [[HazardMapView alloc] initWithOverlay:overlay];
-    return [view autorelease];
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
-{
-    return YES;
+    HazardMapOverlayRenderer *renderer = [[HazardMapOverlayRenderer alloc] initWithOverlay:overlay];
+    return renderer;
 }
 
 @end

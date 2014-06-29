@@ -1,7 +1,8 @@
 /*
      File: MainViewController.m
- Abstract: The application's main view controller (front page).
-  Version: 1.11
+ Abstract: The application's main (initial) view controller.
+ 
+  Version: 1.12
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,211 +42,81 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2012 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
 #import "MainViewController.h"
 
-#import "PageOneViewController.h"
-#import "PageTwoViewController.h"
-#import "PageThreeViewController.h"
-#import "PageFourViewController.h"
-#import "PageFiveViewController.h"
-#import "ModalViewController.h"
-
-#import "Constants.h"	// contains the dictionary keys
+@interface MainViewController () <UIActionSheetDelegate>
+@end
 
 
 @implementation MainViewController
 
-@synthesize menuList, myTableView, myModalViewController;
-
-static NSArray *pageNames = nil;
-
-- (void)dealloc
+//| ----------------------------------------------------------------------------
+- (NSUInteger)supportedInterfaceOrientations
 {
-    [myTableView release];
-	[menuList release];
-	if (self.myModalViewController != nil)
-		[myModalViewController release];
-	
-	[super dealloc];
+    return UIInterfaceOrientationMaskPortrait;
 }
 
-- (void)viewDidLoad
-{
-	[super viewDidLoad];
-    
-    // Make the title of this page the same as the title of this app
-	self.title = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
-		
-	self.menuList = [NSMutableArray array];
-	
-	// We will lazily create our view controllers as the user requests them (at a later time),
-	// but for now we will encase each title an explanation text into a NSDictionary and add it to a mutable array.
-	// This dictionary will be used by our table view data source to populate the text in each cell.
-	//
-	// When it comes time to create the corresponding view controller we will replace each NSDictionary.
-	//
-	// If you want to add more pages, simply call "addObject" on "menuList"
-	// with an additional NSDictionary.  Note we use NSLocalizedString to load a localized version of its title.
-    if (!pageNames)
-	{
-		pageNames = [[NSArray alloc] initWithObjects:@"PageOne", @"PageTwo", @"PageThree", @"PageFour", @"PageFive", nil];
-    }
-	
-    for (NSString *pageName in pageNames)
-	{
-		[self.menuList addObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:
-                             NSLocalizedString([pageName stringByAppendingString:@"Title"], @""), kTitleKey,
-                             NSLocalizedString([pageName stringByAppendingString:@"Explain"], @""), kDetailKey,
-                             nil]];
-	}
-	
-    // Create a final modal view controller
-	UIButton *modalViewButton = [UIButton buttonWithType:UIButtonTypeInfoLight];
-	[modalViewButton addTarget:self
-                        action:@selector(modalViewAction:)
-              forControlEvents:UIControlEventTouchUpInside];
-	UIBarButtonItem *modalBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:modalViewButton];
-	self.navigationItem.rightBarButtonItem = modalBarButtonItem;
-	[modalBarButtonItem release];
-}
 
-- (void)viewDidUnload
-{
-	self.myTableView = nil;
-	self.menuList = nil;
-    
-    [super viewDidUnload];
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-	[self.myTableView deselectRowAtIndexPath:self.myTableView.indexPathForSelectedRow animated:NO];
-}
-
+//| ----------------------------------------------------------------------------
+//  Unwind action that is targeted by the demos which present a modal view
+//  controller, to return to the main screen.
+- (IBAction)unwindToMainViewController:(UIStoryboardSegue*)sender
+{ }
 
 #pragma mark -
-#pragma mark UIActionSheetDelegate
+#pragma mark Style Action Sheet
 
+//| ----------------------------------------------------------------------------
 - (void)actionSheet:(UIActionSheet *)modalView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    // Change the navigation bar style, also make the status bar match with it
+    // Change the navigation bar style
 	switch (buttonIndex)
 	{
-		case 0:
-		{
-			[UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
+		case 0: // "Default"
 			self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
+            // Bars are translucent by default.
+            self.navigationController.navigationBar.translucent = YES;
+            // Reset the bar's tint color to the system default.
+            self.navigationController.navigationBar.tintColor = nil;
 			break;
-		}
-		case 1:
-		{
-			[UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackOpaque;
-			self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
+		case 1: // "Black Opaque"
+			self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+            self.navigationController.navigationBar.translucent = NO;
+            self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
 			break;
-		}
-		case 2:
-		{
-			[UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleBlackTranslucent;
-			self.navigationController.navigationBar.barStyle = UIBarStyleBlackTranslucent;
+		case 2: // "Black Translucent"
+			self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+            self.navigationController.navigationBar.translucent = YES;
+            self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
 			break;
-		}
 	}
-}
-
-
-#pragma mark -
-#pragma mark UITableViewDataSource
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-	return menuList.count;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-	static NSString *kCellIdentifier = @"cellID";
-	
-	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellIdentifier];
-	if (!cell)
-	{
-		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:kCellIdentifier] autorelease];
-        
-		cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        
-        cell.textLabel.backgroundColor = [UIColor clearColor];
-		cell.textLabel.opaque = NO;
-		cell.textLabel.textColor = [UIColor blackColor];
-		cell.textLabel.highlightedTextColor = [UIColor whiteColor];
-		cell.textLabel.font = [UIFont boldSystemFontOfSize:18];
-		
-		cell.detailTextLabel.backgroundColor = [UIColor clearColor];
-		cell.detailTextLabel.opaque = NO;
-		cell.detailTextLabel.textColor = [UIColor grayColor];
-		cell.detailTextLabel.highlightedTextColor = [UIColor whiteColor];
-		cell.detailTextLabel.font = [UIFont systemFontOfSize:14];
-    }
     
-	// get the view controller's info dictionary based on the indexPath's row
-    NSDictionary *dataDictionary = [menuList objectAtIndex:indexPath.row];
-    cell.textLabel.text = [dataDictionary valueForKey:kTitleKey];
-    cell.detailTextLabel.text = [dataDictionary valueForKey:kDetailKey];
-	
-	return cell;
+    // Ask the system to re-query our -preferredStatusBarStyle.
+    [self setNeedsStatusBarAppearanceUpdate];
 }
 
 
-#pragma mark -
-#pragma mark UITableViewDelegate
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    NSMutableDictionary *rowData = [self.menuList objectAtIndex:indexPath.row];
-	UIViewController *targetViewController = [rowData objectForKey:kViewControllerKey];
-	if (!targetViewController)
-	{
-        // The view controller has not been created yet, create it and set it to our menuList array
-        NSString *viewControllerName = [[pageNames objectAtIndex:indexPath.row] stringByAppendingString:@"ViewController"];
-        targetViewController = [[NSClassFromString(viewControllerName) alloc] initWithNibName:viewControllerName bundle:nil];
-        [rowData setValue:targetViewController forKey:kViewControllerKey];
-        [targetViewController release];
-    }
-    [self.navigationController pushViewController:targetViewController animated:YES];
-}
-
-
-#pragma mark -
-#pragma mark API
-
+//| ----------------------------------------------------------------------------
+//! IBAction for the 'Style' bar button item.
 - (IBAction)styleAction:(id)sender
 {
-	UIActionSheet *styleAlert = [[UIActionSheet alloc] initWithTitle:@"Choose a UIBarStyle:"
+	UIActionSheet *styleAlert = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Choose a UIBarStyle:", @"")
                                                             delegate:self
-                                                   cancelButtonTitle:@"Cancel"
+                                                   cancelButtonTitle:NSLocalizedString(@"Cancel", @"")
                                               destructiveButtonTitle:nil
-                                                   otherButtonTitles:@"Default",
-																	 @"BlackOpaque",
-																	 @"BlackTranslucent",
-																	nil,
-																	nil];
+                                                   otherButtonTitles:NSLocalizedString(@"Default", @""),
+																	 NSLocalizedString(@"Black Opaque", @""),
+																	 NSLocalizedString(@"Black Translucent", @""),
+																	 nil];
 	
 	// use the same style as the nav bar
 	styleAlert.actionSheetStyle = (UIActionSheetStyle)self.navigationController.navigationBar.barStyle;
 	
 	[styleAlert showInView:self.view];
-	[styleAlert release];
-}
-
-- (IBAction)modalViewAction:(id)sender
-{
-    if (self.myModalViewController == nil)
-        self.myModalViewController = [[[ModalViewController alloc] initWithNibName:
-										NSStringFromClass([ModalViewController class]) bundle:nil] autorelease];
-
-	[self.navigationController presentModalViewController:self.myModalViewController animated:YES];
 }
 
 @end

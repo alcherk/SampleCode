@@ -1,7 +1,8 @@
 /*
      File: main.m
- Abstract: 
-  Version: 1.6
+ Abstract: This file is included for support purposes and isn't 
+ necessary for understanding this sample.
+  Version: 1.7
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,16 +42,17 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
 
 #import <UIKit/UIKit.h>
 
-int main(int argc, char *argv[]) {
-	
-	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-	int retVal = UIApplicationMain(argc, argv, nil, nil);
-	[pool release];
-	return retVal;
+#import "LaunchMeAppDelegate.h"
+
+int main(int argc, char *argv[])
+{
+	@autoreleasepool {
+        return UIApplicationMain(argc, argv, nil, NSStringFromClass([LaunchMeAppDelegate class]));
+    }
 }

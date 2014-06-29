@@ -1,7 +1,7 @@
 /*
      File: ImageScrollView.h 
  Abstract: This scroll view allows the user to inspect the resulting image's levels of detail. 
-  Version: 1.0 
+  Version: 1.1 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2011 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2014 Apple Inc. All Rights Reserved. 
   
 */
 
@@ -65,6 +65,6 @@
 @property (retain) UIImage* image;
 @property (retain) TiledImageView* backTiledView;	
 
--(id)initWithFrame:(CGRect)frame image:(UIImage*)_image;
+-(id)initWithFrame:(CGRect)frame image:(UIImage*)image;
 
 @end

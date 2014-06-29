@@ -1,7 +1,7 @@
 /*
      File: InstructionsViewController.m 
  Abstract: A UIViewController for entering a Recipe's preparation instructions 
-  Version: 1.1 
+  Version: 1.2 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2011 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2014 Apple Inc. All Rights Reserved. 
   
  */ 
 
@@ -50,16 +50,13 @@
 
 @implementation InstructionsViewController
 
-@synthesize recipe;
-@synthesize instructionsText;
-@synthesize nameLabel;
-
 /*
  Set the navigation bar title.
  */
 - (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle {
 
-    if ((self = [super initWithNibName:nibName bundle:nibBundle])) {
+    self = [super initWithNibName:nibName bundle:nibBundle];
+    if (self) {
         UINavigationItem *navigationItem = self.navigationItem;
         navigationItem.title = @"Instructions";
     }
@@ -75,9 +72,10 @@
  after it is created and added to the view controller stack.
  */
 - (void)viewWillAppear:(BOOL)animated {	
-	instructionsText.text = recipe.instructions;	
-	nameLabel.text = recipe.name;	
+	_instructionsText.text = _recipe.instructions;
+	_nameLabel.text = _recipe.name;
 }
+
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
@@ -86,11 +84,5 @@
 /*
  Release ownership.
  */
-- (void)dealloc {
-	[recipe release];
-	[instructionsText release];
-	[nameLabel release];
-	[super dealloc];
-}
 
 @end

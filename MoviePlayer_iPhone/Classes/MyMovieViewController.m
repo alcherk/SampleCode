@@ -8,7 +8,7 @@ Adds and removes an overlay view to the view hierarchy. Handles button presses t
 Adds and removes a background view to hide any underlying user interface controls when playing a movie.
 Gets user movie settings preferences by calling the MoviePlayerUserPref methods. Apply these settings to the movie with the MyMovieController singleton.
  
- Version: 1.4 
+ Version: 1.5 
  
 Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
 Inc. ("Apple") in consideration of your agreement to the following 
@@ -48,7 +48,7 @@ AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE),
 STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
 POSSIBILITY OF SUCH DAMAGE. 
  
-Copyright (C) 2011 Apple Inc. All Rights Reserved. 
+Copyright (C) 2014 Apple Inc. All Rights Reserved. 
  
 
 */
@@ -153,7 +153,6 @@ CGFloat kMovieViewOffsetY = 20.0;
     self.backgroundView = nil;
     self.overlayController = nil;
 
-    [super dealloc];
 }
 
 /* Remove the movie view from the view hierarchy. */
@@ -177,7 +176,6 @@ CGFloat kMovieViewOffsetY = 20.0;
                               cancelButtonTitle:@"OK"
                               otherButtonTitles:nil];
 		[alert show];
-		[alert release];
 	}
 }
 
@@ -350,7 +348,7 @@ CGFloat kMovieViewOffsetY = 20.0;
 /*  Notification called when the movie finished playing. */
 - (void) moviePlayBackDidFinish:(NSNotification*)notification
 {
-    NSNumber *reason = [[notification userInfo] objectForKey:MPMoviePlayerPlaybackDidFinishReasonUserInfoKey]; 
+    NSNumber *reason = [notification userInfo][MPMoviePlayerPlaybackDidFinishReasonUserInfoKey]; 
 	switch ([reason integerValue]) 
 	{
             /* The end of the movie was reached. */
@@ -363,7 +361,7 @@ CGFloat kMovieViewOffsetY = 20.0;
             /* An error was encountered during playback. */
 		case MPMovieFinishReasonPlaybackError:
             NSLog(@"An error was encountered during playback");
-            [self performSelectorOnMainThread:@selector(displayError:) withObject:[[notification userInfo] objectForKey:@"error"] 
+            [self performSelectorOnMainThread:@selector(displayError:) withObject:[notification userInfo][@"error"] 
                                 waitUntilDone:NO];
             [self removeMovieViewFromViewHierarchy];
             [self removeOverlayView];
@@ -518,7 +516,6 @@ CGFloat kMovieViewOffsetY = 20.0;
         player.controlStyle =[MoviePlayerUserPrefs controlStyleUserSetting];	
         player.backgroundView.backgroundColor = [MoviePlayerUserPrefs backgroundColorUserSetting];
         player.repeatMode = [MoviePlayerUserPrefs repeatModeUserSetting];
-        player.useApplicationAudioSession = [MoviePlayerUserPrefs audioSessionUserSetting];
         if ([MoviePlayerUserPrefs backgroundImageUserSetting] == YES)
         {
             [self.movieBackgroundImageView setFrame:[self.view bounds]];

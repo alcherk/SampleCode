@@ -55,7 +55,7 @@ This sample offers an Xcode project already pre-configured to build your Setting
 ===========================================================================
 BUILD REQUIREMENTS:
 
-Xcode 4, iOS SDK 4.3 or better
+Xcode 5.1, iOS SDK 7.1 or better
 
 ===========================================================================
 RUNTIME REQUIREMENTS:
@@ -126,6 +126,7 @@ CHANGES FROM PREVIOUS VERSIONS:
 1.2.1 - Fixed dealloc method in MyMovieViewController.m 
 1.3 - Added support for receiving streaming audio and video over HTTP.
 1.4 - Update for Xcode 4, iOS 4.3.
+1.5 - Update for Xcode 5.1, iOS 7.1, ARC, modern Objective-C syntax, and bug fix for missing root view controller.
 
 ===========================================================================
-Copyright (C) 2008-2011 Apple Inc. All rights reserved.
+Copyright (C) 2008-2014 Apple Inc. All rights reserved.

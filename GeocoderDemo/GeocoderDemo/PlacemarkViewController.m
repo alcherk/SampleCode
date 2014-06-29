@@ -1,7 +1,7 @@
 /*
      File: PlacemarkViewController.m 
  Abstract: UITableViewController that displays the propeties of a CLPlacemark. 
-  Version: 1.2 
+  Version: 1.3 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,28 +41,36 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2012 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
  */
 
 #import "PlacemarkViewController.h"
-#import <CoreLocation/CoreLocation.h>
-#import <MapKit/MapKit.h>
-#import <QuartzCore/QuartzCore.h>
 
+#import <QuartzCore/QuartzCore.h>   // for CALayer support
+
+@interface PlacemarkViewController ()
+{
+    UITableViewCell *_mapCell;
+    BOOL _preferCoord;
+}
+
+@property (nonatomic, strong) CLPlacemark *placemark;
+
+@end
+
+
+#pragma mark -
 
 @implementation PlacemarkViewController
 
-@synthesize placemark = _placemark;
-
 NSInteger const PlacemarkViewControllerNumberOfSections = 5;
-
 
 - (id)initWithPlacemark:(CLPlacemark*)placemark preferCoord:(BOOL)shouldPreferCoord
 {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
-        _placemark = [placemark retain];
+        _placemark = placemark;
         _preferCoord = shouldPreferCoord;
     }
     return self;
@@ -78,32 +86,17 @@ NSInteger const PlacemarkViewControllerNumberOfSections = 5;
     return [self initWithPlacemark:nil];
 }
 
-- (void)dealloc
-{
-    [_placemark release];
-    _placemark = nil;
-    [_mapCell release];
-    _mapCell = nil;
-    [super dealloc];
-}
-
-- (void)didReceiveMemoryWarning
-{
-    // releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-}
-
 - (void)viewDidLoad
 {
+    [super viewDidLoad];
     self.title = @"CLPlacemark Details";
 }
 
 
-#pragma mark - Table view data source
+#pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    // Return the number of sections.
     return PlacemarkViewControllerNumberOfSections;
 }
 
@@ -112,53 +105,45 @@ NSInteger const PlacemarkViewControllerNumberOfSections = 5;
     NSArray *counts;
     if (_preferCoord)
     {
-        counts = [NSArray arrayWithObjects:
-                  [NSNumber numberWithInt:1],  //map
-                  [NSNumber numberWithInt:8],  //location
-                  [NSNumber numberWithInt:4],  //region
-                  [NSNumber numberWithInt:10], //dict
-                  [NSNumber numberWithInt:1],  //map url
-                  nil];
+        counts = @[[NSNumber numberWithInt:1],  //map
+                   [NSNumber numberWithInt:8],  //location
+                   [NSNumber numberWithInt:4],  //region
+                   [NSNumber numberWithInt:10], //dict
+                   [NSNumber numberWithInt:1]]; //map url
     }
     else
     {
-        counts = [NSArray arrayWithObjects:
-                  [NSNumber numberWithInt:10], //dict
-                  [NSNumber numberWithInt:4],  //region
-                  [NSNumber numberWithInt:8],  //location
-                  [NSNumber numberWithInt:1],  //map
-                  [NSNumber numberWithInt:1],  //map url
-                  nil];    
+        counts = @[[NSNumber numberWithInt:10], //dict
+                  [NSNumber numberWithInt:4],   //region
+                  [NSNumber numberWithInt:8],   //location
+                  [NSNumber numberWithInt:1],   //map
+                  [NSNumber numberWithInt:1]];  //map url
     }
     
-    return [[counts objectAtIndex:section] integerValue];
+    return [counts[section] integerValue];
 }
 
-- (NSString*)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
     NSArray *titles;
     if (_preferCoord)
     {
-        titles = [NSArray arrayWithObjects:
-                  @"",                                      //map
-                  @"location - (CLLocation)",               //location
-                  @"region - (CLRegion)",                   //region
-                  @"addressDictionary - (NSDictionary)",    //dict
-                  @"",                                      //map url
-                  nil];
+        titles = @[@"",                                      // map
+                   @"location - (CLLocation)",               // location
+                   @"region - (CLRegion)",                   // region
+                   @"addressDictionary - (NSDictionary)",    // dict
+                   @""];
     }
     else
     {
-        titles = [NSArray arrayWithObjects:
-                  @"addressDictionary - (NSDictionary)",    //dict
-                  @"region - (CLRegion)",                   //region
-                  @"location - (CLLocation)",               //location
-                  @"Map",                                   //map
-                  @"",                                      //map url
-                  nil];
+        titles = @[@"addressDictionary - (NSDictionary)",    // dict
+                   @"region - (CLRegion)",                   // region
+                   @"location - (CLLocation)",               // location
+                   @"Map",                                   // map
+                   @""];
     }
     
-    return [titles objectAtIndex:section];
+    return titles[section];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -191,7 +176,7 @@ NSInteger const PlacemarkViewControllerNumberOfSections = 5;
 }
 
 
-#pragma mark - Table view delegate
+#pragma mark - UITableViewDelegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -213,7 +198,7 @@ NSInteger const PlacemarkViewControllerNumberOfSections = 5;
                             self.placemark.location.coordinate.latitude,
                             self.placemark.location.coordinate.longitude];
         ll = [ll stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        NSString *url = [NSString stringWithFormat: @"http://maps.google.com/maps?ll=%@",ll];
+        NSString *url = [NSString stringWithFormat:@"http://maps.apple.com/?q=%@", ll];
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
         
         [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
@@ -221,38 +206,36 @@ NSInteger const PlacemarkViewControllerNumberOfSections = 5;
 }
 
 
-#pragma mark - cell generators
+#pragma mark - Cell Generators
 
 - (UITableViewCell *)blankCell
 {
     NSString *cellID = @"Cell";
-    UITableViewCell *cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellID] autorelease];    
+    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellID];    
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }
 
 - (UITableViewCell *)cellForAddressDictionaryIndex:(NSInteger)index
 {
-    NSArray const *keys = [NSArray arrayWithObjects:
-                           @"name",
-                           @"thoroughfare",
-                           @"subThoroughfare",
-                           @"locality",
-                           @"subLocality",
-                           @"administrativeArea",
-                           @"subAdministrativeArea",
-                           @"postalCode",
-                           @"ISOcountryCode",
-                           @"country",
-                           nil];
+    NSArray const *keys = @[@"name",
+                            @"thoroughfare",
+                            @"subThoroughfare",
+                            @"locality",
+                            @"subLocality",
+                            @"administrativeArea",
+                            @"subAdministrativeArea",
+                            @"postalCode",
+                            @"ISOcountryCode",
+                            @"country"];
     
-    if (index >= [keys count])
+    if (index >= (NSInteger)[keys count])
         index = [keys count] - 1;
     
     UITableViewCell *cell = [self blankCell];
     
     // setup
-    NSString *key = [keys objectAtIndex:index];
+    NSString *key = keys[index];
     NSString *ivar = [self.placemark performSelector:NSSelectorFromString(key)];
     NSString *dict = [[self.placemark addressDictionary] objectForKey:key];
     if (dict)
@@ -270,24 +253,22 @@ NSInteger const PlacemarkViewControllerNumberOfSections = 5;
 
 - (UITableViewCell *)cellForLocationIndex:(NSInteger)index
 {
-    NSArray const *keys = [NSArray arrayWithObjects:
-                           @"coordinate.latitude",
-                           @"coordinate.longitude",
-                           @"altitude",
-                           @"horizontalAccuracy",
-                           @"verticalAccuracy",
-                           @"course",
-                           @"speed",
-                           @"timestamp",
-                           nil];
+    NSArray const *keys = @[@"coordinate.latitude",
+                            @"coordinate.longitude",
+                            @"altitude",
+                            @"horizontalAccuracy",
+                            @"verticalAccuracy",
+                            @"course",
+                            @"speed",
+                            @"timestamp"];
     
-    if (index >= [keys count])
+    if (index >= (NSInteger)[keys count])
         index = [keys count] - 1;
     
     UITableViewCell *cell = [self blankCell];
     
     // setup
-    NSString *key = [keys objectAtIndex:index];
+    NSString *key = keys[index];
     NSString *ivar = @"";
     
     // look up the values, special case lat and long and timestamp but first, special case placemark being nil.
@@ -322,20 +303,18 @@ NSInteger const PlacemarkViewControllerNumberOfSections = 5;
 
 - (UITableViewCell *)cellForRegionIndex:(NSInteger)index
 {
-    NSArray const *keys = [NSArray arrayWithObjects:
-                           @"center.latitude",
-                           @"center.longitude",
-                           @"radius",
-                           @"identifier",
-                           nil];
+    NSArray const *keys = @[@"center.latitude",
+                            @"center.longitude",
+                            @"radius",
+                            @"identifier"];
     
-    if (index >= [keys count])
+    if (index >= (NSInteger)[keys count])
         index = [keys count] - 1;
     
     UITableViewCell *cell = [self blankCell];
     
     // setup
-    NSString *key = [keys objectAtIndex:index];
+    NSString *key = keys[index];
     NSString *ivar;
     
     // look up the values, special case lat and long and timestamp but first special case region being nil
@@ -394,19 +373,18 @@ NSInteger const PlacemarkViewControllerNumberOfSections = 5;
     [map addAnnotation:self];
     
     NSString * cellID = @"Cell";
-    UITableViewCell *cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellID] autorelease];    
+    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellID];    
     
     [cell.contentView addSubview:map];
-    [map release];
     
-    _mapCell = [cell retain];
+    _mapCell = cell;
     return cell;
 }
 
 - (UITableViewCell *)cellForMapURL
 {
     NSString * cellID = @"Cell";
-    UITableViewCell *cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID] autorelease];   
+    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];   
     
     cell.textLabel.text = @"View in Maps";
     cell.textLabel.textAlignment = UITextAlignmentCenter;
@@ -415,9 +393,9 @@ NSInteger const PlacemarkViewControllerNumberOfSections = 5;
 }
 
 
-#pragma mark - display utilities
+#pragma mark - Display Utilities
 
-// performSelector is only for objects!
+// performSelector is only for objects
 - (double)doubleForObject:(id)object andSelector:(SEL)selector
 {
     NSInvocation *inv = [NSInvocation invocationWithMethodSignature:[object methodSignatureForSelector:selector]];
@@ -428,7 +406,6 @@ NSInteger const PlacemarkViewControllerNumberOfSections = 5;
     
     return result;
 }
-
 
 // don't try and print any NaNs. these throw exceptions in strings
 - (NSString *)displayStringForDouble:(double)aDouble

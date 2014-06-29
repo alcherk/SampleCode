@@ -1,7 +1,7 @@
 /*
      File: MultichannelMixerController.h 
  Abstract: The Controller Class for the AUGraph. 
-  Version: 1.1 
+  Version: 1.1.1 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2010 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
 */
 
@@ -49,6 +49,7 @@
 #import <AudioUnit/AudioUnit.h>
 
 #import "CAStreamBasicDescription.h"
+#import "CAComponentDescription.h"
 
 #define MAXBUFS  2
 #define NUMFILES 2

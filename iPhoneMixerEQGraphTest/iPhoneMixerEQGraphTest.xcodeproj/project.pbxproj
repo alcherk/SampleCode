@@ -18,19 +18,20 @@
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
-		2B0208D5111FCBB6002BB86D /* CAComponentDescription.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B0208D4111FCBB6002BB86D /* CAComponentDescription.cpp */; };
 		2B1D98D51123637700E1AB0A /* moof.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B1D98D41123637600E1AB0A /* moof.png */; };
 		2B222C2C1120F73E002716C2 /* AUGraphController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2B222C291120F73E002716C2 /* AUGraphController.mm */; };
 		2B222C2D1120F73E002716C2 /* MixerEQGraphTestDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B222C2B1120F73E002716C2 /* MixerEQGraphTestDelegate.m */; };
+		2B2B719B178F8C5600B5BD90 /* CAComponentDescription.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B2B7193178F8C5600B5BD90 /* CAComponentDescription.cpp */; };
+		2B2B719C178F8C5600B5BD90 /* CAStreamBasicDescription.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B2B7197178F8C5600B5BD90 /* CAStreamBasicDescription.cpp */; };
+		2B2B719D178F8C5600B5BD90 /* CAXException.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B2B7199178F8C5600B5BD90 /* CAXException.cpp */; };
+		2B2B719F178F8D6000B5BD90 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B2B719E178F8D6000B5BD90 /* Default-568h@2x.png */; };
+		2B2B71A71790CCC600B5BD90 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B5324C90F5383DD0033DE8C /* AudioToolbox.framework */; };
 		2B5324C80F5383D30033DE8C /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B5324C70F5383D30033DE8C /* AVFoundation.framework */; };
-		2B5324CA0F5383DD0033DE8C /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B5324C90F5383DD0033DE8C /* AudioToolbox.framework */; };
 		2B9A681111179D890050C8C6 /* Track1.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 2B9A680F11179D890050C8C6 /* Track1.mp4 */; };
 		2B9A681211179D890050C8C6 /* Track2.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 2B9A681011179D890050C8C6 /* Track2.mp4 */; };
-		2BE30AC10F59C4ED00D63998 /* CAStreamBasicDescription.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BE30ABF0F59C4ED00D63998 /* CAStreamBasicDescription.cpp */; };
 		2BE30B200F59F67E00D63998 /* green_button.png in Resources */ = {isa = PBXBuildFile; fileRef = 2BE30B1C0F59F67E00D63998 /* green_button.png */; };
 		2BE30B210F59F67E00D63998 /* red_button.png in Resources */ = {isa = PBXBuildFile; fileRef = 2BE30B1D0F59F67E00D63998 /* red_button.png */; };
 		2BE30B230F59F67E00D63998 /* info.html in Resources */ = {isa = PBXBuildFile; fileRef = 2BE30B1F0F59F67E00D63998 /* info.html */; };
-		2BF8389A1047021B000A5DCC /* CAXException.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BF838981047021B000A5DCC /* CAXException.cpp */; };
 		2BFBE19D0F5C9B30003ECC4F /* MyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BFBE19B0F5C9B30003ECC4F /* MyViewController.m */; };
 /* End PBXBuildFile section */
 
@@ -47,27 +48,29 @@
 		1D6058910D05DD3D006BFB54 /* MixEQGraphTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MixEQGraphTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		2B0208D3111FCBB1002BB86D /* CAComponentDescription.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAComponentDescription.h; sourceTree = "<group>"; };
-		2B0208D4111FCBB6002BB86D /* CAComponentDescription.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CAComponentDescription.cpp; sourceTree = "<group>"; };
 		2B1D98D41123637600E1AB0A /* moof.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = moof.png; path = Resources/moof.png; sourceTree = "<group>"; };
 		2B222C281120F73E002716C2 /* AUGraphController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AUGraphController.h; path = Classes/AUGraphController.h; sourceTree = "<group>"; };
 		2B222C291120F73E002716C2 /* AUGraphController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AUGraphController.mm; path = Classes/AUGraphController.mm; sourceTree = "<group>"; };
 		2B222C2A1120F73E002716C2 /* MixerEQGraphTestDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MixerEQGraphTestDelegate.h; sourceTree = "<group>"; };
 		2B222C2B1120F73E002716C2 /* MixerEQGraphTestDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MixerEQGraphTestDelegate.m; sourceTree = "<group>"; };
 		2B222C411120F819002716C2 /* iPhoneMixerEQGraphTest_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iPhoneMixerEQGraphTest_Prefix.pch; sourceTree = "<group>"; };
+		2B2B7192178F8C5600B5BD90 /* CACFDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CACFDictionary.h; sourceTree = "<group>"; };
+		2B2B7193178F8C5600B5BD90 /* CAComponentDescription.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CAComponentDescription.cpp; sourceTree = "<group>"; };
+		2B2B7194178F8C5600B5BD90 /* CAComponentDescription.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAComponentDescription.h; sourceTree = "<group>"; };
+		2B2B7195178F8C5600B5BD90 /* CADebugMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CADebugMacros.h; sourceTree = "<group>"; };
+		2B2B7196178F8C5600B5BD90 /* CAMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAMath.h; sourceTree = "<group>"; };
+		2B2B7197178F8C5600B5BD90 /* CAStreamBasicDescription.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CAStreamBasicDescription.cpp; sourceTree = "<group>"; };
+		2B2B7198178F8C5600B5BD90 /* CAStreamBasicDescription.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAStreamBasicDescription.h; sourceTree = "<group>"; };
+		2B2B7199178F8C5600B5BD90 /* CAXException.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CAXException.cpp; sourceTree = "<group>"; };
+		2B2B719A178F8C5600B5BD90 /* CAXException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAXException.h; sourceTree = "<group>"; };
+		2B2B719E178F8D6000B5BD90 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = SOURCE_ROOT; };
 		2B5324C70F5383D30033DE8C /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		2B5324C90F5383DD0033DE8C /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		2B9A680F11179D890050C8C6 /* Track1.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; name = Track1.mp4; path = Resources/Track1.mp4; sourceTree = "<group>"; };
 		2B9A681011179D890050C8C6 /* Track2.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; name = Track2.mp4; path = Resources/Track2.mp4; sourceTree = "<group>"; };
-		2BE30ABD0F59C4ED00D63998 /* CADebugMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CADebugMacros.h; sourceTree = "<group>"; };
-		2BE30ABE0F59C4ED00D63998 /* CAMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAMath.h; sourceTree = "<group>"; };
-		2BE30ABF0F59C4ED00D63998 /* CAStreamBasicDescription.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CAStreamBasicDescription.cpp; sourceTree = "<group>"; };
-		2BE30AC00F59C4ED00D63998 /* CAStreamBasicDescription.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAStreamBasicDescription.h; sourceTree = "<group>"; };
 		2BE30B1C0F59F67E00D63998 /* green_button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = green_button.png; path = Resources/green_button.png; sourceTree = "<group>"; };
 		2BE30B1D0F59F67E00D63998 /* red_button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = red_button.png; path = Resources/red_button.png; sourceTree = "<group>"; };
 		2BE30B1F0F59F67E00D63998 /* info.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = info.html; path = Resources/info.html; sourceTree = "<group>"; };
-		2BF838981047021B000A5DCC /* CAXException.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CAXException.cpp; sourceTree = "<group>"; };
-		2BF838991047021B000A5DCC /* CAXException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAXException.h; sourceTree = "<group>"; };
 		2BFBE19B0F5C9B30003ECC4F /* MyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyViewController.m; sourceTree = "<group>"; };
 		2BFBE19C0F5C9B30003ECC4F /* MyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyViewController.h; sourceTree = "<group>"; };
 		2BFBE1A00F5C9C30003ECC4F /* ReadMe.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ReadMe.txt; sourceTree = "<group>"; };
@@ -82,7 +85,7 @@
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				2B5324C80F5383D30033DE8C /* AVFoundation.framework in Frameworks */,
-				2B5324CA0F5383DD0033DE8C /* AudioToolbox.framework in Frameworks */,
+				2B2B71A71790CCC600B5BD90 /* AudioToolbox.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -116,7 +119,7 @@
 				2B222C281120F73E002716C2 /* AUGraphController.h */,
 				2B222C291120F73E002716C2 /* AUGraphController.mm */,
 				080E96DDFE201D6D7F000001 /* Other Classes */,
-				2BE30ABC0F59C4ED00D63998 /* iPublicUtility */,
+				2BE30ABC0F59C4ED00D63998 /* PublicUtility */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
@@ -137,6 +140,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				2B2B719E178F8D6000B5BD90 /* Default-568h@2x.png */,
 				180E66BF11D5033600E800D1 /* Icon-72.png */,
 				180E66C011D5033600E800D1 /* Icon-Small-50.png */,
 				180E66C111D5033600E800D1 /* Icon-Small.png */,
@@ -167,20 +171,21 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		2BE30ABC0F59C4ED00D63998 /* iPublicUtility */ = {
+		2BE30ABC0F59C4ED00D63998 /* PublicUtility */ = {
 			isa = PBXGroup;
 			children = (
-				2BE30ABD0F59C4ED00D63998 /* CADebugMacros.h */,
-				2BE30ABE0F59C4ED00D63998 /* CAMath.h */,
-				2BF838991047021B000A5DCC /* CAXException.h */,
-				2BF838981047021B000A5DCC /* CAXException.cpp */,
-				2BE30AC00F59C4ED00D63998 /* CAStreamBasicDescription.h */,
-				2BE30ABF0F59C4ED00D63998 /* CAStreamBasicDescription.cpp */,
-				2B0208D3111FCBB1002BB86D /* CAComponentDescription.h */,
-				2B0208D4111FCBB6002BB86D /* CAComponentDescription.cpp */,
+				2B2B7192178F8C5600B5BD90 /* CACFDictionary.h */,
+				2B2B7193178F8C5600B5BD90 /* CAComponentDescription.cpp */,
+				2B2B7194178F8C5600B5BD90 /* CAComponentDescription.h */,
+				2B2B7195178F8C5600B5BD90 /* CADebugMacros.h */,
+				2B2B7196178F8C5600B5BD90 /* CAMath.h */,
+				2B2B7197178F8C5600B5BD90 /* CAStreamBasicDescription.cpp */,
+				2B2B7198178F8C5600B5BD90 /* CAStreamBasicDescription.h */,
+				2B2B7199178F8C5600B5BD90 /* CAXException.cpp */,
+				2B2B719A178F8C5600B5BD90 /* CAXException.h */,
 			);
-			path = iPublicUtility;
-			sourceTree = "<group>";
+			path = PublicUtility;
+			sourceTree = SOURCE_ROOT;
 		};
 /* End PBXGroup section */
 
@@ -207,8 +212,12 @@
 /* Begin PBXProject section */
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0500;
+			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "iPhoneMixerEQGraphTest" */;
 			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -245,6 +254,7 @@
 				180E66CA11D5033600E800D1 /* Icon.png in Resources */,
 				180E66CB11D5033600E800D1 /* Icon@2x.png in Resources */,
 				180E66CC11D5033600E800D1 /* iTunesArtwork in Resources */,
+				2B2B719F178F8D6000B5BD90 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -256,12 +266,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
-				2BE30AC10F59C4ED00D63998 /* CAStreamBasicDescription.cpp in Sources */,
 				2BFBE19D0F5C9B30003ECC4F /* MyViewController.m in Sources */,
-				2BF8389A1047021B000A5DCC /* CAXException.cpp in Sources */,
-				2B0208D5111FCBB6002BB86D /* CAComponentDescription.cpp in Sources */,
 				2B222C2C1120F73E002716C2 /* AUGraphController.mm in Sources */,
 				2B222C2D1120F73E002716C2 /* MixerEQGraphTestDelegate.m in Sources */,
+				2B2B719B178F8C5600B5BD90 /* CAComponentDescription.cpp in Sources */,
+				2B2B719C178F8C5600B5BD90 /* CAStreamBasicDescription.cpp in Sources */,
+				2B2B719D178F8C5600B5BD90 /* CAXException.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -290,7 +300,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = iPhoneMixerEQGraphTest_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				PRODUCT_NAME = MixEQGraphTest;
 			};
 			name = Debug;
@@ -304,7 +314,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = iPhoneMixerEQGraphTest_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				PRODUCT_NAME = MixEQGraphTest;
 			};
 			name = Release;
@@ -312,30 +322,46 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				ONLY_ACTIVE_ARCH = YES;
-				PREBINDING = NO;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				SDKROOT = iphoneos4.0;
+				RUN_CLANG_STATIC_ANALYZER = YES;
+				SDKROOT = iphoneos;
 			};
 			name = Debug;
 		};
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
-				PREBINDING = NO;
-				SDKROOT = iphoneos4.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				RUN_CLANG_STATIC_ANALYZER = YES;
+				SDKROOT = iphoneos;
 			};
 			name = Release;
 		};

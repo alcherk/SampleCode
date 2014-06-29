@@ -1,7 +1,7 @@
 /*
      File: AUMIDIEffectBase.cpp 
  Abstract:  AUMIDIEffectBase.h  
-  Version: 1.01 
+  Version: 1.0.4 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2012 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
 */
 #include "AUMIDIEffectBase.h"
@@ -157,7 +157,7 @@ static OSStatus		AUMIDIEffectBaseMIDIEvent(void *				inComponentStorage,
 	try {
 		AUMIDIEffectBase *This = static_cast<AUMIDIEffectBase *>(inComponentStorage);
 		if (This == NULL) return paramErr;
-		result = This->MIDIEvent(inStatus, inData1, inData2, inOffsetSampleFrame);
+		result = This->AUMIDIBase::MIDIEvent(inStatus, inData1, inData2, inOffsetSampleFrame);
 	}
 	COMPONENT_CATCH
 	return result;

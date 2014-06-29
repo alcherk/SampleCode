@@ -1,8 +1,7 @@
 /*
      File: AddGroupViewController.m
- Abstract: Allows users to enter a name for a new group. Its AddGroupDelegate
- protocol communicates the typed group name to its delegate.
-  Version: 1.0
+ Abstract: Allows users to enter a name for a new group.
+  Version: 1.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -42,62 +41,52 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2011 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
 */
 
 #import "AddGroupViewController.h"
 
+@interface AddGroupViewController () <UITextFieldDelegate>
+@property (weak, nonatomic) IBOutlet UITextField *myTextField;
+
+@end
+
+
 @implementation AddGroupViewController
-@synthesize textField, delegate;
 
-
-#pragma mark -
-#pragma mark User Interactions
-
-// Dismiss the view controller when the user taps on the Cancel button
-- (IBAction)cancel:(id)sender
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-	[self dismissModalViewControllerAnimated:YES];
-}
-
-
-// Dismiss the keyboard and send the entered string when 
-// the user taps on the Save button
-- (IBAction)save:(id)sender
-{
-	// Dismiss the keyboard
-	[self.textField  resignFirstResponder];
-	[delegate addViewController:self didAddGroup:textField.text];
-}
-
-
-- (BOOL)textFieldShouldReturn:(UITextField *)theTextField
-{
-	// When the user presses return, take focus away from the text field so 
+	// When the user presses return, take focus away from the text field so
 	// that the keyboard is dismissed.
-	if (theTextField == textField)
-	{
-		[textField  resignFirstResponder];
-	}
-	return YES;
+	if (textField == self.myTextField)
+    {
+        [textField resignFirstResponder];
+    }
+    return YES;
+}
+
+
+// Used to send back the user's input to GroupViewController
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([[segue identifier] isEqualToString:@"returnInput"])
+    {
+        if ([self.myTextField.text length] > 0)
+        {
+            self.group = self.myTextField.text;
+        }
+    }
 }
 
 
 #pragma mark -
 #pragma mark Memory management
 
-- (void)didReceiveMemoryWarning 
+- (void)didReceiveMemoryWarning
 {
 	// Release the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];	
-}
-
-
-- (void)dealloc 
-{
-	[textField release];
-    [super dealloc];
+    [super didReceiveMemoryWarning];
 }
 
 @end

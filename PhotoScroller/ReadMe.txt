@@ -39,11 +39,4 @@ ImageData.plist
 Contains full-resolution image data.
 
 ===========================================================================
-CHANGES FROM PREVIOUS VERSIONS
-
-1.2 - Updated to support Automatic Reference Counting (ARC), Storyboards; now using UIPageViewController for managing the photo pages. 
-1.1 - Added autorotation.
-1.0 - Initial version published.
-
-===========================================================================
 Copyright (C) 2010-2012 Apple Inc. All rights reserved.

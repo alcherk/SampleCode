@@ -1,7 +1,7 @@
 /*
      File: RootViewController.m 
  Abstract: n/a 
-  Version: 1.1 
+  Version: 1.2 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -62,8 +62,9 @@
 #pragma mark -
 #pragma mark View lifecycle
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
+-(void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(assetsLibraryChanged:) name:ALAssetsLibraryChangedNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(favoriteAssetsChanged:) name:kFavoriteAssetsChanged object:nil];
@@ -115,7 +116,7 @@
         }
         
         assetsDataInaccessibleViewController.explanation = errorMessage;
-        [self presentModalViewController:assetsDataInaccessibleViewController animated:NO];
+        [self presentViewController:assetsDataInaccessibleViewController animated:NO completion:nil];
         [assetsDataInaccessibleViewController release];
     };
     
@@ -183,7 +184,6 @@
     return cell;
 }
 
-
 #pragma mark -
 #pragma mark AssetsGroupsTableViewCellSelectionDelegate
 - (void)assetsGroupsTableViewCell:(AssetsGroupsTableViewCell *)cell selectedGroupAtIndex:(NSUInteger)index {
@@ -200,7 +200,6 @@
     
 }
 
-
 #pragma mark -
 #pragma mark Memory management
 
@@ -211,16 +210,14 @@
     // Relinquish ownership any cached data, images, etc that aren't in use.
 }
 
-- (void)viewDidUnload {
-    // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
-    // For example: self.myOutlet = nil;
-    
+- (void)viewWillDisappear:(BOOL)animated {
     [groups removeAllObjects];
         
     [[NSNotificationCenter defaultCenter] removeObserver:self name:ALAssetsLibraryChangedNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kFavoriteAssetsChanged object:nil];
+    
+    [super viewWillDisappear:animated];
 }
-
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];

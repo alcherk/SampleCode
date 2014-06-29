@@ -3,7 +3,7 @@
      File: ViewController.h
  Abstract: View controller that adds a keyboard accessory to a text view.
  
-  Version: 1.3
+  Version: 1.5
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -43,22 +43,13 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController <UITextViewDelegate> {
+@interface ViewController : UIViewController
     
-	UITextView *textView;
-	UIView *accessoryView;
-}
-
-@property (nonatomic, retain) IBOutlet UITextView *textView;
-@property (nonatomic, assign) IBOutlet UIView *accessoryView;
-
-- (IBAction)tappedMe:(id)sender;
-
 @end
 

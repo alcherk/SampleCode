@@ -4,7 +4,7 @@
  Abstract: Contains methods to get the application user preferences settings for the movie scaling 
  mode, control style, background color, repeat mode, application audio session and background image.
   
-  Version: 1.4 
+  Version: 1.5 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -44,7 +44,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2011 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2014 Apple Inc. All Rights Reserved. 
   
  
  */
@@ -56,7 +56,6 @@ NSString *kScalingModeKey					= @"scalingMode";
 NSString *kControlStyleKey					= @"controlStyle";
 NSString *kBackgroundColorKey				= @"backgroundColor";
 NSString *kRepeatModeKey					= @"repeatMode";
-NSString *kUseApplicationAudioSessionKey	= @"useApplicationAudioSession";
 NSString *kMovieBackgroundImageKey			= @"useMovieBackgroundImage";
 
 
@@ -64,12 +63,15 @@ NSString *kMovieBackgroundImageKey			= @"useMovieBackgroundImage";
 
 #pragma mark Movie User Preference Settings
 
+// avoid false positives for scalingModeDefault in the static analyzer
+#ifndef __clang_analyzer__
+
 + (void)registerDefaults
 {
     /* First get the movie player settings defaults (scaling, controller type, background color,
 	 repeat mode, application audio session) set by the user via the built-in iPhone Settings 
 	 application */
-	 
+    
     NSString *testValue = [[NSUserDefaults standardUserDefaults] stringForKey:kScalingModeKey];
     if (testValue == nil)
     {
@@ -90,20 +92,19 @@ NSString *kMovieBackgroundImageKey			= @"useMovieBackgroundImage";
         NSString *finalPath = [settingsBundlePath stringByAppendingPathComponent:@"Root.plist"];
         
         NSDictionary *settingsDict = [NSDictionary dictionaryWithContentsOfFile:finalPath];
-        NSArray *prefSpecifierArray = [settingsDict objectForKey:@"PreferenceSpecifiers"];
+        NSArray *prefSpecifierArray = settingsDict[@"PreferenceSpecifiers"];
         
         NSNumber *controlStyleDefault = nil;
         NSNumber *scalingModeDefault = nil;
         NSNumber *backgroundColorDefault = nil;
         NSNumber *repeatModeDefault = nil;
-		NSNumber *useApplicationAudioSession = nil;
 		NSNumber *movieBackgroundImageDefault = nil;
         
         NSDictionary *prefItem;
         for (prefItem in prefSpecifierArray)
         {
-            NSString *keyValueStr = [prefItem objectForKey:@"Key"];
-            id defaultValue = [prefItem objectForKey:@"DefaultValue"];
+            NSString *keyValueStr = prefItem[@"Key"];
+            id defaultValue = prefItem[@"DefaultValue"];
             
             if ([keyValueStr isEqualToString:kScalingModeKey])
             {
@@ -121,10 +122,6 @@ NSString *kMovieBackgroundImageKey			= @"useMovieBackgroundImage";
             {
                 repeatModeDefault = defaultValue;
             }
-            else if ([keyValueStr isEqualToString:kUseApplicationAudioSessionKey])
-            {
-                useApplicationAudioSession = defaultValue;
-            }
             else if ([keyValueStr isEqualToString:kMovieBackgroundImageKey])
             {
                 movieBackgroundImageDefault = defaultValue;
@@ -132,14 +129,11 @@ NSString *kMovieBackgroundImageKey			= @"useMovieBackgroundImage";
         }
         
         // since no default values have been set, create them here
-        NSDictionary *appDefaults =  [NSDictionary dictionaryWithObjectsAndKeys:
-                                      scalingModeDefault, kScalingModeKey,
-                                      controlStyleDefault, kControlStyleKey,
-                                      backgroundColorDefault, kBackgroundColorKey,
-									  repeatModeDefault, kRepeatModeKey,
-									  useApplicationAudioSession, kUseApplicationAudioSessionKey,
-                                      movieBackgroundImageDefault, kMovieBackgroundImageKey,
-									  nil];
+        NSDictionary *appDefaults =  @{kScalingModeKey: scalingModeDefault,
+                                      kControlStyleKey: controlStyleDefault,
+                                      kBackgroundColorKey: backgroundColorDefault,
+									  kRepeatModeKey: repeatModeDefault,
+                                      kMovieBackgroundImageKey: movieBackgroundImageDefault};
         
         [[NSUserDefaults standardUserDefaults] registerDefaults:appDefaults];
         [[NSUserDefaults standardUserDefaults] synchronize];
@@ -155,6 +149,8 @@ NSString *kMovieBackgroundImageKey			= @"useMovieBackgroundImage";
 
 
 }
+
+#endif
 
 +(MPMovieScalingMode)scalingModeUserSetting
 {
@@ -216,18 +212,6 @@ NSString *kMovieBackgroundImageKey			= @"useMovieBackgroundImage";
 			
    */
     return([[NSUserDefaults standardUserDefaults] integerForKey:kRepeatModeKey]);
-}
-
-+(BOOL)audioSessionUserSetting
-{
-	[self registerDefaults];
-    /* 
-		Movie Use Application Audio Session mode indicates whether the movie player should use the application’s audio session.
-	
-        Use Application Audio Session mode can be one of: On, Off.
-			
-   */
-    return([[NSUserDefaults standardUserDefaults] integerForKey:kUseApplicationAudioSessionKey]);
 }
 
 +(BOOL)backgroundImageUserSetting

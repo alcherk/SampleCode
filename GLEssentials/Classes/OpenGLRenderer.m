@@ -1,7 +1,10 @@
 /*
      File: OpenGLRenderer.m
- Abstract: The OpenGLRenderer class creates and draws the shaders.
-  Version: 1.1
+ Abstract: 
+ The OpenGLRenderer class creates and draws objects.
+ Most of the code is OS independent.
+ 
+  Version: 1.7
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,7 +44,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010~2011 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
 
@@ -83,6 +86,10 @@ enum {
 	TEXCOORD_ATTRIB_IDX
 };
 
+#ifndef NULL
+#define NULL 0
+#endif
+
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
 @implementation OpenGLRenderer
@@ -118,16 +125,14 @@ GLfloat m_characterAngle;
 GLuint m_viewWidth;
 GLuint m_viewHeight;
 
-
 GLboolean m_useVBOs;
 
 - (void) resizeWithWidth:(GLuint)width AndHeight:(GLuint)height
 {
 	glViewport(0, 0, width, height);
-	
+
 	m_viewWidth = width;
 	m_viewHeight = height;
-	
 }
 
 - (void) render
@@ -140,10 +145,9 @@ GLboolean m_useVBOs;
 #if RENDER_REFLECTION
 	
 	// Bind our refletion FBO and render our scene
-	
+
 	glBindFramebuffer(GL_FRAMEBUFFER, m_reflectFBOName);
-	
-	
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glViewport(0, 0, m_reflectWidth, m_reflectHeight);
 	
@@ -675,8 +679,10 @@ static GLsizei GetGLTypeSize(GLenum type)
 	return fboName;
 }
 
--(GLuint) buildProgramWithVertexSource:(demoSource*) vertexSource withFragmentSource: (demoSource*)fragmentSource 
-							withNormal:(BOOL)hasNormal withTexcoord:(BOOL)hasTexcoord
+-(GLuint) buildProgramWithVertexSource:(demoSource*)vertexSource
+					withFragmentSource:(demoSource*)fragmentSource
+							withNormal:(BOOL)hasNormal
+						  withTexcoord:(BOOL)hasTexcoord
 {
 	GLuint prgName;
 	
@@ -762,6 +768,9 @@ static GLsizei GetGLTypeSize(GLenum type)
 	// Attach the vertex shader to our program
 	glAttachShader(prgName, vertexShader);
 	
+	// Delete the vertex shader since it is now attached
+	// to the program, which will retain a reference to it
+	glDeleteShader(vertexShader);
 	
 	/////////////////////////////////////////
 	// Specify and compile Fragment Shader //
@@ -799,6 +808,9 @@ static GLsizei GetGLTypeSize(GLenum type)
 	// Attach the fragment shader to our program
 	glAttachShader(prgName, fragShader);
 	
+	// Delete the fragment shader since it is now attached
+	// to the program, which will retain a reference to it
+	glDeleteShader(fragShader);
 	
 	//////////////////////
 	// Link the program //
@@ -856,41 +868,6 @@ static GLsizei GetGLTypeSize(GLenum type)
 	
 	return prgName;
 	
-}
-
-- (void) destroyProgram:(GLuint) prgName
-{	
-	
-	if(0 == prgName)
-	{
-		return;
-	}
-	
-	GLsizei shaderNum;
-	GLsizei shaderCount;
-	
-	// Get the number of attached shaders
-	glGetProgramiv(prgName, GL_ATTACHED_SHADERS, &shaderCount);
-	
-	GLuint* shaders = (GLuint*)malloc(shaderCount * sizeof(GLuint));
-	
-	// Get the names of the shaders attached to the program
-	glGetAttachedShaders(prgName,
-						 shaderCount,
-						 &shaderCount,
-						 shaders);
-	
-	// Delete the shaders attached to the program
-	for(shaderNum = 0; shaderNum < shaderCount; shaderNum++)
-	{
-		glDeleteShader(shaders[shaderNum]);
-	}
-	
-	free(shaders);
-	
-	// Delete the program
-	glDeleteProgram(prgName);
-	glUseProgram(0);
 }
 
 - (id) initWithDefaultFBO: (GLuint) defaultFBOName
@@ -968,8 +945,10 @@ static GLsizei GetGLTypeSize(GLenum type)
 		frgSource = srcLoadSource([filePathName cStringUsingEncoding:NSASCIIStringEncoding]);
 		
 		// Build Program
-		m_characterPrgName = [self buildProgramWithVertexSource:vtxSource withFragmentSource:frgSource
-													withNormal:NO withTexcoord:YES];
+		m_characterPrgName = [self buildProgramWithVertexSource:vtxSource
+											 withFragmentSource:frgSource
+													 withNormal:NO
+												   withTexcoord:YES];
 		
 		srcDestroySource(vtxSource);
 		srcDestroySource(frgSource);
@@ -1037,8 +1016,10 @@ static GLsizei GetGLTypeSize(GLenum type)
 		frgSource = srcLoadSource([filePathName cStringUsingEncoding:NSASCIIStringEncoding]);
 		
 		// Build Program
-		m_reflectPrgName = [self buildProgramWithVertexSource:vtxSource withFragmentSource:frgSource
-												  withNormal:YES withTexcoord:NO];
+		m_reflectPrgName = [self buildProgramWithVertexSource:vtxSource
+										   withFragmentSource:frgSource
+												   withNormal:YES
+												 withTexcoord:NO];
 		
 		srcDestroySource(vtxSource);
 		srcDestroySource(frgSource);
@@ -1102,17 +1083,17 @@ static GLsizei GetGLTypeSize(GLenum type)
 	glDeleteTextures(1, &m_characterTexName);
 		
 	[self destroyVAO:m_characterVAOName];
-	
-	[self destroyProgram:m_characterPrgName];
-	
+
+	glDeleteProgram(m_characterPrgName);
+
 	mdlDestroyModel(m_characterModel);
 
 #if RENDER_REFLECTION
 	[self destroyFBO:m_reflectFBOName];
 	
 	[self destroyVAO:m_reflectVAOName];
-	
-	[self destroyProgram:m_reflectPrgName];
+
+	glDeleteProgram(m_reflectPrgName);
 	
 	mdlDestroyModel(m_quadModel);
 #endif // RENDER_REFLECTION

@@ -1,7 +1,7 @@
 /*
      File: Texture.m
  Abstract: n/a
-  Version: 1.2
+  Version: 1.3
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
@@ -94,14 +94,13 @@ void loadTexture(const char *name, Image *img, RendererInfo *renderer)
 	if (bpp < 8 || bpp > 32 || (colormodel != kCGColorSpaceModelMonochrome && colormodel != kCGColorSpaceModelRGB))
 	{
 		// This loader does not support all possible CGImage types, such as paletted images
-		CGImageRelease(CGImage);
 		return;
 	}
-	components = bpp>>3;
-	rowBytes   = CGImageGetBytesPerRow(CGImage);	// CGImage may pad rows
-	rowPixels  = rowBytes / components;
-	imgWide    = CGImageGetWidth(CGImage);
-	imgHigh    = CGImageGetHeight(CGImage);
+	components = (int)(bpp>>3);
+	rowBytes   = (int)CGImageGetBytesPerRow(CGImage);	// CGImage may pad rows
+	rowPixels  = (int)(rowBytes / components);
+	imgWide    = (int)CGImageGetWidth(CGImage);
+	imgHigh    = (int)CGImageGetHeight(CGImage);
 	img->wide  = rowPixels;
 	img->high  = imgHigh;
 	img->s     = (float)imgWide / rowPixels;
@@ -235,6 +234,5 @@ void loadTexture(const char *name, Image *img, RendererInfo *renderer)
 	
 	if (temp) free(temp);
 	CFRelease(data);
-	CGImageRelease(CGImage);
 	img->texID = texID;
 }

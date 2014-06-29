@@ -1,7 +1,7 @@
 /*
      File: TapDetectingImageView.m 
  Abstract: n/a 
-  Version: 1.1 
+  Version: 1.2 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -106,7 +106,7 @@ CGPoint midpointBetweenPoints(CGPoint a, CGPoint b);
         // case 1: this is the end of both touches at once 
         if ([touches count] == 2 && allTouchesEnded) {
             int i = 0; 
-            int tapCounts[2]= {0}; CGPoint tapLocations[2]={0};
+            int tapCounts[2]= {0}; CGPoint tapLocations[2]={{0, 0}};
             for (UITouch *touch in touches) {
                 tapCounts[i]    = [touch tapCount];
                 tapLocations[i] = [touch locationInView:self];

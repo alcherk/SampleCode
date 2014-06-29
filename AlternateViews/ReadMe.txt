@@ -1,43 +1,100 @@
+### AlternateViews ###
+
+===========================================================================
+DESCRIPTION:
+
+This sample demonstrates how to implement alternate or distinguishing views for particular device orientations.  Doing so can be useful if your app displays different content between orientations or if your app uses vastly different layouts between orientations which cannot be reconciled by auto layout or programatic layout alone.
+
+Two different techniques are illustrated:
+
+AlternateViewControllers:
+The simpler technique.  Two separate view controllers are used (one for portrait, another for landscape).  The portrait view controller is the initial view controller.  Upon receiving a UIDeviceOrientationDidChangeNotification it presents or dismisses the landscape view controller.  This technique should be preferred if the landscape view controller should always cover any bars on the screen (It should always be full screen) or if little controller code is shared between the portrait and landscape views.  There are also a few limitations:
+* It is difficult to share controller code between the portrait and landscape views; because each is implemented in a separate view controller.
+* The landscape view will always be presented atop any navigation bars or tab bars present in the portrait orientation.
+
+AlternateViews:
+A more involved technique that does not share the limitations of AlternateViewControllers.  The portrait and landscape views are defined in XIB files which are loaded and swapped in as a subviews of a single view controller's view, dependent on the current device orientation.  This technique should be preferred if the portrait and landscape views must both be confined to a container view (a Navigation Controller or Tab Bar Controller), or if there is an opportunity to share large amounts of controller code between the two views.  This technique comes with its own limitations:
+* The separate views must be defined in XIBs or programatically.
+* No direct access to the top and bottom layout guides of the view controller from the views.  A workaround for this limitation is demonstrated.
+
+
+===========================================================================
+USING THE SAMPLE:
+
+When launched, notice the view says "Portrait".  Rotate the device to landscape right or landscape left positions and the view changes to the alternate one supporting landscape.
+
+
+===========================================================================
+BUILD REQUIREMENTS:
+
+iOS 7.0 SDK or later
+
+
+===========================================================================
+RUNTIME REQUIREMENTS:
+
+iOS 6.0 or later
+
+
+===========================================================================
+PACKAGING LIST:
+
+AlternateViewControllers
+    main.m
+        - Main source file for this sample.
+
+    AppDelegate.{h,m}
+        - The application's delegate.
+
+    NavigationController.{h,m}
+        - UINavigationController subclass that forwards queries about its supported interface orientations to its child view controllers.
+        - Only necessary if targeting iOS 6; iOS 7 only apps should provide a delegate that implements -navigationControllerSupportedInterfaceOrientations: instead.
+        
+    PortraitViewController.{h,m}
+        - The application view controller used when the device is in portrait orientation.
+        
+    LandscapeView.{h,m}
+        - The view controller shown when the device is in landscape orientation.
+
 AlternateViews
-==============
+    main.m
+        - Main source file for this sample.
 
-A sample app that demonstrates how to implement alternate or distinguishing view controllers for each
-particular device orientation.  Through the help of the following UIViewController properties,
-this can be easily achieved -
+    AppDelegate.{h,m}
+        - The application's delegate.
+        
+    LayoutSupport.h
+        - Protocol adopted by both PortraitView and LandscapeView.  Enables ViewController to pass its layout guides to the orientation specific views.
 
-	@property(nonatomic,assign) UIModalTransitionStyle modalTransitionStyle;	// for a transition fade
-	@property(nonatomic,assign) BOOL wantsFullScreenLayout;   // for any view controller to appear over another
-
-This sample implements a two different view controllers one for portrait and one for landscape.
-The portrait view controller listens for device orientations in order to properly swap in and out the
-landscape view controller.  It uses the above two properties to achieve the visual cross-fade effect.
-
-
-Build Requirements
-iOS 4.0 SDK
-
-
-Runtime Requirements
-iPhone OS 3.2 or later
+    ViewController.{h,m}
+        - A view controller with different views for portrait and landscape orientations.
+        
+    PortraitView.{h,m}
+        - The view used by ViewController while in portrait orientation.
+        
+    LandscapeView.{h,m}
+        - The view used by ViewController while in landscape orientation.
 
 
-Using the Sample
-Build and run the sample using Xcode 3.1.3. To run in the simulator, set the Active SDK to Simulator.
-To run on a device, set the Active SDK to the appropriate Device setting.  When launched, notice the
-view says "Portrait".  Rotate the device to landscape right or landscape left positions and the view
-changes to the alternate one supporting landscape.
+===========================================================================
+CHANGES FROM PREVIOUS VERSIONS:
 
+Version 1.3
+- Updated project to build with the iOS 7 SDK.
+- Now a universal app.
+- Introduces a new technique for implementing alternate views.
 
-Packaging List
-main.m - Main source file for this sample.
-AppDelegate.h/.m - The application's delegate to setup its window and content.
+Version 1.2
+- Updated project to build with the iOS SDK 6.
+- Deployment target set to iOS 4.3.
+- Now uses ARC.
+- Included launch images and missing retina versions of certain icons.
 
-PortraitViewController.h/.m - The secondary UIViewController for portrait device orientation.
-LandscapeViewController.h/.m - The main UIViewController for landscape device orientation.
+Version 1.1
+- Upgraded project to build with the iOS 4.0 SDK.
 
+Version 1.0
+- First version.
 
-Changes from Previous Versions
-1.1 - Upgraded project to build with the iOS 4.0 SDK.
-1.0 - First release
-
-Copyright (C) 2009-2010 Apple Inc. All rights reserved.
+===========================================================================
+Copyright (C) 2009-2014 Apple Inc. All rights reserved.

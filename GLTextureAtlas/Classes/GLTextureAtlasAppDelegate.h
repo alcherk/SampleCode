@@ -1,7 +1,7 @@
 /*
      File: GLTextureAtlasAppDelegate.h
- Abstract: 
-  Version: 1.5
+ Abstract: The GLTextureAtlasAppDelegate class is the app delegate that ties everything together.
+  Version: 1.6
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,22 +41,16 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
 
 #import <UIKit/UIKit.h>
 
-@class EAGLView;
-
-@interface GLTextureAtlasAppDelegate : NSObject <UIApplicationDelegate> {
-    UIWindow *window;
-    EAGLView *glView;
-}
+@interface GLTextureAtlasAppDelegate : NSObject <UIApplicationDelegate>
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
-@property (nonatomic, retain) IBOutlet EAGLView *glView;
 
 @end
 

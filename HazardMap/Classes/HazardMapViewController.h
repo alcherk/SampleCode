@@ -2,7 +2,7 @@
      File: HazardMapViewController.h
  Abstract: Main view controller for the application.  Implements MKMapViewDelegate to manage adding
  a HazardMap overlay to a MKMapView and to manage display of a HazardMapView on the MKMapView.
-  Version: 1.1
+  Version: 1.2
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -42,16 +42,14 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
 #import <UIKit/UIKit.h>
 #import <MapKit/MapKit.h>
 
-@interface HazardMapViewController : UIViewController <MKMapViewDelegate> {
-    IBOutlet MKMapView *map;
-}
+@interface HazardMapViewController : UIViewController <MKMapViewDelegate>
 
 @end
 

@@ -1,7 +1,7 @@
 /*
      File: Recipe.m 
  Abstract: The model object for storing information about a Recipe 
-  Version: 1.1 
+  Version: 1.2 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2011 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2014 Apple Inc. All Rights Reserved. 
   
  */ 
 
@@ -49,14 +49,13 @@
 
 @implementation Recipe
 
-@synthesize name, image, thumbnailImage, instructions, ingredients, description, prepTime;
-
 /*
  Initialize a recipe object.
  */
 - (id)init {
-	if ((self = [super init])) {
-		ingredients = [[NSMutableArray alloc] init];
+    self = [super init];
+	if (self) {
+		_ingredients = [[NSMutableArray alloc] init];
 	}
 	return self;
 }
@@ -64,22 +63,11 @@
 /*
  Release ownership.
  */
-- (void)dealloc {
-	[name release];
-	[description release];
-	[prepTime release];
-	[image release];
-	[thumbnailImage release];
-	[instructions release];
-	[ingredients release];
-	[super dealloc];	
-}
 
 // Ingredients array setter
 - (void)setIngredients:(NSMutableArray *)newIngredients {
-	if (ingredients != newIngredients) {
-		[ingredients release];
-		ingredients = [newIngredients mutableCopy];
+	if (_ingredients != newIngredients) {
+		_ingredients = [newIngredients mutableCopy];
 	}
 }
 

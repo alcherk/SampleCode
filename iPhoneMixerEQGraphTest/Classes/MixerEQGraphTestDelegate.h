@@ -1,7 +1,7 @@
 /*
     File: MixerEQGraphTestDelegate.h
 Abstract: The application delegate class.
- Version: 1.2
+ Version: 1.2.2
 
 Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
 Inc. ("Apple") in consideration of your agreement to the following
@@ -41,13 +41,13 @@ AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE),
 STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
-Copyright (C) 2010 Apple Inc. All Rights Reserved.
+Copyright (C) 2014 Apple Inc. All Rights Reserved.
 
 */
  
 #import <UIKit/UIKit.h>
 
-#import "MyViewController.h"file
+#import "MyViewController.h"
 #import "CAXException.h"
 
 @interface MixerEQGraphTestDelegate : NSObject <UIApplicationDelegate> {

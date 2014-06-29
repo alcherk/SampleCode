@@ -24,18 +24,20 @@ Extended Audio File Services Reference
 ===========================================================================
 SPECIAL CONSIDERATIONS:
 
-AAC encoding requires iPhone OS 3.1 and a hardware capable device such as the iPhone 3GS. See IsAACHardwareEncoderAvailable
-function in MyViewController.m
+AAC encoding using the Audio Converter requires iOS 4.1 and a hardware capable device such
+as the iPhone 3GS or newer.
+ 
+iPhone 5s does not have a hardware encoder and only one encoder will show up.
 
 ===========================================================================
 BUILD REQUIREMENTS:
 
-iOS 4.0 SDK
+iOS 7.0 SDK
 
 ===========================================================================
 RUNTIME REQUIREMENTS:
 
-iOS 4.0 or later
+iOS 5.1 or later
 
 ===========================================================================
 PACKAGING LIST:
@@ -67,6 +69,8 @@ CHANGES FROM PREVIOUS VERSIONS:
 
 Version 1.0, tested with iPhone OS 3.1. First public release.
 Version 1.1, tested with iPhone OS 4.0. Upgraded project to build with the iOS 4.0 SDK.
+Version 1.2, tested with iPhone OS 6.1. Upgraded project to build with the iOS 6.1 SDK.
+Version 1.2.1, updated to support iPhone 5s and software AAC encode with iOS 7.
 
 ================================================================================
-Copyright (C) 2009-2010 Apple Inc. All rights reserved.
+Copyright (C) 2009-2014 Apple Inc. All rights reserved.

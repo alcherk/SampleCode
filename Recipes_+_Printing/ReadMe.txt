@@ -14,12 +14,12 @@ In addition to custom page content, it also draws custom page headers, page foot
 ===========================================================================
 BUILD REQUIREMENTS:
 
-iOS 4.3 SDK
+iOS 7 SDK
 
 ===========================================================================
 RUNTIME REQUIREMENTS:
 
-iOS 4.3 or later.
+iOS 7 or later.
 
 ===========================================================================
 PACKAGING LIST:
@@ -37,12 +37,11 @@ PACKAGING LIST:
 ===========================================================================
 CHANGES FROM PREVIOUS VERSIONS:
 
-Version 1.1
-- Sample scaled down to focus more closely on printing.
+Version 1.2
+- Fix compile time issue.
 
-Version 1.0
-- First version. For WWDC 2011 printing session demo.
-- Has the ability to print one or more recipes
+Version 1.1
+- First version. WWDC sample was scaled down to focus more closely on printing.
 
 ===========================================================================
-Copyright (C) 2011 Apple Inc. All rights reserved.
+Copyright (C) 2011-2014 Apple Inc. All rights reserved.

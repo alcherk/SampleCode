@@ -1,7 +1,7 @@
 /*
      File: AppDelegate.m 
  Abstract: Application delegate for the universal PageControl sample (for both iPad and iPhone) 
-  Version: 1.4 
+  Version: 1.5 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,36 +41,34 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2010 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
  */
 
 #import "AppDelegate.h"
 #import "ContentController.h"
 
+@interface AppDelegate ()
+@property (nonatomic, strong) IBOutlet ContentController *contentController;
+@end
+
 @implementation AppDelegate
-
-@synthesize window, contentController;
-
-- (void)dealloc
-{
-    [window release];
-    [contentController release];
-    
-    [super dealloc];
-}
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application
 {
-	NSString *nibTitle = @"PadContent";
+	_window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    
+    // decide which kind of content we need based on the device idiom,
+    // when we load the proper nib, the "ContentController" class will take it from here
+    //
+    NSString *nibTitle = @"PadContent";
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
 	{
 		nibTitle = @"PhoneContent";
     }
     [[NSBundle mainBundle] loadNibNamed:nibTitle owner:self options:nil];
     
-    [self.window addSubview:self.contentController.view];
-	[window makeKeyAndVisible];
+	[self.window makeKeyAndVisible];
 }
 
 @end

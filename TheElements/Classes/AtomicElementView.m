@@ -1,7 +1,7 @@
 /*
      File: AtomicElementView.m
  Abstract: Displays the Atomic Element information in a large format tile.
-  Version: 1.11
+  Version: 1.12
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,62 +41,62 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
 
 #import "AtomicElementView.h"
 #import "AtomicElementViewController.h"
 #import "AtomicElement.h"
-#import "PeriodicElements.h"
+
 #import <QuartzCore/QuartzCore.h>
 
-
 @implementation AtomicElementView
-@synthesize element;
-@synthesize viewController;
-
 
 // the preferred size of this view is the size of the background image
 + (CGSize)preferredViewSize {
+    
 	return CGSizeMake(256,256);
 }
 
-
-// initialize the view, calling super and setting the 
-// properties to nil
+// initialize the view, calling super and setting the properties to nil
 - (id)initWithFrame:(CGRect)frame {
+    
     if (self = [super initWithFrame:frame]) {
         // Initialization code here.
-		element = nil;
-		viewController = nil;
+		_element = nil;
+		_viewController = nil;
 		// set the background color of the view to clearn
 		self.backgroundColor=[UIColor clearColor];
-		
+        
+        // attach a tap gesture recognizer to this view so it can flip
+        UITapGestureRecognizer *tapGestureRecognizer =
+            [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction:)];
+		[self addGestureRecognizer:tapGestureRecognizer];
     }
     return self;
 }
 
 // yes this view can become first responder
 - (BOOL)canBecomeFirstResponder {
+    
 	return YES;
 }
 
-// when a touch event occurs tell the view controller to flip this view to the 
-// back and show the AtomicElementFlippedView instead.
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-	
-	[viewController flipCurrentView];
-	
+- (void)tapAction:(UIGestureRecognizer *)gestureRecognizer {
+    
+    // when a tap gesture occurs tell the view controller to flip this view to the
+    // back and show the AtomicElementFlippedView instead
+    //
+    [self.viewController flipCurrentView];
 }
-
 
 - (void)drawRect:(CGRect)rect {
 	
 	// get the background image for the state of the element
 	// position it appropriately and draw the image
-	UIImage *backgroundImage = [element stateImageForAtomicElementView];
-	CGRect elementSymbolRectangle = CGRectMake(0,0, [backgroundImage size].width, [backgroundImage size].height);
+	UIImage *backgroundImage = [self.element stateImageForAtomicElementView];
+	CGRect elementSymbolRectangle = CGRectMake(0, 0, [backgroundImage size].width, [backgroundImage size].height);
 	[backgroundImage drawInRect:elementSymbolRectangle];
 	
 	// all the text is drawn in white
@@ -104,36 +104,25 @@
 	
 	// draw the element name
 	UIFont *font = [UIFont boldSystemFontOfSize:36];
-	CGSize stringSize = [element.name sizeWithFont:font];
-	CGPoint point = CGPointMake((self.bounds.size.width-stringSize.width)/2,256/2-50);
-	[element.name drawAtPoint:point withFont:font];
+	CGSize stringSize = [self.element.name sizeWithFont:font];
+	CGPoint point = CGPointMake((self.bounds.size.width-stringSize.width)/2, 256/2-50);
+	[self.element.name drawAtPoint:point withFont:font];
 	
 	// draw the element number
 	font = [UIFont boldSystemFontOfSize:48];
 	point = CGPointMake(10,0);
-	[[NSString stringWithFormat:@"%@",element.atomicNumber] drawAtPoint:point withFont:font];
-	
+	[[NSString stringWithFormat:@"%@", self.element.atomicNumber] drawAtPoint:point withFont:font];
 	
 	// draw the element symbol
 	font = [UIFont boldSystemFontOfSize:96];
-	stringSize = [element.symbol sizeWithFont:font];
+	stringSize = [self.element.symbol sizeWithFont:font];
 	point = CGPointMake((self.bounds.size.width-stringSize.width)/2,256-120);
-	[element.symbol drawAtPoint:point withFont:font];
+	[self.element.symbol drawAtPoint:point withFont:font];
 }
 
 
-- (void)dealloc {
-	// the view controller is an assign, so just set it to nil
-	viewController = nil;
-	
-	[element release];
-	[super dealloc];
-}
-
-
-CGImageRef AEViewCreateGradientImage (int pixelsWide,
-									  int pixelsHigh)
-{
+CGImageRef AEViewCreateGradientImage (int pixelsWide, int pixelsHigh) {
+    
 	CGImageRef theCGImage = NULL;
     CGContextRef gradientBitmapContext = NULL;
     CGColorSpaceRef colorSpace;
@@ -166,11 +155,9 @@ CGImageRef AEViewCreateGradientImage (int pixelsWide,
 		// clean up the gradient
 		CGGradientRelease(grayScaleGradient);
 		
-		// convert the context into a CGImageRef and release the
-		// context
-		theCGImage=CGBitmapContextCreateImage(gradientBitmapContext);
+		// convert the context into a CGImageRef and release the context
+		theCGImage = CGBitmapContextCreateImage(gradientBitmapContext);
 		CGContextRelease(gradientBitmapContext);
-		
 	}
 	
 	// clean up the colorspace
@@ -180,11 +167,8 @@ CGImageRef AEViewCreateGradientImage (int pixelsWide,
     return theCGImage;
 }
 
-
-
-
-- (UIImage *)reflectedImageRepresentationWithHeight:(NSUInteger)height
-{
+- (UIImage *)reflectedImageRepresentationWithHeight:(NSUInteger)height {
+    
 	CGContextRef mainViewContentContext;
     CGColorSpaceRef colorSpace;
 	
@@ -196,53 +180,45 @@ CGImageRef AEViewCreateGradientImage (int pixelsWide,
 	// free the rgb colorspace
     CGColorSpaceRelease(colorSpace);	
 	
-	if (mainViewContentContext==NULL)
+	if (mainViewContentContext == NULL)
 		return NULL;
 	
-	// offset the context. This is necessary because, by default, the  layer created by a view for
+	// offset the context. This is necessary because, by default, the layer created by a view for
 	// caching its content is flipped. But when you actually access the layer content and have
 	// it rendered it is inverted. Since we're only creating a context the size of our 
 	// reflection view (a fraction of the size of the main view) we have to translate the context the
-	// delta in size, render it, and then translate back (we could have saved/restored the graphics 
-	// state
+	// delta in size, render it, and then translate back
 	
-	CGFloat translateVertical=self.bounds.size.height-height;
-	CGContextTranslateCTM(mainViewContentContext,0,-translateVertical);
+	CGFloat translateVertical = self.bounds.size.height-height;
+	CGContextTranslateCTM(mainViewContentContext, 0, -translateVertical);
 	
 	// render the layer into the bitmap context
 	[self.layer renderInContext:mainViewContentContext];
 	
 	// translate the context back
-	CGContextTranslateCTM(mainViewContentContext,0,translateVertical);
+	CGContextTranslateCTM(mainViewContentContext, 0, translateVertical);
 	
-	// Create CGImageRef of the main view bitmap content, and then
-	// release that bitmap context
-	CGImageRef mainViewContentBitmapContext=CGBitmapContextCreateImage(mainViewContentContext);
+	// Create CGImageRef of the main view bitmap content, and then release that bitmap context
+	CGImageRef mainViewContentBitmapContext = CGBitmapContextCreateImage(mainViewContentContext);
 	CGContextRelease(mainViewContentContext);
 	
 	// create a 2 bit CGImage containing a gradient that will be used for masking the 
 	// main view content to create the 'fade' of the reflection.  The CGImageCreateWithMask
-	// function will stretch the bitmap image as required, so we can create a 1 pixel wide
-	// gradient
-	CGImageRef gradientMaskImage=AEViewCreateGradientImage(1,height);
+	// function will stretch the bitmap image as required, so we can create a 1 pixel wide gradient
+	CGImageRef gradientMaskImage = AEViewCreateGradientImage(1, height);
 	
 	// Create an image by masking the bitmap of the mainView content with the gradient view
-	// then release the  pre-masked content bitmap and the gradient bitmap
-	CGImageRef reflectionImage=CGImageCreateWithMask(mainViewContentBitmapContext,gradientMaskImage);
+	// then release the pre-masked content bitmap and the gradient bitmap
+	CGImageRef reflectionImage = CGImageCreateWithMask(mainViewContentBitmapContext, gradientMaskImage);
 	CGImageRelease(mainViewContentBitmapContext);
 	CGImageRelease(gradientMaskImage);
 	
 	// convert the finished reflection image to a UIImage 
-	UIImage *theImage=[UIImage imageWithCGImage:reflectionImage];
-	
-	// image is retained by the property setting above, so we can 
-	// release the original
+	UIImage *theImage = [UIImage imageWithCGImage:reflectionImage];
+
 	CGImageRelease(reflectionImage);
-	
-	// return the image
+
 	return theImage;
 }
-
-
 
 @end

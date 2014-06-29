@@ -1,7 +1,7 @@
 /*
      File: PadContentController.h 
  Abstract: Content controller used to manage the iPad user interface for this app. 
-  Version: 1.4 
+  Version: 1.5 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2010 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
  */
 
@@ -55,10 +55,7 @@ extern NSString *TranslationsKey;
 @class DetailViewController;
 
 @interface PadContentController : ContentController
-{   
-    DetailViewController *detailViewController;
-}
 
-@property (nonatomic, retain) IBOutlet DetailViewController *detailViewController;
+@property (nonatomic, strong) IBOutlet DetailViewController *detailViewController;
 
 @end

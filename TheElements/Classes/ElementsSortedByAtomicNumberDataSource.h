@@ -1,7 +1,7 @@
 /*
      File: ElementsSortedByAtomicNumberDataSource.h
  Abstract: Provides the table view data for the elements sorted by atomic number.
-  Version: 1.11
+  Version: 1.12
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,16 +41,14 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
 
 #import <UIKit/UIKit.h>
 #import "ElementsDataSourceProtocol.h"
 
- 
 @interface ElementsSortedByAtomicNumberDataSource : NSObject <UITableViewDataSource,ElementsDataSource> {
 }
-
 
 @end

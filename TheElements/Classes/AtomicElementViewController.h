@@ -2,7 +2,7 @@
      File: AtomicElementViewController.h
  Abstract: Controller that manages the full tile view of the atomic information,
  creating the reflection, and the flipping of the tile.
-  Version: 1.11
+  Version: 1.12
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -42,36 +42,18 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
 
 #import <UIKit/UIKit.h>
 
 @class AtomicElement;
-@class AtomicElementView;
-@class AtomicElementFlippedView;
 
-@interface AtomicElementViewController : UIViewController {
-	AtomicElement *element;
-	
-	AtomicElementView *atomicElementView;
-	AtomicElementFlippedView *atomicElementFlippedView;
-	UIImageView *reflectionView;
-	UIView *containerView;	
-	UIButton *flipIndicatorButton;	
-	BOOL frontViewIsVisible;
-}
+@interface AtomicElementViewController : UIViewController
 
-@property (assign) BOOL frontViewIsVisible;
-@property (nonatomic,retain) AtomicElement *element;
-@property (nonatomic,retain) UIView *containerView;
-@property (nonatomic,retain) AtomicElementView *atomicElementView;
-@property (nonatomic,retain) UIImageView *reflectionView;
-@property (nonatomic,retain) AtomicElementFlippedView *atomicElementFlippedView;
-@property (nonatomic,retain) UIButton *flipIndicatorButton;
+@property (nonatomic,strong) AtomicElement *element;
 
 - (void)flipCurrentView;
-- (void)myTransitionDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context;
 
 @end

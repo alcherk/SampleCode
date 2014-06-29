@@ -1,7 +1,7 @@
 /*
      File: ImageScrollView.m
  Abstract: Centers image within the scroll view and configures image sizing and display.
-  Version: 1.2
+  Version: 1.3
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -46,38 +46,51 @@
  */
 
 #import <Foundation/Foundation.h>
+
 #import "ImageScrollView.h"
 #import "TilingView.h"
 
-#define TILE_IMAGES 1
+#define TILE_IMAGES 1  // turn on to use tiled images, if off, we use whole images
 
+// forward declaration of our utility functions
 static NSUInteger _ImageCount(void);
-//••static UIImage   *_ImageAtIndex(NSUInteger index);
-static NSString  *_ImageNameAtIndex(NSUInteger index);
-static CGSize     _ImageSizeAtIndex(NSUInteger index);
-static UIImage   *_PlaceholderImageNamed(NSString *name);
-
-@interface ImageScrollView () <UIScrollViewDelegate> {
-    UIImageView *_zoomView;  // if tiling, this contains a very low-res placeholder image. otherwise it contains the full image.
-    CGSize       _imageSize;
 
 #if TILE_IMAGES
-    TilingView  *_tilingView;
+static CGSize _ImageSizeAtIndex(NSUInteger index);
+static UIImage *_PlaceholderImageNamed(NSString *name);
+#endif
+
+#if !TILE_IMAGES
+static UIImage *_ImageAtIndex(NSUInteger index);
+#endif
+
+static NSString *_ImageNameAtIndex(NSUInteger index);
+
+#pragma mark -
+
+@interface ImageScrollView () <UIScrollViewDelegate>
+{
+    UIImageView *_zoomView;  // if tiling, this contains a very low-res placeholder image,
+                             // otherwise it contains the full image.
+    CGSize _imageSize;
+
+#if TILE_IMAGES
+    TilingView *_tilingView;
 #endif
         
-    CGPoint  _pointToCenterAfterResize;
-    CGFloat  _scaleToRestoreAfterResize;
+    CGPoint _pointToCenterAfterResize;
+    CGFloat _scaleToRestoreAfterResize;
 }
 
 @end
 
 @implementation ImageScrollView
-@synthesize index=_index;
 
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
-    if (self) {
+    if (self)
+    {
         self.showsVerticalScrollIndicator = NO;
         self.showsHorizontalScrollIndicator = NO;
         self.bouncesZoom = YES;
@@ -141,12 +154,14 @@ static UIImage   *_PlaceholderImageNamed(NSString *name);
     }
 }
 
+
 #pragma mark - UIScrollViewDelegate
 
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
 {
     return _zoomView;
 }
+
 
 #pragma mark - Configure scrollView to display new image (tiled or not)
 
@@ -192,7 +207,7 @@ static UIImage   *_PlaceholderImageNamed(NSString *name);
     [self configureForImageSize:image.size];
 }
 
-#endif
+#endif // TILE_IMAGES
 
 - (void)configureForImageSize:(CGSize)imageSize
 {
@@ -320,14 +335,6 @@ static NSUInteger _ImageCount(void)
     });
     return count;
 }
-/*
-// we use "imageWithContentsOfFile:" instead of "imageNamed:" here to avoid caching
-static UIImage *_ImageAtIndex(NSUInteger index)
-{
-    NSString *imageName = _ImageNameAtIndex(index);
-    NSString *path = [[NSBundle mainBundle] pathForResource:imageName ofType:@"jpg"];
-    return [UIImage imageWithContentsOfFile:path];
-}*/
 
 static NSString *_ImageNameAtIndex(NSUInteger index)
 {
@@ -335,6 +342,17 @@ static NSString *_ImageNameAtIndex(NSUInteger index)
     return [info valueForKey:@"name"];
 }
 
+#if !TILE_IMAGES
+// we use "imageWithContentsOfFile:" instead of "imageNamed:" here to avoid caching
+static UIImage *_ImageAtIndex(NSUInteger index)
+{
+    NSString *imageName = _ImageNameAtIndex(index);
+    NSString *path = [[NSBundle mainBundle] pathForResource:imageName ofType:@"jpg"];
+    return [UIImage imageWithContentsOfFile:path];
+}
+#endif
+
+#if TILE_IMAGES
 static CGSize _ImageSizeAtIndex(NSUInteger index)
 {
     NSDictionary *info = [_ImageData() objectAtIndex:index];
@@ -346,3 +364,4 @@ static UIImage *_PlaceholderImageNamed(NSString *name)
 {
     return [UIImage imageNamed:[NSString stringWithFormat:@"%@_Placeholder", name]];
 }
+#endif

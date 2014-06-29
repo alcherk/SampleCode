@@ -1,7 +1,7 @@
 /*
      File: AUMIDIEffectBase.h 
  Abstract:  Part of CoreAudio Utility Classes  
-  Version: 1.01 
+  Version: 1.0.4 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2012 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
 */
 #ifndef __AUMIDIEffectBase_h__
@@ -59,6 +59,21 @@ public:
 	/*! @ctor AUMIDIEffectBase */
 								AUMIDIEffectBase(	AudioComponentInstance	inInstance,
 													bool					inProcessesInPlace = false );
+    /*! @method MIDIEvent */
+    virtual OSStatus            MIDIEvent(UInt32            inStatus,
+                                          UInt32            inData1,
+                                          UInt32            inData2,
+                                          UInt32            inOffsetSampleFrame)
+	{
+		return AUMIDIBase::MIDIEvent (inStatus, inData1, inData2, inOffsetSampleFrame);
+	}
+    
+	/*! @method SysEx */
+	virtual OSStatus            SysEx(const UInt8 *         inData,
+                                      UInt32                inLength)
+	{
+		return AUMIDIBase::SysEx (inData, inLength);
+	}
 
 	/*! @method GetPropertyInfo */
 	virtual OSStatus			GetPropertyInfo(AudioUnitPropertyID			inID,

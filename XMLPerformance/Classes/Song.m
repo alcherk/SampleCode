@@ -1,7 +1,7 @@
 /*
      File: Song.m
  Abstract: Contains the parsed information about a song.
-  Version: 1.3
+  Version: 1.4
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,23 +41,12 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
 */
 
 #import "Song.h"
 
 @implementation Song
-
-@synthesize title, artist, album, releaseDate, category;
-
-- (void)dealloc {
-    [title release];
-    [artist release];
-    [album release];
-    [releaseDate release];
-    [category release];
-    [super dealloc];
-}
 
 @end

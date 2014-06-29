@@ -9,12 +9,12 @@ Uses AVPlayer to play videos from the iPod Library, Camera Roll, or via iTunes F
 ===========================================================================
 BUILD REQUIREMENTS:
 
-iOS 4.3 SDK
+iOS 5.0 SDK
 
 ===========================================================================
 RUNTIME REQUIREMENTS:
 
-iPhone OS 4.3
+iPhone OS 5.0
 
 ===========================================================================
 USING THE SAMPLE:
@@ -46,6 +46,8 @@ if ([AVPlayerItem instancesRespondToSelector:@selector (duration)])
 
 ===========================================================================
 CHANGES FROM PREVIOUS VERSIONS:
+
+1.2 - Fixed problem where the metadata screen would not dismiss properly. Fixed deprecated call warnings. Other miscellaneous changes.
 
 1.1 - Update for iOS 4.3 to show how to prepare any asset for playback in a uniform way, plus new technique for obtaining duration of a AVPlayerItem.
 

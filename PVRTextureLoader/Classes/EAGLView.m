@@ -2,7 +2,7 @@
 
     File: EAGLView.m
 Abstract: The EAGLView class is responsible for rendering the GL view.
- Version: 1.5
+ Version: 1.6
 
 Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
 Inc. ("Apple") in consideration of your agreement to the following
@@ -42,7 +42,7 @@ AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE),
 STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
-Copyright (C) 2010 Apple Inc. All Rights Reserved.
+Copyright (C) 2014 Apple Inc. All Rights Reserved.
 
 
 */
@@ -82,7 +82,7 @@ Copyright (C) 2010 Apple Inc. All Rights Reserved.
 - (void)loadImageFile:(NSString *)name ofType:(NSString *)extension mipmap:(BOOL)mipmap texture:(uint32_t)texture
 {
 	UIImage *image;
-	int width, height;
+	size_t width, height;
 	CGImageRef cgImage;
 	GLubyte *data;
 	CGContextRef cgContext;
@@ -118,7 +118,7 @@ Copyright (C) 2010 Apple Inc. All Rights Reserved.
 		else
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)width, (int)height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 		
 		if (mipmap)
 			glGenerateMipmapOES(GL_TEXTURE_2D);
@@ -151,10 +151,10 @@ Copyright (C) 2010 Apple Inc. All Rights Reserved.
 			pvrTexture = [PVRTexture pvrTextureWithContentsOfFile:[[NSBundle mainBundle] pathForResource:[names objectAtIndex:i] ofType:@"pvr"]];
 			if (pvrTexture == nil)
 				NSLog(@"Failed to load %@.pvr", [names objectAtIndex:i]);
-			else
+			else {
 				_textures[i] = [pvrTexture name];
-			
-			[_pvrTextures addObject:pvrTexture];
+                [_pvrTextures addObject:pvrTexture];
+            }
 		}
 	}
 	
@@ -362,9 +362,11 @@ Copyright (C) 2010 Apple Inc. All Rights Reserved.
     glBindFramebufferOES(GL_FRAMEBUFFER_OES, _viewFramebuffer);
     glViewport(0, 0, _backingWidth, _backingHeight);
     
+    GLfloat aspectRatio = (GLfloat)(_backingWidth)/(GLfloat)(_backingHeight);
+    
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-	glFrustumf(-1.0f, 1.0f, -1.5, 1.5, 1.0f, 10.0f);
+	glFrustumf(-1.0f, 1.0f, -1.0/aspectRatio, 1.0/aspectRatio, 1.0f, 10.0f);
     glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glScalef(_scale, _scale, 1.0f);

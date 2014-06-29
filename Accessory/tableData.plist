@@ -23,12 +23,6 @@
 	</dict>
 	<dict>
 		<key>text</key>
-		<string>MacBook</string>
-		<key>checked</key>
-		<false/>
-	</dict>
-	<dict>
-		<key>text</key>
 		<string>MacBook Pro</string>
 		<key>checked</key>
 		<true/>

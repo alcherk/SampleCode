@@ -16,12 +16,12 @@ The constants demonstrate parameters to the algorithm and are intended as initia
 ===========================================================================
 BUILD REQUIREMENTS:
 
-iOS SDK 4.3 or later
+iOS SDK 7.0 or later
 
 ===========================================================================
 RUNTIME REQUIREMENTS:
 
-iOS OS 4.0 or later
+iOS OS 6.0 or later
 
 ===========================================================================
 PACKAGING LIST:
@@ -56,6 +56,9 @@ CHANGES FROM PREVIOUS VERSIONS:
  
 Version 1.0
 - First version.
+
+Version 1.1
+- Updated for iOS 7 SDK. 
  
 ===========================================================================
-Copyright (C) 2011 Apple Inc. All rights reserved.
+Copyright (C) 2011-2014 Apple Inc. All rights reserved.

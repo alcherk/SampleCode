@@ -1,7 +1,7 @@
 /*
      File: iTunesRSSParser.m
  Abstract: Base class for the two parsers, this class handles interactions with a delegate object (the SongsViewController in this sample) and provides basic functionality common to both parsers.
-  Version: 1.3
+  Version: 1.4
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
 */
 
@@ -73,10 +73,6 @@ static NSUInteger kCountForNotification = 10;
     [NSThread detachNewThreadSelector:@selector(downloadAndParse:) toTarget:self withObject:url];
 }
 
-- (void)dealloc {
-    [parsedSongs release];
-    [super dealloc];
-}
 
 - (void)downloadAndParse:(NSURL *)url {
     NSAssert([self isMemberOfClass:[iTunesRSSParser class]] == NO, @"Object is of abstract base class iTunesRSSParser");

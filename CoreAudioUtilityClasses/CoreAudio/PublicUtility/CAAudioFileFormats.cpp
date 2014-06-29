@@ -1,7 +1,7 @@
 /*
      File: CAAudioFileFormats.cpp 
  Abstract:  CAAudioFileFormats.h  
-  Version: 1.01 
+  Version: 1.0.4 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2012 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
 */
 #include "CAAudioFileFormats.h"
@@ -102,7 +102,7 @@ CAAudioFileFormats::CAAudioFileFormats(bool loadDataFormats) :
 		ffi->mFileTypeName = NULL;
 		size = sizeof(CFStringRef);
 		err = AudioFileGetGlobalInfo(kAudioFileGlobalInfo_FileTypeName, sizeof(UInt32), &filetype, &size, &ffi->mFileTypeName);
-		if (ffi->mFileTypeName)
+		if (err == noErr && ffi->mFileTypeName)
 			CFRetain(ffi->mFileTypeName);
 		
 		// file extensions
@@ -338,7 +338,7 @@ bool	CAAudioFileFormats::FileFormatInfo::AnyWritableFormats()
 char *OSTypeToStr(char *buf, OSType t)
 {
 	char *p = buf;
-	char str[4], *q = str;
+	char str[4] = {0}, *q = str;
 	*(UInt32 *)str = CFSwapInt32HostToBig(t);
 	for (int i = 0; i < 4; ++i) {
 		if (isprint(*q) && *q != '\\')

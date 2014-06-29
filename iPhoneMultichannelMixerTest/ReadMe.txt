@@ -44,12 +44,12 @@ None
 ===========================================================================
 BUILD REQUIREMENTS:
 
-iOS 4.0 SDK
+iOS 6.1 SDK
 
 ===========================================================================
 RUNTIME REQUIREMENTS:
 
-iPhone OS 3.2 or later
+iPhone OS 6.1 or later
 
 ===========================================================================
 PACKAGING LIST:
@@ -77,9 +77,10 @@ framework for the demonstration code in this file.
 ===========================================================================
 CHANGES FROM PREVIOUS VERSIONS:
 
-Version 1.1, upgraded project to build with the iOS 4 SDK.
 Version 1.0, tested with iPhone OS 3.0. First public release.
+Version 1.1, upgraded project to build with the iOS 4 SDK.
+Version 1.1.1, upgraded project to build with the iOS 6.1 SDK. Migrated to AVAudioSession from AudioSession APIs.
 
 
 ================================================================================
-Copyright (C) 2009-2010 Apple Inc. All rights reserved.
+Copyright (C) 2009-2013 Apple Inc. All rights reserved.

@@ -1,60 +1,87 @@
-AppPrefs
+### AppPrefs ###
 
-Demonstrates how to display your app's preferences or settings in the "Settings" system application.
-A settings bundle, included in your application’s bundle directory, contains the information needed by
-the Settings application to display your preferences and make it possible for the user to modify them.
-It then saves any configured values in the defaults database so that your application can retrieve them at runtime. 
+================================================================================
+DESCRIPTION:
 
-This sample offers an Xcode project already pre-configured to build your Settings bundle as a target.
-To customize your settings UI, change the Root.plist file.
+This sample demonstrates how to display your app's user configurable options (preferences) in the "Settings" system application.  A settings bundle, included in your application’s bundle directory, contains the information needed by the Settings application to display your preferences and make it possible for the user to modify them.  The Settings application saves any configured values in the defaults database so that your application can retrieve them at runtime. 
 
-This sample also shows how to dynamically update it's UI when its settings are changed while the app is in the background via "NSUserDefaultsDidChangeNotification".
+This sample also shows how to dynamically update it's UI when its settings are changed while the app is in the background by listening for the NSUserDefaultsDidChangeNotification.
 
+================================================================================
+USING THE SAMPLE:
 
-Build Requirements
-iOS 4.0 SDK
-
-
-Runtime Requirements
-iPhone OS 3.2 or later.
-
-
-Using the Sample
 Launch the AppPrefs project using Xcode.
 Make sure the project's current target is set to "AppPrefs".
 Build and run the "AppPrefs" target.
 
-To run in the simulator, set the Active SDK to Simulator. To run on a device, set the Active SDK to
-the appropriate Device setting.  When launched notice the text, its color and the view's background color.
-Quit the application and launch "Settings".  At the end of the settings list you will find a section
-for "AppPrefs".  From there you can set the first and last name, its color and the app's background color.
-Quit Settings and return to AppPrefs and notice the settings have changed.
+When launched notice the text, and its color.
+Switch to the "Settings" application.  At the end of the settings list you will find a section
+for "AppPrefs".  From there you can set the first and last name, and the text color.
+Switch back to AppPrefs and notice the settings have changed.
 
+================================================================================
+FURTHER INFORMATION:
 
-Packaging List
-main.m - Main source file for this sample.
-AppDelegate.h/.m - The application' delegate to setup its window and content.
-MyViewController.h/.m - The main UIViewController containing the app's user interface.
-Root.plist - The scheme file for your settings bundle.
+For more information on extending the Settings application, refer to the "Preferences and Settings Programming Guide" and the "Settings Application Schema Reference".
 
+================================================================================
+BUILD REQUIREMENTS:
 
-Further Information
-For more information on extending the Settings application, refer to the "iPhone Application Programming Guide".
+iOS 6.0 SDK or later
 
+================================================================================
+RUNTIME REQUIREMENTS:
 
-Changes from Previous Versions
-1.0 - First release
+iOS 5.0 or later
 
-1.1 - Updated for and tested with iPhone OS 2.0. First public release.
+================================================================================
+PACKAGING LIST:
 
-1.2 - Updated Read Me
+main.m 
+    Main source file for this sample.
 
-1.3 - More use of nibs, upgraded for 3.0 SDK due to deprecated APIs;
-in "cellForRowAtIndexPath" it now uses UITableViewCell's initWithStyle;
-Settings.bundle no longer builds as a separate Xcode target.
+AppPrefsAppDelegate.{h,m}
+    The application' delegate.  Handles loading and registering the default values for each setting from the Settings bundle.
+    
+RootViewController.{h,m}
+    The main UIViewController containing the app's user interface.
+    
+Settings.bundle/Root.plist
+    The scheme file for your settings bundle.
 
-1.4 - Upgraded project to build with the iOS 4 SDK, fixed static analyzer warning. added support for "NSUserDefaultsDidChangeNotification".
+================================================================================
+CHANGES FROM PREVIOUS VERSIONS:
 
-1.5 - Deployment target set to iPhone OS 3.2.
+Version 1.6
+- Demonstrates extracting and registering the default values for all settings defined in the Settings bundle.
+- Adopted Storyboards and ARC.
+- Adopted the latest Objective-C conventions and best practices.
+- Upgraded to build against the iOS 6 SDK.
+- Deployment target set to iOS 5.
 
-Copyright (C) 2008-2010 Apple Inc. All rights reserved.
+Version 1.5
+- Deployment target set to iPhone OS 3.2.
+
+Version 1.4
+- Upgraded project to build with the iOS 4 SDK
+- Fixed static analyzer warning. 
+- Added support for "NSUserDefaultsDidChangeNotification".
+
+Version 1.3 
+- More use of nibs
+- Upgraded for 3.0 SDK due to deprecated APIs
+- In "cellForRowAtIndexPath" it now uses UITableViewCell's initWithStyle
+- Settings.bundle no longer builds as a separate Xcode target.
+
+Version 1.2 
+- Updated Read Me
+
+Version 1.1 
+- Updated for and tested with iPhone OS 2.0. 
+- First public release.
+
+Version 1.0 
+- First release
+
+================================================================================
+Copyright (C) 2008-2013 Apple Inc. All rights reserved.

@@ -31,14 +31,14 @@ none
 ===========================================================================
 BUILD REQUIREMENTS:
 
-Mac OS X v10.6.4, Xcode 3.2, iPhone OS 4.0, iPhone SDK for iPhone OS 4.0 and later
+Mac OS X v10.9, Xcode 5, iOS 7.0 and later
 
 
 ===========================================================================
 RUNTIME REQUIREMENTS:
 
-Simulator: Mac OS X v10.6.4, iPhone SDK 4.0 and later
-iPhone: iPhone OS 4.0
+Simulator: Mac OS X v10.9, iOS SDK 7.0 and later
+iPhone: iOS 7.0
 
 
 ===========================================================================
@@ -75,4 +75,4 @@ avTouchViewController.m
 The avTouchViewController class defines the view controller, responsible for handling rotations
 
 ================================================================================
-Copyright (C) 2010 Apple Inc. All rights reserved.
+Copyright (C) 2010-2014 Apple Inc. All rights reserved.

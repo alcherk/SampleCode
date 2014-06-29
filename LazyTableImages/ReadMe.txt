@@ -13,7 +13,7 @@ so the UI is more responsive.
 ===========================================================================
 BUILD REQUIREMENTS:
 
-iOS 5.0 SDK or later
+iOS 6.0 SDK or later
 
 ===========================================================================
 RUNTIME REQUIREMENTS:
@@ -23,14 +23,14 @@ iOS 5.0 or later
 ===========================================================================
 PACKAGING LIST:
 
-LazyTableAppDelegate.{h/m} -
+LazyTableAppDelegate.{h/m}
     The app delegate class that downloads in the background the
     "Top Paid iPhone Apps" RSS feed using NSURLConnection.
 
-AppRecord.{h/m} -
+AppRecord.{h/m}
     Wrapper object for each data entry, corresponding to a row in the table.
 
-RootViewController.{h/m} -
+RootViewController.{h/m}
     UITableViewController subclass that builds the table view in multiple stages,
     using feed data obtained from the LazyTableAppDelegate.
 
@@ -45,14 +45,11 @@ IconDownloader.{h/m}
 ===========================================================================
 CHANGES FROM PREVIOUS VERSIONS:
 
-Version 1.0
-- First version.
-
-Version 1.1
-- Fixed crashing bug in didReceiveMemoryWarning, upgraded project to build with the iOS 4 SDK.
-
-Version 1.2
-- Deployment target set to iPhone OS 3.2.
+Version 1.4
+- Migrated to Storyboards and ARC.
+- Upgraded to build with the iOS 6 SDK.
+- Added support for devices with 4" retina displays.
+- Modified IconDownloader to use blocks for its callback instead of delegation.
 
 Version 1.3
 - Upgraded project to build with the iOS 5 SDK.
@@ -64,5 +61,14 @@ Version 1.3
 - Renamed a defined constant in IconDownloader to be less confusing.
 - Fixed a bug in IconDownloader that may cause a downloaded app icon to not be resized properly.
 
+Version 1.2
+- Deployment target set to iPhone OS 3.2.
+
+Version 1.1
+- Fixed crashing bug in didReceiveMemoryWarning, upgraded project to build with the iOS 4 SDK.
+
+Version 1.0
+- First version.
+
 ===========================================================================
-Copyright (C) 2012 Apple Inc. All rights reserved.
+Copyright (C) 2013 Apple Inc. All rights reserved.

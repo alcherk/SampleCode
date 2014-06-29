@@ -3,7 +3,7 @@
  Abstract: Application delegate for the LazyTableImages sample.
  It also downloads in the background the "Top Paid iPhone Apps" RSS feed using NSURLConnection.
   
-  Version: 1.3 
+  Version: 1.4 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -43,29 +43,15 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2012 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
  */
 
 #import <UIKit/UIKit.h>
-#import "AppRecord.h"
-#import "ParseOperation.h"
-
-@class RootViewController;
 
 @interface LazyTableAppDelegate : NSObject <UIApplicationDelegate>
 
-@property (nonatomic, retain) UIWindow *window;
-@property (nonatomic, retain) IBOutlet UINavigationController *navigationController;
-
-@property (nonatomic, retain) IBOutlet RootViewController *rootViewController;
-
-@property (nonatomic, retain) NSMutableArray *appRecords;
-
-@property (nonatomic, retain) NSOperationQueue *queue;
-
-@property (nonatomic, retain) NSURLConnection *appListFeedConnection;
-@property (nonatomic, retain) NSMutableData *appListData;
+@property (nonatomic, strong) UIWindow *window;
 
 @end
 

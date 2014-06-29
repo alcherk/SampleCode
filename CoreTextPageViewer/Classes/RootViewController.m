@@ -3,7 +3,7 @@
      File: RootViewController.m
  Abstract: A view controller that manages a search bar and a recent searches controller.
  The view controller creates a search bar to place in a tool bar. When the user commences a search, a recent searches controller is displayed in a popover.
-  Version: 1.0
+  Version: 1.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -43,7 +43,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2011 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
 */
 
@@ -157,7 +157,7 @@
 #pragma mark -
 #pragma mark View lifecycle
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+- (BOOL)shouldAutorotate {
     return YES;
 }
 
@@ -169,18 +169,6 @@
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
 	// Refresh the core text document layout to reflect the new orientation
 	[self.coreTextScrollView relayoutDoc];
-}
-
-- (void)viewDidUnload {
-    [super viewDidUnload];    
-    self.toolbar = nil;
-	self.samplesButton = nil;
-	self.fontFamsButton = nil;
-	self.samplesController = nil;
-	self.samplesPopoverController = nil;
-	self.fontFamsController = nil;
-	self.fontFamsPopoverController = nil;
-	self.coreTextScrollView = nil;
 }
 
 #pragma mark -
@@ -206,7 +194,7 @@
     }	
     // Switch the page when more than 50% of the previous/next page is visible
     CGFloat pageWidth = coreTextScrollView.frame.size.width;
-    int page = floor((coreTextScrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 1;
+    NSInteger page = floor((coreTextScrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 1;
 	
 	[coreTextScrollView setPage:page];
 }
@@ -216,7 +204,7 @@
 {
     // Switch the page when more than 50% of the previous/next page is visible
 	CGFloat pageWidth = coreTextScrollView.frame.size.width;
-	int page = floor((coreTextScrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 1;
+	NSInteger page = floor((coreTextScrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 1;
 	[coreTextScrollView setPage:page];
 }
 

@@ -1,12 +1,10 @@
 
-### PhotoLocations ###
-
-===========================================================================
-DESCRIPTION:
+PhotoLocations
+==============
 
 This sample illustrates a Core Data application that uses more than one entity and uses transformable attributes. It also shows inferred migration of the persistent store.
 
-The application extends the completed project from the Core Data Tutorial for iPhone OS. The first screen displays a table view of events, which encapsulate a time stamp, a geographical location expressed in latitude and longitude, and the thumbnail of a picture for the event. The user can add and remove events using the first screen.
+The first screen displays a table view of events, which encapsulate a time stamp, a geographical location expressed in latitude and longitude, and the thumbnail of a picture for the event. The user can add and remove events using the first screen.
 
 Event has an optional to-one relationship to Photo (which has an inverse to-one relationship back to Event) that contains the data for a full-sized image. By selecting a row on the first screen, the user displays a detail view that shows the photo (or allows the user to choose a photo for the event).
 
@@ -15,30 +13,16 @@ The photo data is not stored with the event object itself because it's not alway
 Although the application's data model is different from the original application's, the original data store is opened by specifying that inferred migration should be used in the application delegate's persistentStoreCoordinator method. (You must ensure that the applications' bundle identifiers are the same.)
 
 
-===========================================================================
-BUILD REQUIREMENTS:
-
-Mac OS X v10.6.3 or later; Xcode 3.2.3 or later; iOS 4.0 or later.
-
-===========================================================================
-RUNTIME REQUIREMENTS:
-
-Mac OS X v10.6.3 or later; iOS 4.0 or later.
-
-===========================================================================
-PACKAGING LIST:
-
 View Controllers
 ----------------
 
-RootViewController.{h,m}
+APLRootViewController.{h,m}
 The table view controller responsible for displaying the list of events, supporting additional functionality:
  * Addition of new new events;
  * Deletion of existing events using UITableView's tableView:commitEditingStyle:forRowAtIndexPath: method.
 
 
-EventInspector.{h,m}
-EventInspector.xib
+APLEventDetailViewController.{h,m}
 The table view controller responsible for displaying the time, coordinates, and photo of an event, and allowing the user to select a photo for the event, or delete the existing photo.
 
 
@@ -53,15 +37,15 @@ This model contains two versions:
 The application delegate specifies inferred migration in the persistentStoreCoordinator method.
 
 
-Event.{h,m}
+APLEvent.{h,m}
 A Core Data managed object class to represent an event containing geographical coordinates, a time stamp, and a thumbnail image. Event also has a to-one relationship to Photograph.
 
 
-Photo.{h,m}
+APLPhoto.{h,m}
 A Core Data managed object class to represent a photograph. Photograph has a to-one relationship to Event.
 
 
-UIImageToDataTransformer.{h,m}
+APLImageToDataTransformer.{h,m}
 A value transformer which transforms a UIImage object into an NSData object.
 Both Event and Photograph contain image data stored as a transformable attribute.
 
@@ -70,22 +54,10 @@ Both Event and Photograph contain image data stored as a transformable attribute
 Application configuration
 -------------------------
 
-LocationsAppDelegate.{h,m}
+APLAppDelegate.{h,m}
 Configures the Core Data stack and the first view controller.
 
-MainWindow.xib
-Loaded automatically by the application. Creates the application's delegate and window.
 
 
 ===========================================================================
-CHANGES FROM PREVIOUS VERSIONS:
-
-Version 1.1
-- Added UIGraphicsEndImageContext to EventDetailViewController.m.
-  Updated for iOS v4.0.
-
-Version 1.0
-- First version.
-
-===========================================================================
-Copyright (C) 2009 Apple Inc. All rights reserved.
+Copyright (C) 2009-13 Apple Inc. All rights reserved.

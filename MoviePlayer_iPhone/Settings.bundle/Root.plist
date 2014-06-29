@@ -132,16 +132,6 @@
 			<key>DefaultValue</key>
 			<integer>0</integer>
 		</dict>
-		<dict>
-			<key>DefaultValue</key>
-			<true/>
-			<key>Key</key>
-			<string>useApplicationAudioSession</string>
-			<key>Title</key>
-			<string>App Audio Session</string>
-			<key>Type</key>
-			<string>PSToggleSwitchSpecifier</string>
-		</dict>
 	</array>
 	<key>Title</key>
 	<string>MoviePlayer</string>

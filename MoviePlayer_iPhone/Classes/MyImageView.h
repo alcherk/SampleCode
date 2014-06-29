@@ -6,7 +6,7 @@
  in order to receive finger touch event messages. Any finger touch events in this
  view will start the movie playing.
   
-  Version: 1.4 
+  Version: 1.5 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -46,7 +46,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2011 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2014 Apple Inc. All Rights Reserved. 
   
  
  */
@@ -59,7 +59,7 @@
     IBOutlet MyLocalMovieViewController *viewController;
 }
 
-@property (nonatomic,retain) IBOutlet MyLocalMovieViewController *viewController;
+@property (nonatomic,strong) IBOutlet MyLocalMovieViewController *viewController;
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event;
 

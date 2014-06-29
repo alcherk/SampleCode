@@ -1,10 +1,10 @@
 SeismicXML
-
-===========================================================================
-DESCRIPTION:
+==========
 
 The SeismicXML sample application demonstrates how to use NSXMLParser to parse XML data.
 When you launch the application it downloads and parses an RSS feed from the United States Geological Survey (USGS) that provides data on recent earthquakes around the world. It displays the location, date, and magnitude of each earthquake, along with a color-coded graphic that indicates the severity of the earthquake. The XML parsing occurs on a background thread and updates the earthquakes table view with batches of parsed objects.
+
+It uses NSURLConnection to asynchronously download the data. This means the main thread will not be blocked - the application will remain responsive to the user.  When the app is sent to the background, the connection is cancelled.
 
 The USGS feed is at http://earthquake.usgs.gov/eqcenter/catalogs/7day-M2.5.xml and includes all recent magnitude 2.5 and greater earthquakes world-wide, representing each earthquake with an <entry> element, in the following form:
  
@@ -26,81 +26,16 @@ NSXMLParser is an "event-driven" parser. This means that it makes a single pass 
 
 
 ===========================================================================
-BUILD REQUIREMENTS
+Main Classes
 
-iOS SDK 4.0
+APLViewController
+A UITableViewController subclass that manages the table view; initiates the download of the XML data and parses the Earthquake objects at view load time.
 
-===========================================================================
-RUNTIME REQUIREMENTS
-
-iOS OS 3.2 or later
-
-===========================================================================
-PACKAGING LIST
-
-SeismicXMLAppDelegate
-Delegate for the application, initiates the download of the XML data and parses the Earthquake objects at launch time.
-
-Earthquake
-The model class that stores the information about an earthquake.
-
-RootViewController
-A UITableViewController subclass that manages the table view.
-
-ParseOperation
+APLParseOperation
 The NSOperation class used to perform the XML parsing of earthquake data.
 
-===========================================================================
-CHANGES FROM PREVIOUS VERSIONS
-
-Version 2.3
-- Now using NSOperation to perform the XML parsing, silencing any parse aborting errors.
-
-Version 2.1
-- Update artwork and added NSXMLParserDelegate protocol.
-
-Version 2.0
-- Updated for and tested with iOS 4.0 SDK.
-
-Version 1.9
-- Proper formatting of dates, fixed earthquake reporting URLs due to changes in USGS page, removed unused frameworks, improved error reporting, now using KVO for table view updates.
-
-Version 1.8
-- Added separate use of NSURLConnection to asynchronously download data instead of using NSXMLParser -initWithContentsOfURL. Upgraded for 3.0 SDK due to deprecated APIs.
-
-Version 1.7
-- Updated for and tested with iPhone OS 2.0. First public release.
-
-Version 1.6
-- Updated for GM release.
-- Fixed a memory leak in SeismicXMLAppDelegate.m.
-
-Version 1.5
-- Updated for Beta 7.
-- Fixed memory leaks in XMLReader.m.
-- Now uses the SystemConfiguration framework to determine if the RSS feed provider is available and displays a message in the table view if it's not.
-
-Version 1.4
-- Updated for Beta 6.
-- Added LSRequiresIPhoneOS key to Info.plist
-- The custom table view cell add subviews to its content view rather than drawing them directly.
-
-Version 1.3
-- Updated for Beta 5.
-- Removed the XML-to-Objective-C object mapping to simplify the sample.
-- Moved the XML parsing to a background thread.
-
-Version 1.2
-- Updated for Beta 4.
-- Now uses NSXMLParser to parse XML.
-- Removed unused XML parsing classes.
-
-Version 1.1
-- Updated for Beta 3.
-- Updated table view API.
-- Add icon and replaced Default.png file.
-- Removed unit tests.
-- Removed unused framework.
+APLEarthquake
+Simple model class to hold information about an earthquake.
 
 ===========================================================================
-Copyright (C) 2008-2010 Apple Inc. All rights reserved.
+Copyright (C) 2008-2013 Apple Inc. All rights reserved.

@@ -1,7 +1,7 @@
 /*
      File: AppController.h
  Abstract: UIApplication's delegate class, the central controller of the application.
-  Version: 1.8
+  Version: 2.0
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,29 +41,12 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
 
-#import "TapView.h"
-#import "BrowserViewController.h"
-#import "Picker.h"
-#import "TCPServer.h"
+#include <UIKit/UIKit.h>
 
-@interface AppController : NSObject <UIApplicationDelegate, UIActionSheetDelegate,
-									 BrowserViewControllerDelegate, TCPServerDelegate,
-									 NSStreamDelegate>
-{
-	UIWindow			*_window;
-	Picker				*_picker;
-	TCPServer			*_server;
-	NSInputStream		*_inStream;
-	NSOutputStream		*_outStream;
-	BOOL				_inReady;
-	BOOL				_outReady;
-}
-
-- (void) activateView:(TapView*)view;
-- (void) deactivateView:(TapView*)view;
+@interface AppController : UIResponder
 
 @end

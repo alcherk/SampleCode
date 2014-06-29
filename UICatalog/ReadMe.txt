@@ -1,89 +1,50 @@
-UICatalog
-=========
+UICatalog: Creating and Customizing UIKit Controls
+===========================================================================
 
-This sample is a catalog exhibiting many views and controls in the UIKit framework, along with their various properties and styles.
-If you need code to create specific UI controls or views, refer to this sample and it should give you a good head start in building your user interface.
-In most cases you can simply copy and paste the code snippets you need. 
-When images or custom views are used, accessibility code has been added. Using the iPhone Accessibility API enhances the user experience of VoiceOver users.
+This sample is a catalog exhibiting many views and controls in the UIKit framework along with their various functionalities. Refer to this sample if you are looking for specific controls or views that are provided by the system.
 
+Note that this sample also shows you how to make your non-standard views (images or custom views) accessible. Using the iOS Accessibility API enhances the user experience of VoiceOver users.
 
-Build Requirements
-iOS 5.0 SDK or later
+You will also notice this sample shows how to localize string content by using the NSLocalizedString macro. Each language has a "Localizeable.strings" file and this macro refers to this file when loading the strings from the default bundle.
 
-
-Runtime Requirements
-iOS 3.2 or later
-
-
+===========================================================================
 Using the Sample
-Build and run the sample using iOS 5.0 SDK.
-To run in the simulator, set the Active SDK to Simulator. To run on a device, set the Active SDK to the appropriate Device setting.
 
-In most areas of this sample, as you see various UI elements, you will see a corresponding explanation as to where you can find the code. 
-So for example the Buttons page - the gray button will have "ButtonsViewController.m - createGrayButton".
-This means refer to the ButtonsViewController.m source file and search for the createGrayButton Objective-C method.
+This sample can be run on a device or on the simulator.
 
-Buttons - This UIViewController or page contains various kinds of UIButton controls complete with background images.
+While looking over the source code of UICatalog you will find that many elements keep the same order of the view controller classes listed in the project. For example, AAPLActionSheetViewController is the first view controller in the UICatalog project folder, but it is also the first view controller that's shown in the master view controller's table view.
 
-Controls - This page contains other miscellaneous UIControl classes helpful in building your user interface including switch, slider page, and progress indicator.
+UICatalog uses a master/detail application architecture, which can be seen in the storyboard files. The master view controller defines the list of views that are used for demonstration in this application. Each detail view controller corresponds to a given system-provided control (and is named accordingly). For example, AAPLAlertViewController shows how to use UIAlertView and its associated functionality. The only two exceptions to this rule are UISearchBar and UIToolbar; each of these controls have multiple view controllers to explain how the control works and can be customized. This is done to make sure that each view controller only has one UIToolbar or UISearchBar in a view controller at one point in time. Each view controller is responsible for configuring a set of of specific controls that have been set in Interface Builder.
 
-TextFields - This page hosts different kinds of UITextField controls.  It also demonstrates how to handle the keyboard, particularly where text fields are placed.
+===========================================================================
+UIKit Controls
 
-SearchBar - This pages exhibits the UISearchBar control.
+UICatalog demonstrates how to configure and customize the following controls:
 
-TextView - This page exhibits the use of UITextView.
++ UIActionSheet
++ UIActivityIndicatorView
++ UIAlertView
++ UIButton
++ UIDatePicker
++ UIImageView
++ UIPageControl
++ UIPickerView
++ UIProgressView
++ UISegmentedControl
++ UISlider
++ UIStepper
++ UISwitch
++ UITextField
++ UITextView
++ UIWebView
++ UISearchBar
++ UIToolbar
 
-Pickers - This page shows the varying picker style view including UIPickerView and UIDatePicker.  UIDatePicker variants include date, time, date & time, as well as a counter.  A custom picker is also included in this page.
+===========================================================================
+Build/Runtime Requirements
 
-Images - Shows how you can create a UIImageView containing a group of images used for animations or slide show.
+Building this sample requires Xcode 5.0 and iOS 7.0 SDK
+Running the sample requires iOS 7.0 or later.
 
-Web - Shows how to properly use a UIWebView and target websites using NSURL class.
-
-Segment - This page adds several types of UISegmentedControl views.
-
-Toolbar - This page shows how to use UIToolbar and adds several kinds of UIBarButtonItems.
-
-Alerts - This page shows how to use UIActionSheet and UIAlertView to display varying kinds of alerts that require user actions.  This includes simple alerts, OK/Cancel alerts, and alerts with custom titled buttons.
-
-Transitions - This page shows how to implement view "flipping" and "curl" animations between two different views using a category of UIView called UIViewAnimation.
-
-Localization - You will notice this sample in various places shows you how to localize your string content by using the NSLocalizedString() macro.  Each language has a "Localizeable.strings" file and this macro refers to this file when loading the strings.
-
-
-Packaging List
-main.m - Main source file for this sample.
-AppDelegate.h/.m - The application's delegate to setup its window and content.
-Contants.h - Contains various screen placement constants used across all the UIViewControllers.
-
-MainViewController.h/.m - The front UIViewController containing a UITableView to navigate to all its pages.
-ButtonsViewController.h/.m -UIViewController that hosts all the varying UIButtons.
-ControlsViewController.h/.m - UIViewController that hosts all the varying UIControls.
-TextFieldViewController.h/.m - UIViewController that contains UITextFields and how to use them.
-SearchBarController.h/.m - UIViewController that contains a UISearchBar.
-TextViewController.h/.m - UIViewController that shows how to use UITextView.
-PickerViewController.h/.m - UIViewController that shows all the different kinds of picker controls.
-ImagesViewController.h/.m - UIViewController that contains a UIImageView.
-WebViewController.h/.m - UIViewController that shows how to use UIWebView.
-AlertsViewController.h/.m - UIViewController that hosts all the varying kinds of alerts and action sheets.
-SegmentViewController.h/.m - UIViewController that hosts all the varying UISegmentedControls.
-ToolbarViewController.h/.m - UIViewController that hosts a UIToolbar and its UIBarButtonItems.
-TransitionViewController.h/.m - UIViewController that shows how to flip between two different views.
-
-Changes from Previous Versions
-1.0 - First release
-1.1 - Updated the user interface layout to show proper use or proper context in using the UIKit controls and views.
-1.2 - Changes due to API updates in the Beta 3 SDK: reusable UITableView cells.
-1.3 - Updated for Beta 4, changed to use Interface Builder xib files, removed un-needed QuartzCore framework, added Toolbar view for UIToolbar and UIBarButtonItems, added additional UIButtonTypes, added UISearchBar.
-1.4 - Updated for Beta 5, renamed some classes.
-1.5 - Beta 6 Release, updated to use xib file for MainViewController, fixed bad blur effect on UIView classes by properly rounding of coordinates, introduced "UIViewAnimationTransitionCurlUp/UIViewAnimationTransitionCurlDown" UIView transitions, adopted UITextField's "leftView" property.
-1.6 - Minor UI modifications, changed bundle identifier.
-1.7 - Improved custom UIPicker, Updated for and tested with iPhone OS 2.0. First public release.
-2.0 - Upgraded for 3.0 SDK due to deprecated APIs, more use of UITableViewController.
-2.5 - Minor bug fixes, all view controllers created from separate nibs, more use of properties, further code optimizations, added viewDidUnload methods.
-2.6 - Used the iPhone Accessibility API to improve the accessibility of UICatalog and demonstrate how accessibility should be employed.
-2.7 - Removed deprecation use of UIKeyboard info keys, upgraded project to build with the iOS 4 SDK.
-2.8 - Deployment target set to iPhone OS 3.2.
-2.9 - Upgraded to support 4.2 SDK, Picker page now supports landscape orientation.
-2.10 - Upgraded to support 5.0 SDK, UIStepper control added, tinting/background image support added where possible, and secure text entry for UIAlertView.
-
-Copyright (C) 2008-2011 Apple Inc. All rights reserved.
+===========================================================================
+Copyright (C) 2008-2014 Apple Inc. All rights reserved.

@@ -2,7 +2,7 @@
      File: AppDelegate.m
  Abstract: The delegate for the Application. This manages which view controller is added to the window at launch.
  
-  Version: 1.2
+  Version: 1.3
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -55,16 +55,17 @@
 {
     // kick things off by making the first page
     PhotoViewController *pageZero = [PhotoViewController photoViewControllerForPageIndex:0];
-    
-    // assign the first page to the pageViewController (our rootViewController)
-    UIPageViewController *pageViewController = (UIPageViewController *)self.window.rootViewController;
-    pageViewController.dataSource = self;
-    
-    [pageViewController setViewControllers:@[pageZero]
-                                  direction:UIPageViewControllerNavigationDirectionForward
-                                   animated:NO
-                                 completion:NULL];
-    
+    if (pageZero != nil)
+    {
+        // assign the first page to the pageViewController (our rootViewController)
+        UIPageViewController *pageViewController = (UIPageViewController *)self.window.rootViewController;
+        pageViewController.dataSource = self;
+        
+        [pageViewController setViewControllers:@[pageZero]
+                                      direction:UIPageViewControllerNavigationDirectionForward
+                                       animated:NO
+                                     completion:NULL];
+    }
     return YES;
 }
 

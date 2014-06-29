@@ -3,7 +3,7 @@
  Abstract: View controller to manage a view to display a recipe's photo.
  The image view is created programmatically.
  
-  Version: 1.4
+  Version: 1.5
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -43,19 +43,14 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
 @class Recipe;
 
-@interface RecipePhotoViewController : UIViewController {
-    @private
-        Recipe *recipe;
-        UIImageView *imageView;
-}
+@interface RecipePhotoViewController : UIViewController
 
-@property(nonatomic, retain) Recipe *recipe;
-@property(nonatomic, retain) UIImageView *imageView;
+@property(nonatomic, strong) Recipe *recipe;
 
 @end

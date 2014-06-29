@@ -1,7 +1,7 @@
 /*
         File: MyViewController.m
     Abstract: >The main view controller of this app.
-     Version: 1.0
+     Version: 1.0.3
     
     Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
     Inc. ("Apple") in consideration of your agreement to the following
@@ -41,7 +41,7 @@
     STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
     
-    Copyright (C) 2010 Apple Inc. All Rights Reserved.
+    Copyright (C) 2014 Apple Inc. All Rights Reserved.
     
 */
 
@@ -53,7 +53,7 @@ extern OSStatus DoConvertFile(CFURLRef sourceURL, CFURLRef destinationURL, OSTyp
 
 #pragma mark-
 
-static Boolean IsAACHardwareEncoderAvailable(void)
+static Boolean IsAACEncoderAvailable(void)
 {
     Boolean isAvailable = false;
 
@@ -71,8 +71,22 @@ static Boolean IsAACHardwareEncoderAvailable(void)
     result = AudioFormatGetProperty(kAudioFormatProperty_Encoders, sizeof(encoderSpecifier), &encoderSpecifier, &size, encoderDescriptions);
     if (result) { printf("AudioFormatGetProperty kAudioFormatProperty_Encoders result %lu %4.4s\n", result, (char*)&result); return false; }
     
+    printf("Number of AAC encoders available: %lu\n", numEncoders);
+    
+    // with iOS 7.0 AAC software encode is always available
+    // older devices like the iPhone 4s also have a slower/less flexible hardware encoded for supporting AAC encode on older systems
+    // newer devices may not have a hardware AAC encoder at all but a faster more flexible software AAC encoder
+    // as long as one of these encoders is present we can convert to AAC
+    // if both are available you may choose to which one to prefer via the AudioConverterNewSpecific() API
     for (UInt32 i=0; i < numEncoders; ++i) {
-        if (encoderDescriptions[i].mSubType == kAudioFormatMPEG4AAC && encoderDescriptions[i].mManufacturer == kAppleHardwareAudioCodecManufacturer) isAvailable = true;
+        if (encoderDescriptions[i].mSubType == kAudioFormatMPEG4AAC && encoderDescriptions[i].mManufacturer == kAppleHardwareAudioCodecManufacturer) {
+            printf("Hardware encoder available\n");
+            isAvailable = true;
+        }
+        if (encoderDescriptions[i].mSubType == kAudioFormatMPEG4AAC && encoderDescriptions[i].mManufacturer == kAppleSoftwareAudioCodecManufacturer) {
+            printf("Software encoder available\n");
+            isAvailable = true;
+        }
     }
         
     return isAvailable;
@@ -92,7 +106,7 @@ static void UpdateFormatInfo(UILabel *inLabel, CFURLRef inFileURL)
             CFStringRef lastPathComponent = CFURLCopyLastPathComponent(inFileURL);
             *(UInt32 *)formatID = CFSwapInt32HostToBig(asbd.mFormatID);
     
-            inLabel.text = [NSString stringWithFormat: @"%@ %4.4s %6.0f Hz (%d ch.)", lastPathComponent, formatID, asbd.mSampleRate, asbd.NumberChannels(), nil];
+            inLabel.text = [NSString stringWithFormat: @"%@ %4.4s %6.0f Hz (%ld ch.)", lastPathComponent, formatID, asbd.mSampleRate, asbd.NumberChannels(), nil];
             CFRelease(lastPathComponent);
         } else {
             printf("AudioFileGetProperty kAudioFilePropertyDataFormat result %lu %4.4s\n", result, (char*)&result);
@@ -177,7 +191,7 @@ static void UpdateFormatInfo(UILabel *inLabel, CFURLRef inFileURL)
     sampleRate = 0;
     
     // can we encode to AAC?
-    if (IsAACHardwareEncoderAvailable()) {
+    if (IsAACEncoderAvailable()) {
         [self.outputFormatSelector setEnabled:YES forSegmentAtIndex:0];
     } else {
         // even though not enabled in IB, this segment will still be enabled
@@ -203,7 +217,7 @@ static void UpdateFormatInfo(UILabel *inLabel, CFURLRef inFileURL)
 - (void)flipAction:(id)sender
 {
 	[UIView setAnimationDelegate:self];
-	[UIView setAnimationDidStopSelector:@selector(animationDidStop:animationIDfinished:finished:context:)];
+	[UIView setAnimationDidStopSelector:NULL];
 	[UIView beginAnimations:nil context:nil];
 	[UIView setAnimationDuration:kTransitionDuration];
 	
@@ -231,12 +245,10 @@ static void UpdateFormatInfo(UILabel *inLabel, CFURLRef inFileURL)
 
 - (IBAction)convertButtonPressed:(id)sender
 {
-    // use kAudioSessionCategory_AudioProcessing category for offline conversion when not playing or recording audio at the same time
-    // if you are recording or playing audio at the same time you are encoding, use the same Audio Session category that you would normally
-    UInt32 audioCategory = kAudioSessionCategory_AudioProcessing;
-    OSStatus error = AudioSessionSetProperty(kAudioSessionProperty_AudioCategory, sizeof(audioCategory), &audioCategory);
+    NSError *error = nil;
+    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAudioProcessing error:&error];
     if (error) {
-        printf("AudioSessionSetProperty kAudioSessionCategory_AudioProcessing failed! %ld\n", error);
+        printf("Setting the AVAudioSessionCategoryAudioProcessing Category failed! %ld\n", (long)error.code);
         
         return;
     } 
@@ -272,6 +284,7 @@ static void UpdateFormatInfo(UILabel *inLabel, CFURLRef inFileURL)
         case 2:
             // iLBC sample rate is 8K
             outputFormat = kAudioFormatiLBC;
+            sampleRate = 8000.0;
             [self.outputSampleRateSelector setSelectedSegmentIndex:2];
             [self.outputSampleRateSelector setEnabled:NO forSegmentAtIndex:0];
             [self.outputSampleRateSelector setEnabled:NO forSegmentAtIndex:1];
@@ -346,11 +359,11 @@ static void UpdateFormatInfo(UILabel *inLabel, CFURLRef inFileURL)
     UpdateFormatInfo(fileInfo, destinationURL);
     [self.startButton setTitle:@"Playing Output File..." forState:UIControlStateDisabled];
     
-    // set category back to something that will allow us to play audio since kAudioSessionCategory_AudioProcessing will not
-    UInt32 audioCategory = kAudioSessionCategory_MediaPlayback;
-    OSStatus error = AudioSessionSetProperty(kAudioSessionProperty_AudioCategory, sizeof(audioCategory), &audioCategory);
+    // set category back to something that will allow us to play audio since AVAudioSessionCategoryAudioProcessing will not
+    NSError *error = nil;
+    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&error];
     if (error) {
-        printf("AudioSessionSetProperty kAudioSessionCategory_SoloAmbientSound failed! %ld\n", error);
+        printf("Setting the AVAudioSessionCategoryPlayback Category failed! %ld\n", (long)error.code);
         
         [self updateUI];
         
@@ -358,9 +371,9 @@ static void UpdateFormatInfo(UILabel *inLabel, CFURLRef inFileURL)
     } 
     
     // play the result
-    AVAudioPlayer *player = [[AVAudioPlayer alloc] initWithContentsOfURL:(NSURL *)destinationURL error:nil];
+    AVAudioPlayer *player = [[AVAudioPlayer alloc] initWithContentsOfURL:(NSURL *)destinationURL error:&error];
     if (nil == player) {
-        printf("AVAudioPlayer alloc failed! %ld\n", error);
+        printf("AVAudioPlayer alloc failed! %ld\n", (long)error.code);
         
         [self updateUI];
         

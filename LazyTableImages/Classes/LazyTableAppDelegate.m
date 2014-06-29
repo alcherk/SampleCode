@@ -3,7 +3,7 @@
  Abstract: Application delegate for the LazyTableImages sample.
  It also downloads in the background the "Top Paid iPhone Apps" RSS feed using NSURLConnection.
   
-  Version: 1.3 
+  Version: 1.4 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -43,13 +43,14 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2012 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
  */
 
 #import "LazyTableAppDelegate.h"
 #import "RootViewController.h"
 #import "ParseOperation.h"
+#import "AppRecord.h"
 
 // This framework was imported so we could use the kCFURLErrorNotConnectedToInternet error code.
 #import <CFNetwork/CFNetwork.h>
@@ -60,49 +61,25 @@ static NSString *const TopPaidAppsFeed =
 
 
 @interface LazyTableAppDelegate () 
-{
-    UIWindow				*window;
-    UINavigationController	*navigationController;
-	
-    // this view controller hosts our table of top paid apps
-    RootViewController      *rootViewController;
-    
-    // the list of apps shared with "RootViewController"
-    NSMutableArray          *appRecords;
-    
-    // the queue to run our "ParseOperation"
-    NSOperationQueue		*queue;
-    
-    // RSS feed network connection to the App Store
-    NSURLConnection         *appListFeedConnection;
-    NSMutableData           *appListData;
-}
+// the queue to run our "ParseOperation"
+@property (nonatomic, strong) NSOperationQueue *queue;
+// RSS feed network connection to the App Store
+@property (nonatomic, strong) NSURLConnection *appListFeedConnection;
+@property (nonatomic, strong) NSMutableData *appListData;
 @end
 
 
 @implementation LazyTableAppDelegate
 
-@synthesize window, navigationController, appRecords, rootViewController, queue, appListFeedConnection, appListData;
-
-
 #pragma mark -
 
 // -------------------------------------------------------------------------------
-//	applicationDidFinishLaunching:application
+//	application:didFinishLaunchingWithOptions:
 // -------------------------------------------------------------------------------
-- (void)applicationDidFinishLaunching:(UIApplication *)application
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // Initializr the app window
-    self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
-    self.window.rootViewController = self.navigationController;
-    [self.window makeKeyAndVisible];
-    
-    // Initialize the array of app records and pass a reference to that list to our root view controller
-    self.appRecords = [NSMutableArray array];
-    rootViewController.entries = self.appRecords;
-    
     NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:TopPaidAppsFeed]];
-    self.appListFeedConnection = [[[NSURLConnection alloc] initWithRequest:urlRequest delegate:self] autorelease];
+    self.appListFeedConnection = [[NSURLConnection alloc] initWithRequest:urlRequest delegate:self];
     
     // Test the validity of the connection object. The most likely reason for the connection object
     // to be nil is a malformed URL, which is a programmatic error easily detected during development
@@ -113,21 +90,9 @@ static NSString *const TopPaidAppsFeed =
     
     // show in the status bar that network activity is starting
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-}
-
-// -------------------------------------------------------------------------------
-//	handleLoadedApps:notif
-// -------------------------------------------------------------------------------
-- (void)handleLoadedApps:(NSArray *)loadedApps
-{
-    [self.appRecords addObjectsFromArray:loadedApps];
     
-    // tell our table view to reload its data, now that parsing has completed
-    [rootViewController.tableView reloadData];
+    return YES;
 }
-
-#pragma mark -
-#pragma mark NSURLConnection delegate methods
 
 // -------------------------------------------------------------------------------
 //	handleError:error
@@ -141,13 +106,13 @@ static NSString *const TopPaidAppsFeed =
 											  cancelButtonTitle:@"OK"
 											  otherButtonTitles:nil];
     [alertView show];
-    [alertView release];
 }
 
 // The following are delegate methods for NSURLConnection. Similar to callback functions, this is how
 // the connection object,  which is working in the background, can asynchronously communicate back to
 // its delegate on the thread from which it was started - in this case, the main thread.
 //
+#pragma mark - NSURLConnectionDelegate methods
 
 // -------------------------------------------------------------------------------
 //	connection:didReceiveResponse:response
@@ -162,7 +127,7 @@ static NSString *const TopPaidAppsFeed =
 // -------------------------------------------------------------------------------
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
 {
-    [appListData appendData:data];  // append incoming data
+    [self.appListData appendData:data];  // append incoming data
 }
 
 // -------------------------------------------------------------------------------
@@ -201,55 +166,48 @@ static NSString *const TopPaidAppsFeed =
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;   
     
     // create the queue to run our ParseOperation
-    self.queue = [[[NSOperationQueue alloc] init] autorelease];
+    self.queue = [[NSOperationQueue alloc] init];
     
-    // create an ParseOperation (NSOperation subclass) to parse the RSS feed data so that the UI is not blocked
-    // "ownership of appListData has been transferred to the parse operation and should no longer be
-    // referenced in this thread.
-    //
-    ParseOperation *parser = [[ParseOperation alloc] initWithData:appListData 
-                                                completionHandler:^(NSArray *appList) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            
-            [self handleLoadedApps:appList];
-            
-        });
-        
-        self.queue = nil;   // we are finished with the queue and our ParseOperation
-    }];
+    // create an ParseOperation (NSOperation subclass) to parse the RSS feed data
+    // so that the UI is not blocked
+    ParseOperation *parser = [[ParseOperation alloc] initWithData:self.appListData];
     
     parser.errorHandler = ^(NSError *parseError) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            
             [self handleError:parseError];
-            
         });
     };
     
-    [queue addOperation:parser]; // this will start the "ParseOperation"
+    // Referencing parser from within its completionBlock would create a retain
+    // cycle.
+    __weak ParseOperation *weakParser = parser;
     
-    [parser release];
+    parser.completionBlock = ^(void) {
+        if (weakParser.appRecordList) {
+            // The completion block may execute on any thread.  Because operations
+            // involving the UI are about to be performed, make sure they execute
+            // on the main thread.
+            dispatch_async(dispatch_get_main_queue(), ^{
+                // The root rootViewController is the only child of the navigation
+                // controller, which is the window's rootViewController.
+                RootViewController *rootViewController = (RootViewController*)[(UINavigationController*)self.window.rootViewController topViewController];
+                
+                rootViewController.entries = weakParser.appRecordList;
+                
+                // tell our table view to reload its data, now that parsing has completed
+                [rootViewController.tableView reloadData];
+            });
+        }
+        
+        // we are finished with the queue and our ParseOperation
+        self.queue = nil;
+    };
+    
+    [self.queue addOperation:parser]; // this will start the "ParseOperation"
     
     // ownership of appListData has been transferred to the parse operation
     // and should no longer be referenced in this thread
     self.appListData = nil;
-}
-
-// -------------------------------------------------------------------------------
-//	dealloc
-// -------------------------------------------------------------------------------
-- (void)dealloc
-{
-	[navigationController release];
-    [appRecords release];
-    
-	[rootViewController release];
-    [appListFeedConnection release];
-    [appListData release];
-    
-    [window release];
-    
-	[super dealloc];
 }
 
 @end

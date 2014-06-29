@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 45;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -14,9 +14,8 @@
 		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
 		2893B14B114EFD4D0094356F /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2893B14A114EFD4D0094356F /* ViewController.m */; };
 		2893B14F114EFD5B0094356F /* ReadMe.txt in Resources */ = {isa = PBXBuildFile; fileRef = 2893B14E114EFD5B0094356F /* ReadMe.txt */; };
-		53D3DE9211763723002FCB6E /* AccessoryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 53D3DE8C11763723002FCB6E /* AccessoryView.xib */; };
-		53D3DE9311763723002FCB6E /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 53D3DE8E11763723002FCB6E /* MainWindow.xib */; };
-		53D3DE9411763723002FCB6E /* ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 53D3DE9011763723002FCB6E /* ViewController.xib */; };
+		53A2CBDE169B3EE20013F294 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 53A2CBDC169B3EE20013F294 /* MainStoryboard.storyboard */; };
+		53B6FC3518DB477E00C1B479 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 53B6FC3418DB477E00C1B479 /* Images.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,9 +30,8 @@
 		2893B14E114EFD5B0094356F /* ReadMe.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ReadMe.txt; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* KeyboardAccessory_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyboardAccessory_Prefix.pch; sourceTree = "<group>"; };
-		53D3DE8D11763723002FCB6E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/AccessoryView.xib; sourceTree = "<group>"; };
-		53D3DE8F11763723002FCB6E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainWindow.xib; sourceTree = "<group>"; };
-		53D3DE9111763723002FCB6E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController.xib; sourceTree = "<group>"; };
+		53A2CBDD169B3EE20013F294 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
+		53B6FC3418DB477E00C1B479 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = KeyboardAccessory/Images.xcassets; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* KeyboardAccessory-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "KeyboardAccessory-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -95,9 +93,8 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				53D3DE8C11763723002FCB6E /* AccessoryView.xib */,
-				53D3DE8E11763723002FCB6E /* MainWindow.xib */,
-				53D3DE9011763723002FCB6E /* ViewController.xib */,
+				53B6FC3418DB477E00C1B479 /* Images.xcassets */,
+				53A2CBDC169B3EE20013F294 /* MainStoryboard.storyboard */,
 				8D1107310486CEB800E47090 /* KeyboardAccessory-Info.plist */,
 			);
 			name = Resources;
@@ -138,8 +135,12 @@
 /* Begin PBXProject section */
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0510;
+			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "KeyboardAccessory" */;
-			compatibilityVersion = "Xcode 3.1";
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -163,9 +164,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				2893B14F114EFD5B0094356F /* ReadMe.txt in Resources */,
-				53D3DE9211763723002FCB6E /* AccessoryView.xib in Resources */,
-				53D3DE9311763723002FCB6E /* MainWindow.xib in Resources */,
-				53D3DE9411763723002FCB6E /* ViewController.xib in Resources */,
+				53B6FC3518DB477E00C1B479 /* Images.xcassets in Resources */,
+				53A2CBDE169B3EE20013F294 /* MainStoryboard.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -185,28 +185,12 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		53D3DE8C11763723002FCB6E /* AccessoryView.xib */ = {
+		53A2CBDC169B3EE20013F294 /* MainStoryboard.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				53D3DE8D11763723002FCB6E /* en */,
+				53A2CBDD169B3EE20013F294 /* en */,
 			);
-			name = AccessoryView.xib;
-			sourceTree = "<group>";
-		};
-		53D3DE8E11763723002FCB6E /* MainWindow.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				53D3DE8F11763723002FCB6E /* en */,
-			);
-			name = MainWindow.xib;
-			sourceTree = "<group>";
-		};
-		53D3DE9011763723002FCB6E /* ViewController.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				53D3DE9111763723002FCB6E /* en */,
-			);
-			name = ViewController.xib;
+			name = MainStoryboard.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -216,6 +200,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -230,6 +217,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = KeyboardAccessory_Prefix.pch;
@@ -248,9 +238,10 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				PREBINDING = NO;
-				SDKROOT = iphoneos3.2;
-				TARGETED_DEVICE_FAMILY = 2;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -263,10 +254,10 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				PREBINDING = NO;
-				SDKROOT = iphoneos3.2;
-				TARGETED_DEVICE_FAMILY = 2;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};

@@ -9,30 +9,33 @@ The root view controller displays information (title, author, and copyright date
 ===========================================================================
 BUILD REQUIREMENTS:
 
-iOS 4.0 SDK
+iOS 6.0 SDK or later
 
 ===========================================================================
 RUNTIME REQUIREMENTS:
 
-iPhone OS 3.2 or later
+iOS 5.0 or later
 
 ===========================================================================
 PACKAGING LIST:
 
 SimpleUndoAppDelegate.{h,m}
-Configures the book and the first view controllers.
+    Configures the book and the first view controllers.
 
 RootViewController.{h,m}
-Manages a table view that displays information about a book.
+    Manages a table view that displays information about a book.
 
 EditingViewController.{h,m}
-View for editing a field of data, text or date.
+    View controller for editing a field of data, text or date.
 
 Book.{h,m}
-A simple managed object class to represent a book.
+    A simple managed object class to represent a book.
 
 ===========================================================================
 CHANGES FROM PREVIOUS VERSIONS:
+
+Version 1.2
+- Adopted storyboards and ARC.
 
 Version 1.1
 - Upgraded project to build with the iOS 4.0 SDK.
@@ -41,4 +44,4 @@ Version 1.0
 - First version.
 
 ===========================================================================
-Copyright (C) 2009-2010 Apple Inc. All rights reserved.
+Copyright (C) 2009-2013 Apple Inc. All rights reserved.

@@ -1,7 +1,7 @@
 /*
      File: Earthquake.h
  Abstract: The model class that stores the information about an earthquake.
-  Version: 1.0
+  Version: 1.3
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,38 +41,31 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2011 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
 #import <Foundation/Foundation.h>
 
-@interface Earthquake : NSManagedObject {
-    // Magnitude of the earthquake on the Richter scale.
-    NSNumber *magnitude;
-    
-    // Name of the location of the earthquake.
-    NSString *location;
-    
-    // Date and time at which the earthquake occurred.
-    NSDate *date;
-    
-    // Holds the URL to the USGS web page of the earthquake.
-    // The application uses this URL to open that page in Safari.
-    NSURL *USGSWebLink;
-    
-    // Latitude and longitude of the earthquake. These properties are not displayed by the
-    // application, but are used to create a URL for opening the Maps application. They could
-    // alternatively be used in conjuction with MapKit to be shown in a map view.
-    NSNumber *latitude;
-    NSNumber *longitude;
-}
+@interface Earthquake : NSManagedObject
 
-@property (nonatomic, assign) NSNumber *magnitude;
-@property (nonatomic, retain) NSString *location;
-@property (nonatomic, retain) NSDate *date;
-@property (nonatomic, retain) NSString *USGSWebLink;
-@property (nonatomic, assign) NSNumber *latitude;
-@property (nonatomic, assign) NSNumber *longitude;
+// Magnitude of the earthquake on the Richter scale.
+@property (nonatomic, unsafe_unretained) NSNumber *magnitude;
+
+// Name of the location of the earthquake.
+@property (nonatomic, strong) NSString *location;
+
+// Date and time at which the earthquake occurred.
+@property (nonatomic, strong) NSDate *date;
+
+// Holds the URL string to the USGS web page of the earthquake.
+// The application uses this URL to open that page in Safari.
+// create a URL for opening the Maps application.
+// They could alternatively be used in conjuction with MapKit to be shown in a map view.
+@property (nonatomic, strong) NSString *USGSWebLink;
+
+// Latitude and longitude of the earthquake.
+@property (nonatomic, unsafe_unretained) NSNumber *latitude;
+@property (nonatomic, unsafe_unretained) NSNumber *longitude;
 
 @end

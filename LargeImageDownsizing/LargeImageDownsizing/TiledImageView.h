@@ -1,7 +1,7 @@
 /*
      File: TiledImageView.h 
  Abstract: View backed by CATiledLayer which is good for particularly large views. 
-  Version: 1.0 
+  Version: 1.1 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2011 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2014 Apple Inc. All Rights Reserved. 
   
 */
 
@@ -54,6 +54,6 @@
 }
 @property (retain) UIImage* image;
 
--(id)initWithFrame:(CGRect)_frame image:(UIImage*)_image scale:(CGFloat)_scale;
+-(id)initWithFrame:(CGRect)_frame image:(UIImage*)image scale:(CGFloat)scale;
 
 @end

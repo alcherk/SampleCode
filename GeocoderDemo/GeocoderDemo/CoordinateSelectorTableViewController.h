@@ -1,7 +1,7 @@
 /*
      File: CoordinateSelectorTableViewController.h
  Abstract: UITableViewController that allows for the selection of a CLCoordinate2D.
-  Version: 1.2
+  Version: 1.3
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2012 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
 
@@ -57,7 +57,7 @@ typedef enum
 
 // this class contains a list of names and associated Coordinates as well as allowing
 // for the selection of a custom Coordinate it vends the users selection through
-// the 4 selected* properties.. 
+// the 4 selected properties.. 
 //
 @interface CoordinateSelectorTableViewController : UITableViewController <UITextFieldDelegate, CLLocationManagerDelegate>
 

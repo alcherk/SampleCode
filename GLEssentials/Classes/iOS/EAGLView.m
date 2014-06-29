@@ -1,7 +1,7 @@
 /*
      File: EAGLView.m
  Abstract: The EAGLView class is a UIView subclass that renders OpenGL scene.
-  Version: 1.0
+  Version: 1.7
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010~2011 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
 
@@ -51,7 +51,6 @@
 
 @implementation EAGLView
 
-@synthesize animating;
 @dynamic animationFrameInterval;
 
 // You must implement this method
@@ -89,7 +88,7 @@
 			return nil;
 		}
         
-		animating = FALSE;
+		_animating = FALSE;
 		displayLinkSupported = FALSE;
 		animationFrameInterval = 1;
 		displayLink = nil;
@@ -135,7 +134,7 @@
 	{
 		animationFrameInterval = frameInterval;
 		
-		if (animating)
+		if (_animating)
 		{
 			[self stopAnimation];
 			[self startAnimation];
@@ -145,7 +144,7 @@
 
 - (void) startAnimation
 {
-	if (!animating)
+	if (!_animating)
 	{
 		if (displayLinkSupported)
 		{
@@ -160,13 +159,13 @@
 		else
 			animationTimer = [NSTimer scheduledTimerWithTimeInterval:(NSTimeInterval)((1.0 / 60.0) * animationFrameInterval) target:self selector:@selector(drawView:) userInfo:nil repeats:TRUE];
 		
-		animating = TRUE;
+		_animating = TRUE;
 	}
 }
 
 - (void)stopAnimation
 {
-	if (animating)
+	if (_animating)
 	{
 		if (displayLinkSupported)
 		{
@@ -179,7 +178,7 @@
 			animationTimer = nil;
 		}
 		
-		animating = FALSE;
+		_animating = FALSE;
 	}
 }
 

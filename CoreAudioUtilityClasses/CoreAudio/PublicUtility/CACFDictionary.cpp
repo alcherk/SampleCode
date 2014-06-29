@@ -1,7 +1,7 @@
 /*
      File: CACFDictionary.cpp 
  Abstract:  CACFDictionary.h  
-  Version: 1.01 
+  Version: 1.0.4 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2012 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
 */
 //=============================================================================
@@ -241,6 +241,33 @@ bool	CACFDictionary::GetFixed64(const CFStringRef inKey, Float64& outValue) cons
 			outValue = static_cast<Float64>(theFixed64 >> 32);
 			outValue += static_cast<Float64>(theFixed64 & 0x00000000FFFFFFFFLL) / static_cast<Float64>(0x0000000100000000LL);
 			theAnswer = true;
+		}
+	}
+	
+	return theAnswer;
+}
+
+bool	CACFDictionary::Get4CC(const CFStringRef inKey, UInt32& outValue) const
+{
+	bool theAnswer = false;
+	
+	CFTypeRef theValue = NULL;
+	if(GetCFType(inKey, theValue))
+	{
+		if((theValue != NULL) && (CFGetTypeID(theValue) == CFNumberGetTypeID()))
+		{
+			CFNumberGetValue(static_cast<CFNumberRef>(theValue), kCFNumberSInt32Type, &outValue);
+			theAnswer = true;
+		}
+		else if((theValue != NULL) && (CFGetTypeID(theValue) == CFStringGetTypeID()))
+		{
+			CFStringRef theString = static_cast<CFStringRef>(theValue);
+			if(CFStringGetLength(theString) == 4)
+			{
+				char theCString[5];
+				CFStringGetCString(theString, theCString, 5, kCFStringEncodingASCII);
+				outValue = CFSwapInt32BigToHost(*reinterpret_cast<UInt32*>(theCString));
+			}
 		}
 	}
 	

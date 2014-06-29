@@ -3,7 +3,7 @@
  Abstract: Table view controller to manage an editable table view that displays information about a recipe.
  The table view uses different cell types for different row types.
  
-  Version: 1.4
+  Version: 1.5
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -43,33 +43,14 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
 @class Recipe;
 
-@interface RecipeDetailViewController : UITableViewController <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UITextFieldDelegate> {
-    @private
-        Recipe *recipe;
-        NSMutableArray *ingredients;
-        
-        UIView *tableHeaderView;    
-        UIButton *photoButton;
-        UITextField *nameTextField;
-        UITextField *overviewTextField;
-        UITextField *prepTimeTextField;
-}
+@interface RecipeDetailViewController : UITableViewController
             
-@property (nonatomic, retain) Recipe *recipe;
-@property (nonatomic, retain) NSMutableArray *ingredients;
-
-@property (nonatomic, retain) IBOutlet UIView *tableHeaderView;
-@property (nonatomic, retain) IBOutlet UIButton *photoButton;
-@property (nonatomic, retain) IBOutlet UITextField *nameTextField;
-@property (nonatomic, retain) IBOutlet UITextField *overviewTextField;
-@property (nonatomic, retain) IBOutlet UITextField *prepTimeTextField;
-
-- (IBAction)photoTapped;
+@property (nonatomic, strong) Recipe *recipe;
 
 @end

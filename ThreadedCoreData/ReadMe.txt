@@ -15,33 +15,30 @@ For those new to Core Data, it can be helpful to compare SeismicXML sample with 
 ===========================================================================
 BUILD REQUIREMENTS
 
-iOS SDK 4.2 or later
+iOS SDK 7.0 or later
 
 ===========================================================================
 RUNTIME REQUIREMENTS
 
-iOS OS 3.2 or later
+iOS 6.0 or later
 
 ===========================================================================
 PACKAGING LIST
 
-SeismicXMLAppDelegate
+APLAppDelegate
 Delegate for the application, initiates the download of the XML data and parses the Earthquake objects at launch time.
 
 Earthquake
 The model class (NSManagedObject) that stores the information about an earthquake.
 
-RootViewController
+APLViewController
 A UITableViewController subclass that manages the table view.
 
-ParseOperation
+APLParseOperation
 The NSOperation class used to perform the XML parsing of earthquake data, creating managed objects based on each earthquake and stores them on the main thread.
 
-===========================================================================
-CHANGES FROM PREVIOUS VERSIONS
-
-Version 1.0
-- New Release
+APLEarthquakeTableViewCell
+Custom UITableViewCell for displaying each earthquake's data.
 
 ===========================================================================
-Copyright (C) 2011 Apple Inc. All rights reserved.
+Copyright (C) 2011-2014 Apple Inc. All rights reserved.

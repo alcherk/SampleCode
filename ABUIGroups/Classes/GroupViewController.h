@@ -1,7 +1,8 @@
 /*
      File: GroupViewController.h
- Abstract: Definitions for the GroupViewController class.
-  Version: 1.0
+ Abstract: Prompts a user for access to their address book data, then updates its UI according to their response.
+ Adds, displays, and removes group records from Contacts.
+  Version: 1.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,27 +42,10 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2011 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
 */
 
-#import <UIKit/UIKit.h>
-#import "AddGroupViewController.h"
-
-@interface GroupViewController : UITableViewController <AddGroupDelegate>
-{
-	NSMutableArray *sourcesAndGroups;
-	ABAddressBookRef addressBook;
-}
-	
-@property (nonatomic, retain) NSMutableArray *sourcesAndGroups;
-
-- (NSString *)nameForSourceWithIdentifier:(int)identifier;
-- (NSString *)nameForGroup:(ABRecordRef)group;
-- (NSString *)nameForSource:(ABRecordRef)source;
-
-- (void)showAddGroupViewController;
-- (void)deleteGroup:(ABRecordRef)group fromAddressBook:(ABAddressBookRef)myAddressBook;
-- (NSMutableArray *)fetchGroupsInAddressBook:(ABAddressBookRef)myAddressBook;
-
+@interface GroupViewController : UITableViewController
 @end
+

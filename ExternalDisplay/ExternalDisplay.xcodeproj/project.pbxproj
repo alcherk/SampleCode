@@ -7,63 +7,46 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1D3623260D0F684500981E51 /* ExternalDisplayAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* ExternalDisplayAppDelegate.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		2892E4100DC94CBA00A64D0F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */; };
-		BF6AB9A7130B4AD900724635 /* Default-Landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = BF6AB9A6130B4AD900724635 /* Default-Landscape.png */; };
-		BF6AB9AB130B4B2200724635 /* ExternalDisplayViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF6AB9AA130B4B2200724635 /* ExternalDisplayViewController.xib */; };
-		BF6AB9C5130B4BC300724635 /* ExternalDisplayViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF6AB9C4130B4BC300724635 /* ExternalDisplayViewController_iPad.xib */; };
-		BF6AB9C7130B4BD200724635 /* PresoModeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF6AB9C6130B4BD200724635 /* PresoModeViewController.xib */; };
-		BF6AB9C9130B4BDC00724635 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF6AB9C8130B4BDC00724635 /* MainWindow.xib */; };
-		BF6AB9CB130B4BEA00724635 /* MainWindow_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF6AB9CA130B4BEA00724635 /* MainWindow_iPad.xib */; };
-		BF898DC11244285F008489AA /* ExternalDisplayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF898DC01244285F008489AA /* ExternalDisplayViewController.m */; };
-		BF898DD012442887008489AA /* ScreenOne.png in Resources */ = {isa = PBXBuildFile; fileRef = BF898DCD12442887008489AA /* ScreenOne.png */; };
-		BF898DD112442887008489AA /* ScreenTwo.png in Resources */ = {isa = PBXBuildFile; fileRef = BF898DCE12442887008489AA /* ScreenTwo.png */; };
-		BF898E8912492CFD008489AA /* PresoModeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF898E8812492CFD008489AA /* PresoModeViewController.m */; };
-		BF89910C1253DA51008489AA /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = BF8991051253DA51008489AA /* Icon-72.png */; };
-		BF89910D1253DA51008489AA /* Icon-Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = BF8991061253DA51008489AA /* Icon-Small-50.png */; };
-		BF89910E1253DA51008489AA /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = BF8991071253DA51008489AA /* Icon-Small.png */; };
-		BF89910F1253DA51008489AA /* Icon-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BF8991081253DA51008489AA /* Icon-Small@2x.png */; };
-		BF8991101253DA51008489AA /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = BF8991091253DA51008489AA /* Icon.png */; };
-		BF8991111253DA51008489AA /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BF89910A1253DA51008489AA /* Icon@2x.png */; };
-		BF8991121253DA51008489AA /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = BF89910B1253DA51008489AA /* iTunesArtwork */; };
-		BF8991221253DAE1008489AA /* Default-Portrait.png in Resources */ = {isa = PBXBuildFile; fileRef = BF8991211253DAE1008489AA /* Default-Portrait.png */; };
-		BF89913E1253E1E8008489AA /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = BF89913D1253E1E8008489AA /* Default.png */; };
+		BF4D64EE17E26D250016570D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BF4D64ED17E26D250016570D /* Images.xcassets */; };
+		BFCC908417E3B1D0003A1F89 /* ExternalDisplayAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BFCC907F17E3B1D0003A1F89 /* ExternalDisplayAppDelegate.m */; };
+		BFCC908517E3B1D0003A1F89 /* ExternalDisplayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BFCC908117E3B1D0003A1F89 /* ExternalDisplayViewController.m */; };
+		BFCC908617E3B1D0003A1F89 /* PresoModeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BFCC908317E3B1D0003A1F89 /* PresoModeViewController.m */; };
+		BFCC909217E3B434003A1F89 /* ExternalDisplayViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFCC908817E3B434003A1F89 /* ExternalDisplayViewController_iPad.xib */; };
+		BFCC909317E3B434003A1F89 /* ExternalDisplayViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFCC908A17E3B434003A1F89 /* ExternalDisplayViewController.xib */; };
+		BFCC909417E3B434003A1F89 /* MainWindow_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFCC908C17E3B434003A1F89 /* MainWindow_iPad.xib */; };
+		BFCC909517E3B434003A1F89 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFCC908E17E3B434003A1F89 /* MainWindow.xib */; };
+		BFCC909617E3B434003A1F89 /* PresoModeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = BFCC909017E3B434003A1F89 /* PresoModeViewController.xib */; };
+		BFCC909917E3B468003A1F89 /* ScreenOne.png in Resources */ = {isa = PBXBuildFile; fileRef = BFCC909717E3B468003A1F89 /* ScreenOne.png */; };
+		BFCC909A17E3B468003A1F89 /* ScreenTwo.png in Resources */ = {isa = PBXBuildFile; fileRef = BFCC909817E3B468003A1F89 /* ScreenTwo.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		1D3623240D0F684500981E51 /* ExternalDisplayAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExternalDisplayAppDelegate.h; sourceTree = "<group>"; };
-		1D3623250D0F684500981E51 /* ExternalDisplayAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExternalDisplayAppDelegate.m; sourceTree = "<group>"; };
 		1D6058910D05DD3D006BFB54 /* ExternalDisplay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ExternalDisplay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		28A0AAE50D9B0CCF005BE974 /* ExternalDisplay_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExternalDisplay_Prefix.pch; sourceTree = "<group>"; };
-		28AD735F0D9D9599002E5188 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainWindow.xib; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* ExternalDisplay-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "ExternalDisplay-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
-		BF6AB9A6130B4AD900724635 /* Default-Landscape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape.png"; sourceTree = "<group>"; };
-		BF898DBF1244285F008489AA /* ExternalDisplayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExternalDisplayViewController.h; sourceTree = "<group>"; };
-		BF898DC01244285F008489AA /* ExternalDisplayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExternalDisplayViewController.m; sourceTree = "<group>"; };
-		BF898DCC12442887008489AA /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/ExternalDisplayViewController.xib; sourceTree = "<group>"; };
-		BF898DCD12442887008489AA /* ScreenOne.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ScreenOne.png; sourceTree = "<group>"; };
-		BF898DCE12442887008489AA /* ScreenTwo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ScreenTwo.png; sourceTree = "<group>"; };
-		BF898E1312480A41008489AA /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainWindow_iPad.xib; sourceTree = "<group>"; };
-		BF898E1512480A49008489AA /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/ExternalDisplayViewController_iPad.xib; sourceTree = "<group>"; };
-		BF898E2312481A71008489AA /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/PresoModeViewController.xib; sourceTree = "<group>"; };
-		BF898E8712492CFD008489AA /* PresoModeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PresoModeViewController.h; sourceTree = "<group>"; };
-		BF898E8812492CFD008489AA /* PresoModeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PresoModeViewController.m; sourceTree = "<group>"; };
-		BF8991051253DA51008489AA /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72.png"; sourceTree = "<group>"; };
-		BF8991061253DA51008489AA /* Icon-Small-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small-50.png"; sourceTree = "<group>"; };
-		BF8991071253DA51008489AA /* Icon-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small.png"; sourceTree = "<group>"; };
-		BF8991081253DA51008489AA /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small@2x.png"; sourceTree = "<group>"; };
-		BF8991091253DA51008489AA /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
-		BF89910A1253DA51008489AA /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
-		BF89910B1253DA51008489AA /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; path = iTunesArtwork; sourceTree = "<group>"; };
-		BF8991211253DAE1008489AA /* Default-Portrait.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait.png"; sourceTree = "<group>"; };
-		BF89913D1253E1E8008489AA /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		BF4D64ED17E26D250016570D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		BFCC6FE617E3BA5F002A2E3D /* ReadMe.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = ReadMe.txt; sourceTree = "<group>"; };
+		BFCC907E17E3B1D0003A1F89 /* ExternalDisplayAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExternalDisplayAppDelegate.h; sourceTree = "<group>"; };
+		BFCC907F17E3B1D0003A1F89 /* ExternalDisplayAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExternalDisplayAppDelegate.m; sourceTree = "<group>"; };
+		BFCC908017E3B1D0003A1F89 /* ExternalDisplayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExternalDisplayViewController.h; sourceTree = "<group>"; };
+		BFCC908117E3B1D0003A1F89 /* ExternalDisplayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExternalDisplayViewController.m; sourceTree = "<group>"; };
+		BFCC908217E3B1D0003A1F89 /* PresoModeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PresoModeViewController.h; sourceTree = "<group>"; };
+		BFCC908317E3B1D0003A1F89 /* PresoModeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PresoModeViewController.m; sourceTree = "<group>"; };
+		BFCC908917E3B434003A1F89 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/ExternalDisplayViewController_iPad.xib; sourceTree = "<group>"; };
+		BFCC908B17E3B434003A1F89 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/ExternalDisplayViewController.xib; sourceTree = "<group>"; };
+		BFCC908D17E3B434003A1F89 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainWindow_iPad.xib; sourceTree = "<group>"; };
+		BFCC908F17E3B434003A1F89 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainWindow.xib; sourceTree = "<group>"; };
+		BFCC909117E3B434003A1F89 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/PresoModeViewController.xib; sourceTree = "<group>"; };
+		BFCC909717E3B468003A1F89 /* ScreenOne.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ScreenOne.png; path = ExternalDisplay/images/ScreenOne.png; sourceTree = SOURCE_ROOT; };
+		BFCC909817E3B468003A1F89 /* ScreenTwo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ScreenTwo.png; path = ExternalDisplay/images/ScreenTwo.png; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,17 +63,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		080E96DDFE201D6D7F000001 /* Classes */ = {
+		080E96DDFE201D6D7F000001 /* ExternalDisplay */ = {
 			isa = PBXGroup;
 			children = (
-				1D3623240D0F684500981E51 /* ExternalDisplayAppDelegate.h */,
-				1D3623250D0F684500981E51 /* ExternalDisplayAppDelegate.m */,
-				BF898DBF1244285F008489AA /* ExternalDisplayViewController.h */,
-				BF898DC01244285F008489AA /* ExternalDisplayViewController.m */,
-				BF898E8712492CFD008489AA /* PresoModeViewController.h */,
-				BF898E8812492CFD008489AA /* PresoModeViewController.m */,
+				BFCC907E17E3B1D0003A1F89 /* ExternalDisplayAppDelegate.h */,
+				BFCC907F17E3B1D0003A1F89 /* ExternalDisplayAppDelegate.m */,
+				BFCC908017E3B1D0003A1F89 /* ExternalDisplayViewController.h */,
+				BFCC908117E3B1D0003A1F89 /* ExternalDisplayViewController.m */,
+				BFCC908217E3B1D0003A1F89 /* PresoModeViewController.h */,
+				BFCC908317E3B1D0003A1F89 /* PresoModeViewController.m */,
+				BFCC908C17E3B434003A1F89 /* MainWindow_iPad.xib */,
+				BFCC908E17E3B434003A1F89 /* MainWindow.xib */,
+				BFCC908817E3B434003A1F89 /* ExternalDisplayViewController_iPad.xib */,
+				BFCC908A17E3B434003A1F89 /* ExternalDisplayViewController.xib */,
+				BFCC909017E3B434003A1F89 /* PresoModeViewController.xib */,
+				BF4D64ED17E26D250016570D /* Images.xcassets */,
+				BF8991041253DA51008489AA /* images */,
+				BFCC908717E3B348003A1F89 /* Supporting Files */,
 			);
-			path = Classes;
+			path = ExternalDisplay;
 			sourceTree = "<group>";
 		};
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
@@ -104,36 +95,12 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				080E96DDFE201D6D7F000001 /* Classes */,
-				29B97315FDCFA39411CA2CEA /* Other Sources */,
-				29B97317FDCFA39411CA2CEA /* Resources */,
+				BFCC6FE617E3BA5F002A2E3D /* ReadMe.txt */,
+				080E96DDFE201D6D7F000001 /* ExternalDisplay */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
 			name = CustomTemplate;
-			sourceTree = "<group>";
-		};
-		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
-			isa = PBXGroup;
-			children = (
-				28A0AAE50D9B0CCF005BE974 /* ExternalDisplay_Prefix.pch */,
-				29B97316FDCFA39411CA2CEA /* main.m */,
-			);
-			name = "Other Sources";
-			sourceTree = "<group>";
-		};
-		29B97317FDCFA39411CA2CEA /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				BF6AB9AA130B4B2200724635 /* ExternalDisplayViewController.xib */,
-				BF6AB9C4130B4BC300724635 /* ExternalDisplayViewController_iPad.xib */,
-				BF6AB9C6130B4BD200724635 /* PresoModeViewController.xib */,
-				BF6AB9C8130B4BDC00724635 /* MainWindow.xib */,
-				BF6AB9CA130B4BEA00724635 /* MainWindow_iPad.xib */,
-				8D1107310486CEB800E47090 /* ExternalDisplay-Info.plist */,
-				BF8991041253DA51008489AA /* images */,
-			);
-			name = Resources;
 			sourceTree = "<group>";
 		};
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
@@ -149,20 +116,21 @@
 		BF8991041253DA51008489AA /* images */ = {
 			isa = PBXGroup;
 			children = (
-				BF8991051253DA51008489AA /* Icon-72.png */,
-				BF8991061253DA51008489AA /* Icon-Small-50.png */,
-				BF8991071253DA51008489AA /* Icon-Small.png */,
-				BF8991081253DA51008489AA /* Icon-Small@2x.png */,
-				BF8991091253DA51008489AA /* Icon.png */,
-				BF89910A1253DA51008489AA /* Icon@2x.png */,
-				BF89910B1253DA51008489AA /* iTunesArtwork */,
-				BF898DCD12442887008489AA /* ScreenOne.png */,
-				BF898DCE12442887008489AA /* ScreenTwo.png */,
-				BF89913D1253E1E8008489AA /* Default.png */,
-				BF8991211253DAE1008489AA /* Default-Portrait.png */,
-				BF6AB9A6130B4AD900724635 /* Default-Landscape.png */,
+				BFCC909717E3B468003A1F89 /* ScreenOne.png */,
+				BFCC909817E3B468003A1F89 /* ScreenTwo.png */,
 			);
-			path = images;
+			name = images;
+			path = ../images;
+			sourceTree = "<group>";
+		};
+		BFCC908717E3B348003A1F89 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				8D1107310486CEB800E47090 /* ExternalDisplay-Info.plist */,
+				29B97316FDCFA39411CA2CEA /* main.m */,
+				28A0AAE50D9B0CCF005BE974 /* ExternalDisplay_Prefix.pch */,
+			);
+			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -190,6 +158,9 @@
 /* Begin PBXProject section */
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0500;
+			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "ExternalDisplay" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
@@ -215,23 +186,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BF6AB9C9130B4BDC00724635 /* MainWindow.xib in Resources */,
-				BF6AB9AB130B4B2200724635 /* ExternalDisplayViewController.xib in Resources */,
-				BF898DD012442887008489AA /* ScreenOne.png in Resources */,
-				BF898DD112442887008489AA /* ScreenTwo.png in Resources */,
-				BF6AB9CB130B4BEA00724635 /* MainWindow_iPad.xib in Resources */,
-				BF6AB9C5130B4BC300724635 /* ExternalDisplayViewController_iPad.xib in Resources */,
-				BF6AB9C7130B4BD200724635 /* PresoModeViewController.xib in Resources */,
-				BF89910C1253DA51008489AA /* Icon-72.png in Resources */,
-				BF89910D1253DA51008489AA /* Icon-Small-50.png in Resources */,
-				BF89910E1253DA51008489AA /* Icon-Small.png in Resources */,
-				BF89910F1253DA51008489AA /* Icon-Small@2x.png in Resources */,
-				BF8991101253DA51008489AA /* Icon.png in Resources */,
-				BF8991111253DA51008489AA /* Icon@2x.png in Resources */,
-				BF8991121253DA51008489AA /* iTunesArtwork in Resources */,
-				BF8991221253DAE1008489AA /* Default-Portrait.png in Resources */,
-				BF89913E1253E1E8008489AA /* Default.png in Resources */,
-				BF6AB9A7130B4AD900724635 /* Default-Landscape.png in Resources */,
+				BFCC909517E3B434003A1F89 /* MainWindow.xib in Resources */,
+				BFCC909617E3B434003A1F89 /* PresoModeViewController.xib in Resources */,
+				BFCC909A17E3B468003A1F89 /* ScreenTwo.png in Resources */,
+				BFCC909417E3B434003A1F89 /* MainWindow_iPad.xib in Resources */,
+				BFCC909217E3B434003A1F89 /* ExternalDisplayViewController_iPad.xib in Resources */,
+				BFCC909917E3B468003A1F89 /* ScreenOne.png in Resources */,
+				BF4D64EE17E26D250016570D /* Images.xcassets in Resources */,
+				BFCC909317E3B434003A1F89 /* ExternalDisplayViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -242,54 +204,54 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BFCC908517E3B1D0003A1F89 /* ExternalDisplayViewController.m in Sources */,
+				BFCC908617E3B1D0003A1F89 /* PresoModeViewController.m in Sources */,
+				BFCC908417E3B1D0003A1F89 /* ExternalDisplayAppDelegate.m in Sources */,
 				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
-				1D3623260D0F684500981E51 /* ExternalDisplayAppDelegate.m in Sources */,
-				BF898DC11244285F008489AA /* ExternalDisplayViewController.m in Sources */,
-				BF898E8912492CFD008489AA /* PresoModeViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		BF6AB9AA130B4B2200724635 /* ExternalDisplayViewController.xib */ = {
+		BFCC908817E3B434003A1F89 /* ExternalDisplayViewController_iPad.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				BF898DCC12442887008489AA /* English */,
-			);
-			name = ExternalDisplayViewController.xib;
-			sourceTree = "<group>";
-		};
-		BF6AB9C4130B4BC300724635 /* ExternalDisplayViewController_iPad.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				BF898E1512480A49008489AA /* English */,
+				BFCC908917E3B434003A1F89 /* English */,
 			);
 			name = ExternalDisplayViewController_iPad.xib;
 			sourceTree = "<group>";
 		};
-		BF6AB9C6130B4BD200724635 /* PresoModeViewController.xib */ = {
+		BFCC908A17E3B434003A1F89 /* ExternalDisplayViewController.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				BF898E2312481A71008489AA /* English */,
+				BFCC908B17E3B434003A1F89 /* English */,
 			);
-			name = PresoModeViewController.xib;
+			name = ExternalDisplayViewController.xib;
 			sourceTree = "<group>";
 		};
-		BF6AB9C8130B4BDC00724635 /* MainWindow.xib */ = {
+		BFCC908C17E3B434003A1F89 /* MainWindow_iPad.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				28AD735F0D9D9599002E5188 /* English */,
+				BFCC908D17E3B434003A1F89 /* English */,
+			);
+			name = MainWindow_iPad.xib;
+			sourceTree = "<group>";
+		};
+		BFCC908E17E3B434003A1F89 /* MainWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BFCC908F17E3B434003A1F89 /* English */,
 			);
 			name = MainWindow.xib;
 			sourceTree = "<group>";
 		};
-		BF6AB9CA130B4BEA00724635 /* MainWindow_iPad.xib */ = {
+		BFCC909017E3B434003A1F89 /* PresoModeViewController.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				BF898E1312480A41008489AA /* English */,
+				BFCC909117E3B434003A1F89 /* English */,
 			);
-			name = MainWindow_iPad.xib;
+			name = PresoModeViewController.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -299,12 +261,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = ExternalDisplay_Prefix.pch;
-				INFOPLIST_FILE = "ExternalDisplay-Info.plist";
+				GCC_PREFIX_HEADER = ExternalDisplay/ExternalDisplay_Prefix.pch;
+				INFOPLIST_FILE = "ExternalDisplay/ExternalDisplay-Info.plist";
 				PRODUCT_NAME = ExternalDisplay;
 			};
 			name = Debug;
@@ -313,10 +278,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = ExternalDisplay_Prefix.pch;
-				INFOPLIST_FILE = "ExternalDisplay-Info.plist";
+				GCC_PREFIX_HEADER = ExternalDisplay/ExternalDisplay_Prefix.pch;
+				INFOPLIST_FILE = "ExternalDisplay/ExternalDisplay-Info.plist";
 				PRODUCT_NAME = ExternalDisplay;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -325,12 +293,12 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -340,12 +308,11 @@
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PREBINDING = NO;
 				SDKROOT = iphoneos;

@@ -51,4 +51,4 @@ Image.png
 The screen-sized image loaded as a texture.
 
 ================================================================================
-Copyright (C) 2008-2010 Apple Inc. All rights reserved.
+Copyright (C) 2008-2014 Apple Inc. All rights reserved.

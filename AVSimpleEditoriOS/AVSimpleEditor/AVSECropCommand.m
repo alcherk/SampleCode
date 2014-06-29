@@ -1,7 +1,7 @@
 /*
      File: AVSECropCommand.m
  Abstract: A subclass of AVSECommand which uses AVMutableVideoComposition to achieve a crop effect. This tool crops the bottom right quadrant of a composition. This is achieved by reducing the video composition's render size to half of original and then applying a CGAffineTransformMakeTranslation transform to move the appropriate quadrant into view.
-  Version: 1.0
+  Version: 1.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2012 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
 

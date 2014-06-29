@@ -2,7 +2,7 @@
      File: ReverseViewController.m 
  Abstract: View controller in charge of reverse geocoding.
   
-  Version: 1.2 
+  Version: 1.3 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -42,7 +42,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2012 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
  */
 
@@ -58,8 +58,8 @@
 @property (readonly) CLLocationCoordinate2D currentUserCoordinate;
 @property (readonly) NSInteger selectedRow;
 
-@property (readonly) UIActivityIndicatorView *spinner; // weak
-@property (readonly) UIActivityIndicatorView *currentLocationActivityIndicatorView; // weak
+@property (weak, readonly) UIActivityIndicatorView *spinner;
+@property (weak, readonly) UIActivityIndicatorView *currentLocationActivityIndicatorView;
 
 @end
 
@@ -67,33 +67,6 @@
 #pragma mark -
 
 @implementation ReverseViewController
-
-@synthesize locationManager = _locationManager;
-
-@synthesize currentUserCoordinate = _currentUserCoordinate;
-@synthesize selectedRow = _selectedRow;
-
-@synthesize spinner = _spinner;
-@synthesize currentLocationActivityIndicatorView = _currentLocationActivityIndicatorView;
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self)
-    {
-        self.title = @"Reverse";
-        self.tabBarItem.image = [UIImage imageNamed:@"reverse"];
-    }
-    return self;
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-}
-
-
-#pragma mark - View lifecycle
 
 - (void)viewDidLoad
 {
@@ -104,6 +77,8 @@
     _selectedRow = 0;
 }
 
+// viewDidUnload is not called on iOS 6.0 and later
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0
 - (void)viewDidUnload
 {
     // if the view has gone away, so should we set our weak pointer
@@ -112,39 +87,15 @@
     
     [super viewDidUnload];
 }
-
-- (void)dealloc
-{
-    _locationManager.delegate = nil;
-    [_locationManager release];
-    
-    [super dealloc];
-}
+#endif
 
 
-#pragma mark -
-#pragma mark View Controller Appearance
+#pragma mark - View Controller Rotation
 
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-	[super viewWillDisappear:animated];
-}
-
-- (void)viewDidDisappear:(BOOL)animated
-{
-	[super viewDidDisappear:animated];
-}
-
+// rotation support for iOS 5.x and earlier, note for iOS 6.0 and later all you need is
+// "UISupportedInterfaceOrientations" defined in your Info.plist
+//
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // return YES for supported orientations
@@ -157,10 +108,10 @@
         return YES;
     }
 }
+#endif
 
 
-#pragma mark -
-#pragma mark UI Handling
+#pragma mark - UI Handling
 
 - (void)showSpinner:(UIActivityIndicatorView *)whichSpinner withShowState:(BOOL)show
 {
@@ -184,7 +135,7 @@
     {
         // add the spinner to the table cell
         UIActivityIndicatorView *curLocSpinner =
-            [[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray] autorelease];
+            [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         [curLocSpinner startAnimating];    
         [curLocSpinner setFrame:CGRectMake(200.0, 0.0, 22.0, 22.0)];
         [curLocSpinner setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin];
@@ -205,16 +156,16 @@
     if (!_spinner)
     {
         // add the spinner to the table's footer view
-        UIView* containerView = [[[UIView alloc] initWithFrame:
-                                    CGRectMake(0.0, 0.0, self.tableView.frame.size.width, 22.0)] autorelease];
+        UIView *containerView = [[UIView alloc] initWithFrame:
+                                    CGRectMake(0.0, 0.0, CGRectGetWidth(self.tableView.frame), 22.0)];
         UIActivityIndicatorView *spinner =
-            [[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray] autorelease];
+            [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
            
         // size and center the spinner
         [spinner setFrame:CGRectZero];
         [spinner sizeToFit];
         CGRect frame = spinner.frame;
-        frame.origin.x = (self.tableView.frame.size.width - frame.size.width) / 2.0;
+        frame.origin.x = (CGRectGetWidth(self.tableView.frame) - CGRectGetWidth(frame)) / 2.0;
         spinner.frame = frame;
         [spinner startAnimating]; 
         
@@ -226,33 +177,24 @@
     [self showSpinner:self.spinner withShowState:show];
 }
 
-- (void)lockUI
+- (void)lockUI:(BOOL)lock
 {
     // prevent user interaction while we are processing the forward geocoding
-    self.tableView.allowsSelection = NO;
-    [self showSpinner:YES];
-}
-
-- (void)unlockUI
-{
-    // allow user interaction since we are done processing
-    self.tableView.allowsSelection = YES;
-    [self showSpinner:NO];
+    self.tableView.allowsSelection = !lock;
+    [self showSpinner:lock];
 }
 
 
-#pragma mark -
-#pragma mark Display Results
+#pragma mark - Display Results
 
 // display the results
 - (void)displayPlacemarks:(NSArray *)placemarks
 {
     dispatch_async(dispatch_get_main_queue(),^ {
-        [self unlockUI];
+        [self lockUI:NO];
         
         PlacemarksListViewController *plvc = [[PlacemarksListViewController alloc] initWithPlacemarks:placemarks preferCoord:YES];
         [self.navigationController pushViewController:plvc animated:YES];
-        [plvc release];
     });
 }
 
@@ -260,7 +202,7 @@
 - (void)displayError:(NSError*)error
 {
     dispatch_async(dispatch_get_main_queue(),^ {
-        [self unlockUI];
+        [self lockUI:NO];
 
         NSString *message;
         switch ([error code])
@@ -275,11 +217,11 @@
                 break;
         }
 
-        UIAlertView *alert =  [[[UIAlertView alloc] initWithTitle:@"An error occurred."
+        UIAlertView *alert =  [[UIAlertView alloc] initWithTitle:@"An error occurred."
                                                     message:message
                                                    delegate:nil 
                                           cancelButtonTitle:@"OK"
-                                           otherButtonTitles:nil] autorelease];;
+                                           otherButtonTitles:nil];;
         [alert show];
     });   
 }
@@ -316,7 +258,7 @@
     if (!cell)
     {
         UITableViewCellStyle style = (indexPath.section == 0) ? UITableViewCellStyleSubtitle : UITableViewCellStyleDefault; 
-        cell = [[[UITableViewCell alloc] initWithStyle:style reuseIdentifier:@"basicCell"] autorelease];
+        cell = [[UITableViewCell alloc] initWithStyle:style reuseIdentifier:@"basicCell"];
     }
        
     if (indexPath.section == 0)
@@ -364,6 +306,37 @@
     }    
     
     return cell;
+}
+
+
+#pragma mark - UITableViewDelegate
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [[tableView cellForRowAtIndexPath:indexPath] setSelected:NO];
+    
+    if (indexPath.section == 1 && indexPath.row == 0)
+    {
+        // perform the Geocode
+        [self performCoordinateGeocode:self];
+    }
+    else
+    {
+        NSInteger whichCellRow = (indexPath.row == 0) ? 1 : 0;
+        
+        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:whichCellRow inSection:0]];
+        cell.accessoryType = UITableViewCellAccessoryNone;
+        
+        cell = [self.tableView cellForRowAtIndexPath:indexPath];
+        cell.accessoryType = UITableViewCellAccessoryCheckmark;
+        
+        if (indexPath.row == 1)
+        {
+            [self startUpdatingCurrentLocation];
+        }
+        
+        _selectedRow = indexPath.row;
+    }
 }
 
 
@@ -429,7 +402,7 @@
     _currentUserCoordinate = kCLLocationCoordinate2DInvalid;
 
     // show the error alert
-    UIAlertView *alert = [[[UIAlertView alloc] init] autorelease];
+    UIAlertView *alert = [[UIAlertView alloc] init];
     alert.title = @"Error updating location";
     alert.message = [error localizedDescription];
     [alert addButtonWithTitle:@"OK"];
@@ -437,21 +410,19 @@
 }
 
 
-#pragma mark -
-#pragma mark Actions
+#pragma mark - Actions
 
 - (IBAction)performCoordinateGeocode:(id)sender
 {
-    [self lockUI];
+    [self lockUI:YES];
     
-    CLGeocoder *geocoder = [[[CLGeocoder alloc] init] autorelease];
+    CLGeocoder *geocoder = [[CLGeocoder alloc] init];
     
     CLLocationCoordinate2D coord = (_selectedRow == 0) ? kSanFranciscoCoordinate : _currentUserCoordinate;
     
-    CLLocation *location = [[[CLLocation alloc] initWithLatitude:coord.latitude longitude:coord.longitude] autorelease];
+    CLLocation *location = [[CLLocation alloc] initWithLatitude:coord.latitude longitude:coord.longitude];
     
     [geocoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *error) {
-        NSLog(@"reverseGeocodeLocation:completionHandler: Completion Handler called!");
         if (error){
             NSLog(@"Geocode failed with error: %@", error);
             [self displayError:error];
@@ -460,37 +431,6 @@
         NSLog(@"Received placemarks: %@", placemarks);
         [self displayPlacemarks:placemarks];
     }];
-}
-
-
-#pragma mark - UITableViewDelegate
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    [[tableView cellForRowAtIndexPath:indexPath] setSelected:NO];
-    
-    if (indexPath.section == 1 && indexPath.row == 0)
-    {
-        // perform the Geocode
-        [self performCoordinateGeocode:self];
-    }
-    else
-    {
-        NSInteger whichCellRow = (indexPath.row == 0) ? 1 : 0;
-     
-        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:whichCellRow inSection:0]];
-        cell.accessoryType = UITableViewCellAccessoryNone;
-        
-        cell = [self.tableView cellForRowAtIndexPath:indexPath];
-        cell.accessoryType = UITableViewCellAccessoryCheckmark;
-    
-        if (indexPath.row == 1)
-        {
-            [self startUpdatingCurrentLocation];
-        }
-        
-        _selectedRow = indexPath.row;
-    }
 }
 
 @end

@@ -3,20 +3,10 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 45;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		182A8D0811D2BB3B00E156CC /* EditingView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 182A8D0211D2BB3B00E156CC /* EditingView.xib */; };
-		182A8D0911D2BB3B00E156CC /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 182A8D0411D2BB3B00E156CC /* MainWindow.xib */; };
-		182A8D0A11D2BB3B00E156CC /* RootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 182A8D0611D2BB3B00E156CC /* RootViewController.xib */; };
-		182A8D1211D2BB7300E156CC /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = 182A8D0B11D2BB7300E156CC /* Icon-72.png */; };
-		182A8D1311D2BB7300E156CC /* Icon-Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = 182A8D0C11D2BB7300E156CC /* Icon-Small-50.png */; };
-		182A8D1411D2BB7300E156CC /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = 182A8D0D11D2BB7300E156CC /* Icon-Small.png */; };
-		182A8D1511D2BB7300E156CC /* Icon-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 182A8D0E11D2BB7300E156CC /* Icon-Small@2x.png */; };
-		182A8D1611D2BB7300E156CC /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 182A8D0F11D2BB7300E156CC /* Icon.png */; };
-		182A8D1711D2BB7300E156CC /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 182A8D1011D2BB7300E156CC /* Icon@2x.png */; };
-		182A8D1811D2BB7300E156CC /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = 182A8D1111D2BB7300E156CC /* iTunesArtwork */; };
 		1D3623260D0F684500981E51 /* SimpleUndoAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* SimpleUndoAppDelegate.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
@@ -25,21 +15,14 @@
 		288131970F60AEDD004132C2 /* Book.m in Sources */ = {isa = PBXBuildFile; fileRef = 288131960F60AEDD004132C2 /* Book.m */; };
 		2892E4100DC94CBA00A64D0F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */; };
 		28C286E10D94DF7D0034E888 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C286E00D94DF7D0034E888 /* RootViewController.m */; };
-		28D2EFE30F688E6C00258F94 /* ReadMe.txt in Resources */ = {isa = PBXBuildFile; fileRef = 28D2EFE20F688E6C00258F94 /* ReadMe.txt */; };
 		5396CFEC11D2BEE40065BF7B /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5396CFEA11D2BEE40065BF7B /* Localizable.strings */; };
+		D0BDC167172710A200E72116 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D0BDC169172710A200E72116 /* MainStoryboard.storyboard */; };
+		D0E4C1601729A60D0090D2F4 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = D0E4C15F1729A60D0090D2F4 /* Default.png */; };
+		D0E4C1621729A6D60090D2F4 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D0E4C1611729A6D60090D2F4 /* Default@2x.png */; };
+		D0E4C1641729A6DD0090D2F4 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D0E4C1631729A6DD0090D2F4 /* Default-568h@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		182A8D0311D2BB3B00E156CC /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/EditingView.xib; sourceTree = "<group>"; };
-		182A8D0511D2BB3B00E156CC /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainWindow.xib; sourceTree = "<group>"; };
-		182A8D0711D2BB3B00E156CC /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/RootViewController.xib; sourceTree = "<group>"; };
-		182A8D0B11D2BB7300E156CC /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72.png"; path = "images/Icon-72.png"; sourceTree = "<group>"; };
-		182A8D0C11D2BB7300E156CC /* Icon-Small-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small-50.png"; path = "images/Icon-Small-50.png"; sourceTree = "<group>"; };
-		182A8D0D11D2BB7300E156CC /* Icon-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small.png"; path = "images/Icon-Small.png"; sourceTree = "<group>"; };
-		182A8D0E11D2BB7300E156CC /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small@2x.png"; path = "images/Icon-Small@2x.png"; sourceTree = "<group>"; };
-		182A8D0F11D2BB7300E156CC /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = images/Icon.png; sourceTree = "<group>"; };
-		182A8D1011D2BB7300E156CC /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "images/Icon@2x.png"; sourceTree = "<group>"; };
-		182A8D1111D2BB7300E156CC /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; name = iTunesArtwork; path = images/iTunesArtwork; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* SimpleUndoAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimpleUndoAppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* SimpleUndoAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SimpleUndoAppDelegate.m; sourceTree = "<group>"; };
@@ -57,6 +40,10 @@
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		5396CFEB11D2BEE40065BF7B /* en */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* SimpleUndo-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "SimpleUndo-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		D0BDC168172710A200E72116 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
+		D0E4C15F1729A60D0090D2F4 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = images/Default.png; sourceTree = "<group>"; };
+		D0E4C1611729A6D60090D2F4 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x.png"; path = "images/Default@2x.png"; sourceTree = "<group>"; };
+		D0E4C1631729A6DD0090D2F4 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "images/Default-568h@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,21 +60,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		080E96DDFE201D6D7F000001 /* Classes */ = {
-			isa = PBXGroup;
-			children = (
-				28C286DF0D94DF7D0034E888 /* RootViewController.h */,
-				28C286E00D94DF7D0034E888 /* RootViewController.m */,
-				2881317B0F60A050004132C2 /* EditingViewController.h */,
-				2881317C0F60A050004132C2 /* EditingViewController.m */,
-				1D3623240D0F684500981E51 /* SimpleUndoAppDelegate.h */,
-				1D3623250D0F684500981E51 /* SimpleUndoAppDelegate.m */,
-				288131950F60AEDD004132C2 /* Book.h */,
-				288131960F60AEDD004132C2 /* Book.m */,
-			);
-			path = Classes;
-			sourceTree = "<group>";
-		};
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -100,41 +72,26 @@
 			isa = PBXGroup;
 			children = (
 				28D2EFE20F688E6C00258F94 /* ReadMe.txt */,
-				080E96DDFE201D6D7F000001 /* Classes */,
-				29B97315FDCFA39411CA2CEA /* Other Sources */,
-				29B97317FDCFA39411CA2CEA /* Resources */,
+				D0BDC16A172716CB00E72116 /* SimpleUndo */,
+				29B97315FDCFA39411CA2CEA /* Supporting Files */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
 			name = CustomTemplate;
 			sourceTree = "<group>";
 		};
-		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
+		29B97315FDCFA39411CA2CEA /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				28A0AAE50D9B0CCF005BE974 /* SimpleUndo_Prefix.pch */,
-				29B97316FDCFA39411CA2CEA /* main.m */,
-			);
-			name = "Other Sources";
-			sourceTree = "<group>";
-		};
-		29B97317FDCFA39411CA2CEA /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				182A8D0B11D2BB7300E156CC /* Icon-72.png */,
-				182A8D0C11D2BB7300E156CC /* Icon-Small-50.png */,
-				182A8D0D11D2BB7300E156CC /* Icon-Small.png */,
-				182A8D0E11D2BB7300E156CC /* Icon-Small@2x.png */,
-				182A8D0F11D2BB7300E156CC /* Icon.png */,
-				182A8D1011D2BB7300E156CC /* Icon@2x.png */,
-				182A8D1111D2BB7300E156CC /* iTunesArtwork */,
-				182A8D0211D2BB3B00E156CC /* EditingView.xib */,
-				182A8D0411D2BB3B00E156CC /* MainWindow.xib */,
-				182A8D0611D2BB3B00E156CC /* RootViewController.xib */,
-				5396CFEA11D2BEE40065BF7B /* Localizable.strings */,
+				D0E4C1631729A6DD0090D2F4 /* Default-568h@2x.png */,
+				D0E4C1611729A6D60090D2F4 /* Default@2x.png */,
+				D0E4C15F1729A60D0090D2F4 /* Default.png */,
 				8D1107310486CEB800E47090 /* SimpleUndo-Info.plist */,
+				5396CFEA11D2BEE40065BF7B /* Localizable.strings */,
+				29B97316FDCFA39411CA2CEA /* main.m */,
+				28A0AAE50D9B0CCF005BE974 /* SimpleUndo_Prefix.pch */,
 			);
-			name = Resources;
+			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
@@ -145,6 +102,22 @@
 				2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D0BDC16A172716CB00E72116 /* SimpleUndo */ = {
+			isa = PBXGroup;
+			children = (
+				1D3623240D0F684500981E51 /* SimpleUndoAppDelegate.h */,
+				1D3623250D0F684500981E51 /* SimpleUndoAppDelegate.m */,
+				D0BDC169172710A200E72116 /* MainStoryboard.storyboard */,
+				28C286DF0D94DF7D0034E888 /* RootViewController.h */,
+				28C286E00D94DF7D0034E888 /* RootViewController.m */,
+				2881317B0F60A050004132C2 /* EditingViewController.h */,
+				2881317C0F60A050004132C2 /* EditingViewController.m */,
+				288131950F60AEDD004132C2 /* Book.h */,
+				288131960F60AEDD004132C2 /* Book.m */,
+			);
+			name = SimpleUndo;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -172,8 +145,12 @@
 /* Begin PBXProject section */
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0460;
+			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "SimpleUndo" */;
-			compatibilityVersion = "Xcode 3.1";
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -196,18 +173,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				28D2EFE30F688E6C00258F94 /* ReadMe.txt in Resources */,
-				182A8D0811D2BB3B00E156CC /* EditingView.xib in Resources */,
-				182A8D0911D2BB3B00E156CC /* MainWindow.xib in Resources */,
-				182A8D0A11D2BB3B00E156CC /* RootViewController.xib in Resources */,
-				182A8D1211D2BB7300E156CC /* Icon-72.png in Resources */,
-				182A8D1311D2BB7300E156CC /* Icon-Small-50.png in Resources */,
-				182A8D1411D2BB7300E156CC /* Icon-Small.png in Resources */,
-				182A8D1511D2BB7300E156CC /* Icon-Small@2x.png in Resources */,
-				182A8D1611D2BB7300E156CC /* Icon.png in Resources */,
-				182A8D1711D2BB7300E156CC /* Icon@2x.png in Resources */,
-				182A8D1811D2BB7300E156CC /* iTunesArtwork in Resources */,
 				5396CFEC11D2BEE40065BF7B /* Localizable.strings in Resources */,
+				D0BDC167172710A200E72116 /* MainStoryboard.storyboard in Resources */,
+				D0E4C1601729A60D0090D2F4 /* Default.png in Resources */,
+				D0E4C1621729A6D60090D2F4 /* Default@2x.png in Resources */,
+				D0E4C1641729A6DD0090D2F4 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -229,30 +199,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		182A8D0211D2BB3B00E156CC /* EditingView.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				182A8D0311D2BB3B00E156CC /* en */,
-			);
-			name = EditingView.xib;
-			sourceTree = "<group>";
-		};
-		182A8D0411D2BB3B00E156CC /* MainWindow.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				182A8D0511D2BB3B00E156CC /* en */,
-			);
-			name = MainWindow.xib;
-			sourceTree = "<group>";
-		};
-		182A8D0611D2BB3B00E156CC /* RootViewController.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				182A8D0711D2BB3B00E156CC /* en */,
-			);
-			name = RootViewController.xib;
-			sourceTree = "<group>";
-		};
 		5396CFEA11D2BEE40065BF7B /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -260,6 +206,14 @@
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
+		};
+		D0BDC169172710A200E72116 /* MainStoryboard.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D0BDC168172710A200E72116 /* en */,
+			);
+			name = MainStoryboard.storyboard;
+			sourceTree = SOURCE_ROOT;
 		};
 /* End PBXVariantGroup section */
 
@@ -269,7 +223,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = SimpleUndo_Prefix.pch;
@@ -294,14 +247,23 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = YES;
+				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				ONLY_ACTIVE_ARCH = YES;
-				PREBINDING = NO;
-				SDKROOT = iphoneos4.0;
+				RUN_CLANG_STATIC_ANALYZER = YES;
+				SDKROOT = iphoneos;
 			};
 			name = Debug;
 		};
@@ -309,13 +271,22 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = YES;
+				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
-				PREBINDING = NO;
-				SDKROOT = iphoneos4.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				RUN_CLANG_STATIC_ANALYZER = YES;
+				SDKROOT = iphoneos;
 			};
 			name = Release;
 		};

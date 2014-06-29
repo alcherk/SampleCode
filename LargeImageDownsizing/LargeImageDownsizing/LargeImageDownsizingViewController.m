@@ -1,7 +1,7 @@
 /*
      File: LargeImageDownsizingViewController.m 
  Abstract: The primary view controller for this project. 
-  Version: 1.0 
+  Version: 1.1 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2011 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2014 Apple Inc. All Rights Reserved. 
   
 */
 
@@ -112,6 +112,10 @@
 #   define kSourceImageTileSizeMB 10.0f // The tile size will be (x)MB of uncompressed image data. 
 #endif
 
+/* Constants for all other iOS devices are left to be defined by the developer. 
+ The purpose of this sample is to illustrate that device specific constants can 
+ and should be created by you the developer, versus iterating a complete list. */
+
 #define bytesPerMB 1048576.0f 
 #define bytesPerPixel 4.0f
 #define pixelsPerMB ( bytesPerMB / bytesPerPixel ) // 262144 pixels, for 4 bytes per pixel.
@@ -165,7 +169,7 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
--(void)downsize:(id)_arg {
+-(void)downsize:(id)arg {
     // create an autorelease pool to catch calls to -autorelease.
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     // create an image from the image filename constant. Note this
@@ -305,13 +309,13 @@
     if( destImage == nil ) NSLog(@"destImage is nil.");
 }
 
--(void)updateScrollView:(id)_arg {
+-(void)updateScrollView:(id)arg {
     [self createImageFromContext];
     // display the output image on the screen.
     progressView.image = destImage;
 }
 
--(void)initializeScrollView:(id)_arg {
+-(void)initializeScrollView:(id)arg {
     [progressView removeFromSuperview];
     [self createImageFromContext];
     // create a scroll view to display the resulting image.

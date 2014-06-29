@@ -5,7 +5,7 @@
  Contains an action method that is called when the Play Movie button is pressed to play the movie.
  Provides a text edit control for the user to enter a movie URL.
   
-  Version: 1.4 
+  Version: 1.5 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -45,7 +45,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2011 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2014 Apple Inc. All Rights Reserved. 
   
  
  */
@@ -60,7 +60,7 @@
 	IBOutlet UITextField *movieURLTextField;
 }
 
-@property (nonatomic,retain) IBOutlet UITextField *movieURLTextField;
+@property (nonatomic,strong) IBOutlet UITextField *movieURLTextField;
 
 -(IBAction)playStreamingMovieButtonPressed:(id)sender;
 

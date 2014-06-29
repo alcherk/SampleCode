@@ -1,7 +1,7 @@
 /*
-     File: iOSGLEssentialPracticesAppDelegate.h
- Abstract: The application delegate.
-  Version: 1.0
+     File: iOSGLEssentialsAppDelegate.h
+ Abstract: The application delegate
+  Version: 1.7
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,21 +41,21 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010~2011 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
 
 #import <UIKit/UIKit.h>
 
 @class EAGLView;
+@class MainViewController;
 
 @interface iOSGLEssentialPracticesAppDelegate : NSObject <UIApplicationDelegate> {
-    UIWindow *window;
-	EAGLView *glView;
 }
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
 @property (nonatomic, retain) IBOutlet EAGLView *glView;
+@property (nonatomic, retain) IBOutlet MainViewController *mainViewController;
 
 @end
 

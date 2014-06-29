@@ -1,8 +1,8 @@
 /*
      File: ParseOperation.h 
- Abstract: NSOperation code for parsing the RSS feed.
+ Abstract: NSOperation subclass for parsing the RSS feed.
   
-  Version: 1.3 
+  Version: 1.4 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -42,32 +42,21 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2012 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
  */
 
-typedef void (^ArrayBlock)(NSArray *);
-typedef void (^ErrorBlock)(NSError *);
+@interface ParseOperation : NSOperation
 
-@class AppRecord;
+// A block to call when an error is encountered during parsing.
+@property (nonatomic, copy) void (^errorHandler)(NSError *error);
 
-@interface ParseOperation : NSOperation <NSXMLParserDelegate>
-{
-@private
-    ArrayBlock      completionHandler;
-    ErrorBlock      errorHandler;
-    
-    NSData          *dataToParse;
-    
-    NSMutableArray  *workingArray;
-    AppRecord       *workingEntry;
-    NSMutableString *workingPropertyString;
-    NSArray         *elementsToParse;
-    BOOL            storingCharacterData;
-}
+// NSArray containing AppRecord instances for each entry parsed
+// from the input data.
+// Only meaningful after the operation has completed.
+@property (nonatomic, strong, readonly) NSArray *appRecordList;
 
-@property (nonatomic, copy) ErrorBlock errorHandler;
-
-- (id)initWithData:(NSData *)data completionHandler:(ArrayBlock)handler;
+// The initializer for this NSOperation subclass.  
+- (id)initWithData:(NSData *)data;
 
 @end

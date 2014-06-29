@@ -1,8 +1,8 @@
 /*
      File: ParseOperation.m 
- Abstract: NSOperation code for parsing the RSS feed.
+ Abstract: NSOperation subclass for parsing the RSS feed.
   
-  Version: 1.3 
+  Version: 1.4 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -42,13 +42,12 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2012 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
  */
 
 #import "ParseOperation.h"
 #import "AppRecord.h"
-#import "LazyTableAppDelegate.h"
 
 // string contants found in the RSS feed
 static NSString *kIDStr     = @"id";
@@ -58,85 +57,73 @@ static NSString *kArtistStr = @"im:artist";
 static NSString *kEntryStr  = @"entry";
 
 
-@interface ParseOperation ()
-@property (nonatomic, copy) ArrayBlock completionHandler;
-@property (nonatomic, retain) NSData *dataToParse;
-@property (nonatomic, retain) NSMutableArray *workingArray;
-@property (nonatomic, retain) AppRecord *workingEntry;
-@property (nonatomic, retain) NSMutableString *workingPropertyString;
-@property (nonatomic, retain) NSArray *elementsToParse;
-@property (nonatomic, assign) BOOL storingCharacterData;
+@interface ParseOperation () <NSXMLParserDelegate>
+// Redeclare appRecordList so we can modify it.
+@property (nonatomic, strong) NSArray *appRecordList;
+@property (nonatomic, strong) NSData *dataToParse;
+@property (nonatomic, strong) NSMutableArray *workingArray;
+@property (nonatomic, strong) AppRecord *workingEntry;
+@property (nonatomic, strong) NSMutableString *workingPropertyString;
+@property (nonatomic, strong) NSArray *elementsToParse;
+@property (nonatomic, readwrite) BOOL storingCharacterData;
 @end
+
 
 @implementation ParseOperation
 
-@synthesize completionHandler, errorHandler, dataToParse, workingArray, workingEntry, workingPropertyString, elementsToParse, storingCharacterData;
-
-- (id)initWithData:(NSData *)data completionHandler:(ArrayBlock)handler
+// -------------------------------------------------------------------------------
+//	initWithData:
+// -------------------------------------------------------------------------------
+- (id)initWithData:(NSData *)data
 {
     self = [super init];
     if (self != nil)
     {
-        self.dataToParse = data;
-        self.completionHandler = handler;
-        self.elementsToParse = [NSArray arrayWithObjects:kIDStr, kNameStr, kImageStr, kArtistStr, nil];
+        _dataToParse = data;
+        _elementsToParse = [[NSArray alloc] initWithObjects:kIDStr, kNameStr, kImageStr, kArtistStr, nil];
     }
     return self;
 }
 
 // -------------------------------------------------------------------------------
-//	dealloc:
-// -------------------------------------------------------------------------------
-- (void)dealloc
-{
-    [completionHandler release];
-    [errorHandler release];
-    [dataToParse release];
-    [workingEntry release];
-    [workingPropertyString release];
-    [workingArray release];
-    
-    [super dealloc];
-}
-
-// -------------------------------------------------------------------------------
-//	main:
+//	main
+//  Entry point for the operation.
 //  Given data to parse, use NSXMLParser and process all the top paid apps.
 // -------------------------------------------------------------------------------
 - (void)main
 {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	self.workingArray = [NSMutableArray array];
+    // The default implemetation of the -start method sets up an autorelease pool
+    // just before invoking -main however it does NOT setup an excption handler
+    // before invoking -main.  If an exception is thrown here, the app will be
+    // terminated.
+    
+    self.workingArray = [NSMutableArray array];
     self.workingPropertyString = [NSMutableString string];
     
     // It's also possible to have NSXMLParser download the data, by passing it a URL, but this is not
-	// desirable because it gives less control over the network, particularly in responding to
-	// connection errors.
+    // desirable because it gives less control over the network, particularly in responding to
+    // connection errors.
     //
-    NSXMLParser *parser = [[NSXMLParser alloc] initWithData:dataToParse];
-	[parser setDelegate:self];
+    NSXMLParser *parser = [[NSXMLParser alloc] initWithData:self.dataToParse];
+    [parser setDelegate:self];
     [parser parse];
-	
-	if (![self isCancelled])
+    
+    if (![self isCancelled])
     {
-        // call our completion handler with the result of our parsing
-        self.completionHandler(self.workingArray);
+        // Set appRecordList to the result of our parsing
+        self.appRecordList = [NSArray arrayWithArray:self.workingArray];
     }
     
     self.workingArray = nil;
     self.workingPropertyString = nil;
     self.dataToParse = nil;
-    
-    [parser release];
-
-	[pool release];
 }
 
+#pragma mark - RSS processing
 
-#pragma mark -
-#pragma mark RSS processing
-
+// -------------------------------------------------------------------------------
+//	parser:didStartElement:namespaceURI:qualifiedName:attributes:
+// -------------------------------------------------------------------------------
 - (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName
                                         namespaceURI:(NSString *)namespaceURI
                                        qualifiedName:(NSString *)qName
@@ -146,22 +133,25 @@ static NSString *kEntryStr  = @"entry";
     //
     if ([elementName isEqualToString:kEntryStr])
 	{
-        self.workingEntry = [[[AppRecord alloc] init] autorelease];
+        self.workingEntry = [[AppRecord alloc] init];
     }
-    storingCharacterData = [elementsToParse containsObject:elementName];
+    self.storingCharacterData = [self.elementsToParse containsObject:elementName];
 }
 
+// -------------------------------------------------------------------------------
+//	parser:didEndElement:namespaceURI:qualifiedName:
+// -------------------------------------------------------------------------------
 - (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName
                                       namespaceURI:(NSString *)namespaceURI
                                      qualifiedName:(NSString *)qName
 {
     if (self.workingEntry)
 	{
-        if (storingCharacterData)
+        if (self.storingCharacterData)
         {
-            NSString *trimmedString = [workingPropertyString stringByTrimmingCharactersInSet:
+            NSString *trimmedString = [self.workingPropertyString stringByTrimmingCharactersInSet:
                                        [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-            [workingPropertyString setString:@""];  // clear the string for next time
+            [self.workingPropertyString setString:@""];  // clear the string for next time
             if ([elementName isEqualToString:kIDStr])
             {
                 self.workingEntry.appURLString = trimmedString;
@@ -188,17 +178,24 @@ static NSString *kEntryStr  = @"entry";
     
 }
 
+// -------------------------------------------------------------------------------
+//	parser:foundCharacters:
+// -------------------------------------------------------------------------------
 - (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string
 {
-    if (storingCharacterData)
+    if (self.storingCharacterData)
     {
-        [workingPropertyString appendString:string];
+        [self.workingPropertyString appendString:string];
     }
 }
 
+// -------------------------------------------------------------------------------
+//	parser:parseErrorOccurred:
+// -------------------------------------------------------------------------------
 - (void)parser:(NSXMLParser *)parser parseErrorOccurred:(NSError *)parseError
 {
-    self.errorHandler(parseError);
+    if (self.errorHandler)
+        self.errorHandler(parseError);
 }
 
 @end

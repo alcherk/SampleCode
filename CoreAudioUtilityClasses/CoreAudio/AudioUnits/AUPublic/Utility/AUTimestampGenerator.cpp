@@ -1,7 +1,7 @@
 /*
      File: AUTimestampGenerator.cpp 
  Abstract:  AUTimestampGenerator.h  
-  Version: 1.01 
+  Version: 1.0.4 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2012 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
 */
 #include "AUTimestampGenerator.h"
@@ -103,7 +103,7 @@ void	AUTimestampGenerator::AddOutputTime(const AudioTimeStamp &inTimeStamp, Floa
 #if DEBUG
 		if (mVerbosity > 1)
 			if (mDiscontinuous)
-				printf("%-20.20s: *** DISCONTINUOUS, got "TSGFMT", expected "TSGFMT"\n", mDebugName, (SInt64)mCurrentOutputTime.mSampleTime, (SInt64)mNextOutputSampleTime);
+				printf("%-20.20s: *** DISCONTINUOUS, got " TSGFMT", expected " TSGFMT"\n", mDebugName, (SInt64)mCurrentOutputTime.mSampleTime, (SInt64)mNextOutputSampleTime);
 #endif
 	}
 	mNextOutputSampleTime = mCurrentOutputTime.mSampleTime + expectedDeltaFrames;
@@ -140,7 +140,7 @@ const AudioTimeStamp &	AUTimestampGenerator::GenerateInputTime(Float64 framesToA
 			inputSampleTime = lastInputSampleTime + deltaSamples;
 #if DEBUG
 			if (mVerbosity > 1)
-				printf("%-20.20s: adjusted input time: "TSGFMT" -> "TSGFMT" (SR=%.3f, rs=%.3f)\n", mDebugName, (SInt64)lastInputSampleTime, (SInt64)inputSampleTime, inputSampleRate, rateScalar);
+				printf("%-20.20s: adjusted input time: " TSGFMT" -> " TSGFMT" (SR=%.3f, rs=%.3f)\n", mDebugName, (SInt64)lastInputSampleTime, (SInt64)inputSampleTime, inputSampleRate, rateScalar);
 #endif
 			mDiscontinuous = false;
 		} else {
@@ -184,7 +184,7 @@ const AudioTimeStamp &	AUTimestampGenerator::GenerateInputTime(Float64 framesToA
 
 #if DEBUG
 	if (mVerbosity > 0) {
-		printf("%-20.20s: out = "TSGFMT" (%10.3fs)  in = "TSGFMT"  (%10.3fs)  delta = "TSGFMT"  advance = "TSGFMT"\n", mDebugName, (SInt64)mCurrentOutputTime.mSampleTime, DebugHostTime(mCurrentOutputTime), (SInt64)inputSampleTime, DebugHostTime(mCurrentInputTime), (SInt64)(mCurrentOutputTime.mSampleTime - inputSampleTime), (SInt64)framesToAdvance);
+		printf("%-20.20s: out = " TSGFMT" (%10.3fs)  in = " TSGFMT"  (%10.3fs)  delta = " TSGFMT"  advance = " TSGFMT"\n", mDebugName, (SInt64)mCurrentOutputTime.mSampleTime, DebugHostTime(mCurrentOutputTime), (SInt64)inputSampleTime, DebugHostTime(mCurrentInputTime), (SInt64)(mCurrentOutputTime.mSampleTime - inputSampleTime), (SInt64)framesToAdvance);
 	}
 #endif
 	return mCurrentInputTime;

@@ -1,7 +1,7 @@
 /*
      File: InstructionsViewController.h 
  Abstract: A UIViewController for entering a Recipe's preparation instructions 
-  Version: 1.1 
+  Version: 1.2 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2011 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2014 Apple Inc. All Rights Reserved. 
   
  */ 
 
@@ -49,14 +49,10 @@
 
 @class Recipe;
 
-@interface InstructionsViewController : UIViewController {
-	Recipe *recipe;
-	UITextView *instructionsText;
-	UILabel *nameLabel;
-}
+@interface InstructionsViewController : UIViewController
 
-@property (nonatomic, retain) Recipe *recipe;
-@property (nonatomic, retain) IBOutlet UITextView *instructionsText;
-@property (nonatomic, retain) IBOutlet UILabel *nameLabel;
+@property (nonatomic, strong) Recipe *recipe;
+@property (nonatomic, strong) IBOutlet UITextView *instructionsText;
+@property (nonatomic, strong) IBOutlet UILabel *nameLabel;
 
 @end

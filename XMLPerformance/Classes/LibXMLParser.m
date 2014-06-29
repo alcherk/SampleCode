@@ -1,7 +1,7 @@
 /*
      File: LibXMLParser.m
  Abstract: Subclass of iTunesRSSParser that uses libxml2 for parsing the XML data.
-  Version: 1.3
+  Version: 1.4
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
 */
 
@@ -61,7 +61,7 @@ static xmlSAXHandler simpleSAXHandlerStruct;
 
 @implementation LibXMLParser
 
-@synthesize rssConnection, done, parsingASong, storingCharacters, currentSong, countOfParsedSongs, characterBuffer, parseFormatter, downloadAndParsePool;
+@synthesize rssConnection, done, parsingASong, storingCharacters, currentSong, characterBuffer, parseFormatter;
 
 + (NSString *)parserName {
     return @"libxml2";
@@ -75,14 +75,14 @@ static xmlSAXHandler simpleSAXHandlerStruct;
 This method is called on a secondary thread by the superclass. We have asynchronous work to do here with downloading and parsing data, so we will need a run loop to prevent the thread from exiting before we are finished.
 */
 - (void)downloadAndParse:(NSURL *)url {
-    self.downloadAndParsePool = [[NSAutoreleasePool alloc] init];
+
     done = NO;
-    self.parseFormatter = [[[NSDateFormatter alloc] init] autorelease];
+    self.parseFormatter = [[NSDateFormatter alloc] init];
     [parseFormatter setDateStyle:NSDateFormatterLongStyle];
     [parseFormatter setTimeStyle:NSDateFormatterNoStyle];
     // necessary because iTunes RSS feed is not localized, so if the device region has been set to other than US
     // the date formatter must be set to US locale in order to parse the dates
-    [parseFormatter setLocale:[[[NSLocale alloc] initWithLocaleIdentifier:@"US"] autorelease]];
+    [parseFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"US"]];
     self.characterBuffer = [NSMutableData data];
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
     NSURLRequest *theRequest = [NSURLRequest requestWithURL:url];
@@ -92,7 +92,7 @@ This method is called on a secondary thread by the superclass. We have asynchron
     // to the context for streaming parsing. The handler structure defined above will be used for all the parsing. 
     // The second argument, self, will be passed as user data to each of the SAX handlers. The last three arguments
     // are left blank to avoid creating a tree in memory.
-    context = xmlCreatePushParserCtxt(&simpleSAXHandlerStruct, self, NULL, 0, NULL);
+    context = xmlCreatePushParserCtxt(&simpleSAXHandlerStruct, (__bridge void *)(self), NULL, 0, NULL);
     [self performSelectorOnMainThread:@selector(downloadStarted) withObject:nil waitUntilDone:NO];
     if (rssConnection != nil) {
         do {
@@ -105,11 +105,10 @@ This method is called on a secondary thread by the superclass. We have asynchron
     self.parseFormatter = nil;
     self.rssConnection = nil;
     self.currentSong = nil;
-    [downloadAndParsePool release];
-    self.downloadAndParsePool = nil;
 }
 
-#pragma mark NSURLConnection Delegate methods
+
+#pragma mark - NSURLConnection Delegate methods
 
 /*
 Disable caching so that each time we run this app we are starting with a clean slate. You may not want to do this in your application.
@@ -120,12 +119,14 @@ Disable caching so that each time we run this app we are starting with a clean s
 
 // Forward errors to the delegate.
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
+    
     done = YES;
     [self performSelectorOnMainThread:@selector(parseError:) withObject:error waitUntilDone:NO];
 }
 
 // Called when a chunk of data has been downloaded.
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+    
     NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
     // Process the downloaded chunk of data.
     xmlParseChunk(context, (const char *)[data bytes], [data length], 0);
@@ -134,6 +135,7 @@ Disable caching so that each time we run this app we are starting with a clean s
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+    
     [self performSelectorOnMainThread:@selector(downloadEnded) withObject:nil waitUntilDone:NO];
     NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
     // Signal the context that parsing is complete by passing "1" as the last parameter.
@@ -150,31 +152,25 @@ Disable caching so that each time we run this app we are starting with a clean s
 static const NSUInteger kAutoreleasePoolPurgeFrequency = 20;
 
 - (void)finishedCurrentSong {
+    
     [self performSelectorOnMainThread:@selector(parsedSong:) withObject:currentSong waitUntilDone:NO];
     // performSelectorOnMainThread: will retain the object until the selector has been performed
     // setting the local reference to nil ensures that the local reference will be released
     self.currentSong = nil;
-    countOfParsedSongs++;
-    // Periodically purge the autorelease pool. The frequency of this action may need to be tuned according to the 
-    // size of the objects being parsed. The goal is to keep the autorelease pool from growing too large, but 
-    // taking this action too frequently would be wasteful and reduce performance.
-    if (countOfParsedSongs == kAutoreleasePoolPurgeFrequency) {
-        [downloadAndParsePool release];
-        self.downloadAndParsePool = [[NSAutoreleasePool alloc] init];
-        countOfParsedSongs = 0;
-    }
 }
 
 /*
     Character data is appended to a buffer until the current element ends.
  */
 - (void)appendCharacters:(const char *)charactersFound length:(NSInteger)length {
+    
     [characterBuffer appendBytes:charactersFound length:length];
 }
 
 - (NSString *)currentString {
+    
     // Create a string with the character data using UTF-8 encoding. UTF-8 is the default XML data encoding.
-    NSString *currentString = [[[NSString alloc] initWithData:characterBuffer encoding:NSUTF8StringEncoding] autorelease];
+    NSString *currentString = [[NSString alloc] initWithData:characterBuffer encoding:NSUTF8StringEncoding];
     [characterBuffer setLength:0];
     return currentString;
 }
@@ -209,13 +205,13 @@ static const NSUInteger kLength_ReleaseDate = 12;
  */
 static void startElementSAX(void *ctx, const xmlChar *localname, const xmlChar *prefix, const xmlChar *URI, 
                             int nb_namespaces, const xmlChar **namespaces, int nb_attributes, int nb_defaulted, const xmlChar **attributes) {
-    LibXMLParser *parser = (LibXMLParser *)ctx;
+    
+    LibXMLParser *parser = (__bridge LibXMLParser *)ctx;
     // The second parameter to strncmp is the name of the element, which we known from the XML schema of the feed.
     // The third parameter to strncmp is the number of characters in the element name, plus 1 for the null terminator.
     if (prefix == NULL && !strncmp((const char *)localname, kName_Item, kLength_Item)) {
         Song *newSong = [[Song alloc] init];
         parser.currentSong = newSong;
-        [newSong release];
         parser.parsingASong = YES;
     } else if (parser.parsingASong && ( (prefix == NULL && (!strncmp((const char *)localname, kName_Title, kLength_Title) || !strncmp((const char *)localname, kName_Category, kLength_Category))) || ((prefix != NULL && !strncmp((const char *)prefix, kName_Itms, kLength_Itms)) && (!strncmp((const char *)localname, kName_Artist, kLength_Artist) || !strncmp((const char *)localname, kName_Album, kLength_Album) || !strncmp((const char *)localname, kName_ReleaseDate, kLength_ReleaseDate))) )) {
         parser.storingCharacters = YES;
@@ -229,8 +225,9 @@ static void startElementSAX(void *ctx, const xmlChar *localname, const xmlChar *
  care about, this means we have all the character data. The next step is to create an NSString using the buffer
  contents and store that with the current Song object.
  */
-static void	endElementSAX(void *ctx, const xmlChar *localname, const xmlChar *prefix, const xmlChar *URI) {    
-    LibXMLParser *parser = (LibXMLParser *)ctx;
+static void	endElementSAX(void *ctx, const xmlChar *localname, const xmlChar *prefix, const xmlChar *URI) {
+    
+    LibXMLParser *parser = (__bridge LibXMLParser *)ctx;
     if (parser.parsingASong == NO) return;
     if (prefix == NULL) {
         if (!strncmp((const char *)localname, kName_Item, kLength_Item)) {
@@ -258,7 +255,8 @@ static void	endElementSAX(void *ctx, const xmlChar *localname, const xmlChar *pr
  This callback is invoked when the parser encounters character data inside a node. The parser class determines how to use the character data.
 */
 static void	charactersFoundSAX(void *ctx, const xmlChar *ch, int len) {
-    LibXMLParser *parser = (LibXMLParser *)ctx;
+    
+    LibXMLParser *parser = (__bridge LibXMLParser *)ctx;
     // A state variable, "storingCharacters", is set when nodes of interest begin and end. 
     // This determines whether character data is handled or ignored. 
     if (parser.storingCharacters == NO) return;
@@ -270,6 +268,7 @@ static void	charactersFoundSAX(void *ctx, const xmlChar *ch, int len) {
  The specifics of how errors are handled depends on the application.
  */
 static void errorEncounteredSAX(void *ctx, const char *msg, ...) {
+    
     // Handle errors as appropriate for your application.
     NSCAssert(NO, @"Unhandled error encountered during SAX parse.");
 }

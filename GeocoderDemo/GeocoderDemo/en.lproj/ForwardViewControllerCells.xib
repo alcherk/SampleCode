@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <archive type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="8.00">
 	<data>
-		<int key="IBDocument.SystemTarget">1280</int>
-		<string key="IBDocument.SystemVersion">10K549</string>
-		<string key="IBDocument.InterfaceBuilderVersion">1910</string>
-		<string key="IBDocument.AppKitVersion">1038.36</string>
-		<string key="IBDocument.HIToolboxVersion">461.00</string>
+		<int key="IBDocument.SystemTarget">1552</int>
+		<string key="IBDocument.SystemVersion">12D78</string>
+		<string key="IBDocument.InterfaceBuilderVersion">3084</string>
+		<string key="IBDocument.AppKitVersion">1187.37</string>
+		<string key="IBDocument.HIToolboxVersion">626.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
-			<string key="NS.object.0">911</string>
+			<string key="NS.object.0">2083</string>
 		</object>
 		<array key="IBDocument.IntegratedClassDependencies">
+			<string>IBProxyObject</string>
+			<string>IBUILabel</string>
 			<string>IBUISlider</string>
 			<string>IBUITableViewCell</string>
-			<string>IBUILabel</string>
 			<string>IBUITextField</string>
-			<string>IBProxyObject</string>
 		</array>
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -44,7 +44,7 @@
 							<object class="IBUITextField" id="297808841">
 								<reference key="NSNextResponder" ref="753561898"/>
 								<int key="NSvFlags">274</int>
-								<string key="NSFrame">{{10, 0}, {300, 44}}</string>
+								<string key="NSFrame">{{10, 0}, {300, 43}}</string>
 								<reference key="NSSuperview" ref="753561898"/>
 								<reference key="NSWindow"/>
 								<bool key="IBUIOpaque">NO</bool>
@@ -63,6 +63,7 @@
 								<bool key="IBUIAdjustsFontSizeToFit">YES</bool>
 								<float key="IBUIMinimumFontSize">17</float>
 								<object class="IBUITextInputTraits" key="IBUITextInputTraits">
+									<int key="IBUIReturnKeyType">9</int>
 									<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								</object>
 								<int key="IBUIClearButtonMode">1</int>
@@ -77,7 +78,7 @@
 								</object>
 							</object>
 						</array>
-						<string key="NSFrameSize">{320, 44}</string>
+						<string key="NSFrameSize">{320, 43}</string>
 						<reference key="NSSuperview" ref="141243901"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="297808841"/>
@@ -103,20 +104,11 @@
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 				<int key="IBUISelectionStyle">0</int>
 				<reference key="IBUIContentView" ref="753561898"/>
-				<object class="IBUIFontDescription" key="IBUIFontDescription" id="29986785">
-					<int key="type">1</int>
-					<int key="size">4</int>
-				</object>
-				<object class="NSFont" key="IBUIFont" id="468896207">
-					<string key="NSName">Helvetica</string>
-					<double key="NSSize">14</double>
-					<int key="NSfFlags">16</int>
-				</object>
 				<string key="IBUIReuseIdentifier">searchStringCell</string>
 				<real value="38" key="IBUIRowHeight"/>
 			</object>
 			<object class="IBUITableViewCell" id="768330850">
-				<reference key="NSNextResponder"/>
+				<nil key="NSNextResponder"/>
 				<int key="NSvFlags">292</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="IBUIView" id="438141163">
@@ -128,7 +120,6 @@
 								<int key="NSvFlags">290</int>
 								<string key="NSFrame">{{85, 9}, {220, 23}}</string>
 								<reference key="NSSuperview" ref="438141163"/>
-								<reference key="NSWindow"/>
 								<bool key="IBUIOpaque">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<int key="IBUIContentHorizontalAlignment">0</int>
@@ -141,7 +132,6 @@
 								<int key="NSvFlags">294</int>
 								<string key="NSFrame">{{12, 9}, {77, 21}}</string>
 								<reference key="NSSuperview" ref="438141163"/>
-								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="510938985"/>
 								<bool key="IBUIOpaque">NO</bool>
 								<bool key="IBUIClipsSubviews">YES</bool>
@@ -152,10 +142,10 @@
 								<object class="NSColor" key="IBUITextColor">
 									<int key="NSColorSpace">1</int>
 									<bytes key="NSRGB">MCAwIDAAA</bytes>
+									<string key="IBUIColorCocoaTouchKeyPath">darkTextColor</string>
 								</object>
 								<nil key="IBUIHighlightedColor"/>
 								<int key="IBUIBaselineAdjustment">1</int>
-								<bool key="IBUIAdjustsFontSizeToFit">NO</bool>
 								<float key="IBUIMinimumFontSize">17</float>
 								<object class="IBUIFontDescription" key="IBUIFontDescription">
 									<int key="type">2</int>
@@ -166,11 +156,11 @@
 									<double key="NSSize">17</double>
 									<int key="NSfFlags">16</int>
 								</object>
+								<bool key="IBUIAdjustsFontSizeToFit">NO</bool>
 							</object>
 						</array>
 						<string key="NSFrameSize">{320, 40}</string>
 						<reference key="NSSuperview" ref="768330850"/>
-						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="372939817"/>
 						<reference key="IBUIBackgroundColor" ref="286881632"/>
 						<bool key="IBUIOpaque">NO</bool>
@@ -181,15 +171,11 @@
 					</object>
 				</array>
 				<string key="NSFrameSize">{320, 40}</string>
-				<reference key="NSSuperview"/>
-				<reference key="NSWindow"/>
 				<reference key="NSNextKeyView" ref="438141163"/>
 				<reference key="IBUIBackgroundColor" ref="307101908"/>
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 				<int key="IBUISelectionStyle">0</int>
 				<reference key="IBUIContentView" ref="438141163"/>
-				<reference key="IBUIFontDescription" ref="29986785"/>
-				<reference key="IBUIFont" ref="468896207"/>
 				<string key="IBUIReuseIdentifier">radiusSliderCell</string>
 			</object>
 		</array>
@@ -330,11 +316,16 @@
 					<string key="superclassName">UITableViewController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="hintSwitchChanged:">id</string>
+						<string key="performStringGeocode:">id</string>
 						<string key="radiusChanged:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
 						<object class="IBActionInfo" key="hintSwitchChanged:">
 							<string key="name">hintSwitchChanged:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="performStringGeocode:">
+							<string key="name">performStringGeocode:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="radiusChanged:">
@@ -387,6 +378,6 @@
 		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaTouchFramework</string>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
-		<string key="IBCocoaTouchPluginVersion">911</string>
+		<string key="IBCocoaTouchPluginVersion">2083</string>
 	</data>
 </archive>

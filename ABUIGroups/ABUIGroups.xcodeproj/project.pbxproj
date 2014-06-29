@@ -13,8 +13,8 @@
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		2892E4100DC94CBA00A64D0F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */; };
 		28C286E10D94DF7D0034E888 /* GroupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C286E00D94DF7D0034E888 /* GroupViewController.m */; };
-		EBA33722143278E50011ED69 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = EBA33721143278E50011ED69 /* Default.png */; };
-		EBB63D5213204CCF0046250A /* AddGroupViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = EBB63D5013204CCF0046250A /* AddGroupViewController.xib */; };
+		EB8CFF9917A06F79000E9B78 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = EB8CFF9717A06F79000E9B78 /* Default.png */; };
+		EB8CFF9A17A06F79000E9B78 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = EB8CFF9817A06F79000E9B78 /* Default@2x.png */; };
 		EBC432C31300A2F500B4C6A7 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = EBC432BC1300A2F500B4C6A7 /* Icon-72.png */; };
 		EBC432C41300A2F500B4C6A7 /* Icon-Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = EBC432BD1300A2F500B4C6A7 /* Icon-Small-50.png */; };
 		EBC432C51300A2F500B4C6A7 /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = EBC432BE1300A2F500B4C6A7 /* Icon-Small.png */; };
@@ -22,11 +22,11 @@
 		EBC432C71300A2F500B4C6A7 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = EBC432C01300A2F500B4C6A7 /* Icon.png */; };
 		EBC432C81300A2F500B4C6A7 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = EBC432C11300A2F500B4C6A7 /* Icon@2x.png */; };
 		EBC432C91300A2F500B4C6A7 /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = EBC432C21300A2F500B4C6A7 /* iTunesArtwork */; };
-		EBC432CD1300A30300B4C6A7 /* GroupViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = EBC432CC1300A30300B4C6A7 /* GroupViewController.xib */; };
-		EBC432CF1300A30B00B4C6A7 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = EBC432CE1300A30B00B4C6A7 /* MainWindow.xib */; };
 		EBC7192912FBD22800B1931B /* MySource.m in Sources */ = {isa = PBXBuildFile; fileRef = EBC7192812FBD22800B1931B /* MySource.m */; };
 		EBC7192D12FBD37C00B1931B /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EBC7192C12FBD37C00B1931B /* AddressBook.framework */; };
 		EBC719BD12FBDAF500B1931B /* AddGroupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EBC719BB12FBDAF500B1931B /* AddGroupViewController.m */; };
+		EBFD68F017A0686A00A85630 /* Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EBFD68F217A0686A00A85630 /* Storyboard.storyboard */; };
+		EBFD68F417A069A000A85630 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = EBFD68F317A069A000A85630 /* Default-568h@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,10 +42,8 @@
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* ABUIGroups-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "ABUIGroups-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		EB567B2F1317364B006805EA /* ReadMe.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ReadMe.txt; sourceTree = "<group>"; };
-		EB695A1C1321C0AE006556F8 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/AddGroupViewController.xib; sourceTree = "<group>"; };
-		EB695A1D1321C0B7006556F8 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/GroupViewController.xib; sourceTree = "<group>"; };
-		EB695A1E1321C0C0006556F8 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainWindow.xib; sourceTree = "<group>"; };
-		EBA33721143278E50011ED69 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		EB8CFF9717A06F79000E9B78 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = images/Default.png; sourceTree = "<group>"; };
+		EB8CFF9817A06F79000E9B78 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x.png"; path = "images/Default@2x.png"; sourceTree = "<group>"; };
 		EBC432BC1300A2F500B4C6A7 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72.png"; path = "images/Icon-72.png"; sourceTree = "<group>"; };
 		EBC432BD1300A2F500B4C6A7 /* Icon-Small-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small-50.png"; path = "images/Icon-Small-50.png"; sourceTree = "<group>"; };
 		EBC432BE1300A2F500B4C6A7 /* Icon-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small.png"; path = "images/Icon-Small.png"; sourceTree = "<group>"; };
@@ -58,6 +56,8 @@
 		EBC7192C12FBD37C00B1931B /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		EBC719BA12FBDAF500B1931B /* AddGroupViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddGroupViewController.h; sourceTree = "<group>"; };
 		EBC719BB12FBDAF500B1931B /* AddGroupViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddGroupViewController.m; sourceTree = "<group>"; };
+		EBFD68F117A0686A00A85630 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/Storyboard.storyboard; sourceTree = "<group>"; };
+		EBFD68F317A069A000A85630 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "images/Default-568h@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,17 +124,17 @@
 			isa = PBXGroup;
 			children = (
 				EBC432BC1300A2F500B4C6A7 /* Icon-72.png */,
+				EB8CFF9717A06F79000E9B78 /* Default.png */,
+				EB8CFF9817A06F79000E9B78 /* Default@2x.png */,
 				EBC432BD1300A2F500B4C6A7 /* Icon-Small-50.png */,
+				EBFD68F317A069A000A85630 /* Default-568h@2x.png */,
 				EBC432BE1300A2F500B4C6A7 /* Icon-Small.png */,
 				EBC432BF1300A2F500B4C6A7 /* Icon-Small@2x.png */,
 				EBC432C01300A2F500B4C6A7 /* Icon.png */,
 				EBC432C11300A2F500B4C6A7 /* Icon@2x.png */,
 				EBC432C21300A2F500B4C6A7 /* iTunesArtwork */,
-				EBB63D5013204CCF0046250A /* AddGroupViewController.xib */,
-				EBC432CC1300A30300B4C6A7 /* GroupViewController.xib */,
-				EBC432CE1300A30B00B4C6A7 /* MainWindow.xib */,
+				EBFD68F217A0686A00A85630 /* Storyboard.storyboard */,
 				8D1107310486CEB800E47090 /* ABUIGroups-Info.plist */,
-				EBA33721143278E50011ED69 /* Default.png */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -203,8 +203,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EBC432CF1300A30B00B4C6A7 /* MainWindow.xib in Resources */,
-				EBC432CD1300A30300B4C6A7 /* GroupViewController.xib in Resources */,
 				EBC432C31300A2F500B4C6A7 /* Icon-72.png in Resources */,
 				EBC432C41300A2F500B4C6A7 /* Icon-Small-50.png in Resources */,
 				EBC432C51300A2F500B4C6A7 /* Icon-Small.png in Resources */,
@@ -212,8 +210,10 @@
 				EBC432C71300A2F500B4C6A7 /* Icon.png in Resources */,
 				EBC432C81300A2F500B4C6A7 /* Icon@2x.png in Resources */,
 				EBC432C91300A2F500B4C6A7 /* iTunesArtwork in Resources */,
-				EBB63D5213204CCF0046250A /* AddGroupViewController.xib in Resources */,
-				EBA33722143278E50011ED69 /* Default.png in Resources */,
+				EBFD68F017A0686A00A85630 /* Storyboard.storyboard in Resources */,
+				EBFD68F417A069A000A85630 /* Default-568h@2x.png in Resources */,
+				EB8CFF9917A06F79000E9B78 /* Default.png in Resources */,
+				EB8CFF9A17A06F79000E9B78 /* Default@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -235,28 +235,12 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		EBB63D5013204CCF0046250A /* AddGroupViewController.xib */ = {
+		EBFD68F217A0686A00A85630 /* Storyboard.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				EB695A1C1321C0AE006556F8 /* en */,
+				EBFD68F117A0686A00A85630 /* en */,
 			);
-			name = AddGroupViewController.xib;
-			sourceTree = "<group>";
-		};
-		EBC432CC1300A30300B4C6A7 /* GroupViewController.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				EB695A1D1321C0B7006556F8 /* en */,
-			);
-			name = GroupViewController.xib;
-			sourceTree = "<group>";
-		};
-		EBC432CE1300A30B00B4C6A7 /* MainWindow.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				EB695A1E1321C0C0006556F8 /* en */,
-			);
-			name = MainWindow.xib;
+			name = Storyboard.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -266,14 +250,29 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = ABUIGroups_Prefix.pch;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = NO;
+				GCC_WARN_MISSING_PARENTHESES = YES;
+				GCC_WARN_SHADOW = NO;
+				GCC_WARN_SIGN_COMPARE = NO;
+				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = NO;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = NO;
+				GCC_WARN_UNUSED_LABEL = NO;
+				GCC_WARN_UNUSED_VALUE = NO;
+				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "ABUIGroups-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = ABUIGroups;
 				RUN_CLANG_STATIC_ANALYZER = NO;
 			};
@@ -283,14 +282,28 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = ABUIGroups_Prefix.pch;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = NO;
+				GCC_WARN_MISSING_PARENTHESES = YES;
+				GCC_WARN_SHADOW = NO;
+				GCC_WARN_SIGN_COMPARE = NO;
+				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = NO;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = NO;
+				GCC_WARN_UNUSED_LABEL = NO;
+				GCC_WARN_UNUSED_VALUE = NO;
+				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "ABUIGroups-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = ABUIGroups;
-				RUN_CLANG_STATIC_ANALYZER = NO;
+				RUN_CLANG_STATIC_ANALYZER = YES;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -299,11 +312,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -312,12 +327,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 			};
 			name = Release;

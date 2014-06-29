@@ -8,12 +8,12 @@ Demonstrates how a UIScrollView subclass can scroll infinitely in the horizontal
 ================================================================================
 BUILD REQUIREMENTS:
 
-Xcode 4.0 or later, iOS 4.3 SDK or later
+iOS 6.0 SDK or later
 
 ================================================================================
 RUNTIME REQUIREMENTS:
 
-iOS 4.3 or later
+iOS 6.0 or later
 
 ===========================================================================
 PACKAGING LIST
@@ -30,8 +30,8 @@ This view tiles UILabel instances to give the effect of infinite scrolling side 
 ================================================================================
 CHANGES FROM PREVIOUS VERSIONS:
 
-Version 1.0
-- First version.
+1.0 - First version.
+1.1 - Upgraded for iOS 6.0, now using Automatic Reference Counting (ARC), updated to adopt current best practices for Objective-C.
 
 ===========================================================================
-Copyright (C) 2011 Apple Inc. All rights reserved.
+Copyright (C) 2011-2013 Apple Inc. All rights reserved.

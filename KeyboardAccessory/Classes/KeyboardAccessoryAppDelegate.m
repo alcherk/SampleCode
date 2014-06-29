@@ -1,9 +1,8 @@
-
 /*
      File: KeyboardAccessoryAppDelegate.m
  Abstract: Simple application delegate that displays the application's window. 
  
-  Version: 1.3
+  Version: 1.5
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -43,31 +42,17 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
 #import "KeyboardAccessoryAppDelegate.h"
-#import "ViewController.h"
 
 @implementation KeyboardAccessoryAppDelegate
 
-@synthesize window;
-@synthesize viewController;
-
-
-- (void)applicationDidFinishLaunching:(UIApplication *)application {    
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
-    [window addSubview:viewController.view];
-    [window makeKeyAndVisible];
+    return YES;
 }
-
-
-- (void)dealloc {
-    [viewController release];
-    [window release];
-    [super dealloc];
-}
-
 
 @end

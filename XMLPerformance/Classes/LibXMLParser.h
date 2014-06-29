@@ -1,7 +1,7 @@
 /*
      File: LibXMLParser.h
  Abstract: Subclass of iTunesRSSParser that uses libxml2 for parsing the XML data.
-  Version: 1.3
+  Version: 1.4
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
 */
 
@@ -69,25 +69,16 @@
     NSMutableData *characterBuffer;
     // A reference to the current song the parser is working with.
     Song *currentSong;
-    // The number of parsed songs is tracked so that the autorelease pool for the parsing thread can be periodically
-    // emptied to keep the memory footprint under control. 
-    NSUInteger countOfParsedSongs;
-    NSAutoreleasePool *downloadAndParsePool;
+
     NSDateFormatter *parseFormatter;
 }
 
 @property BOOL storingCharacters;
-@property (nonatomic, retain) NSMutableData *characterBuffer;
+@property (nonatomic, strong) NSMutableData *characterBuffer;
 @property BOOL done;
 @property BOOL parsingASong;
-@property NSUInteger countOfParsedSongs;
-@property (nonatomic, retain) Song *currentSong;
-@property (nonatomic, retain) NSURLConnection *rssConnection;
-@property (nonatomic, retain) NSDateFormatter *parseFormatter;
-// The autorelease pool property is assign because autorelease pools cannot be retained.
-@property (nonatomic, assign) NSAutoreleasePool *downloadAndParsePool;
-
-- (void)downloadAndParse:(NSURL *)url;
-- (void)finishedCurrentSong;
+@property (nonatomic, strong) Song *currentSong;
+@property (nonatomic, strong) NSURLConnection *rssConnection;
+@property (nonatomic, strong) NSDateFormatter *parseFormatter;
 
 @end

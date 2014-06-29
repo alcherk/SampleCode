@@ -1,7 +1,7 @@
 /*
      File: AUEffectBase.h 
  Abstract:  Part of CoreAudio Utility Classes  
-  Version: 1.01 
+  Version: 1.0.4 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2012 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
 */
 #ifndef __AUEffectBase_h__
@@ -135,6 +135,7 @@ public:
 
 	// convenience wrappers for accessing parameters in the global scope
 	/*! @method SetParameter */
+    using AUBase::SetParameter;
 	void						SetParameter(			AudioUnitParameterID			paramID,
 														AudioUnitParameterValue			value)
 								{
@@ -142,6 +143,7 @@ public:
 								}
 								
 	/*! @method GetParameter */
+    using AUBase::GetParameter;
 	AudioUnitParameterValue		GetParameter(			AudioUnitParameterID			paramID )
 								{
 									return Globals()->GetParameter(paramID );

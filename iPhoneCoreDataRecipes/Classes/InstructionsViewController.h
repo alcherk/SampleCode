@@ -2,7 +2,7 @@
      File: InstructionsViewController.h
  Abstract: View controller to manage a text view to allow the user to edit instructions for a recipe.
  
-  Version: 1.4
+  Version: 1.5
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -42,21 +42,14 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
 @class Recipe;
 
-@interface InstructionsViewController : UIViewController {
-    @private
-        Recipe *recipe;
-        UITextView *instructionsText;
-        UILabel *nameLabel;
-}
+@interface InstructionsViewController : UIViewController
 
-@property (nonatomic, retain) Recipe *recipe;
-@property (nonatomic, retain) IBOutlet UITextView *instructionsText;
-@property (nonatomic, retain) IBOutlet UILabel *nameLabel;
+@property (nonatomic, strong) Recipe *recipe;
 
 @end

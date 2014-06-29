@@ -17,12 +17,12 @@ How you configure Core Location services directly affects your device's battery 
 ===========================================================================
 BUILD REQUIREMENTS:
 
-iOS 5.0 SDK or later
+iOS 6.0 SDK or later
 
 ===========================================================================
 RUNTIME REQUIREMENTS:
 
-iOS 4.0 or later
+iOS 5.0 or later
 
 ===========================================================================
 PACKAGING LIST:
@@ -36,26 +36,6 @@ CrumbPathView
 BreadcrumbViewController
 - Uses MKMapView delegate messages to track the user location and update the displayed path of the user on an MKMapView.
 
-===========================================================================
-CHANGES FROM PREVIOUS VERSIONS:
-
-Version 1.5
-- Added support for MKUserTrackingMode.
-
-Version 1.4
-- Upgraded to use iOS 4.3 SDK, fixed UI issues with its settings screen.
-
-Version 1.3
-- Upgraded to iOS 4.2 SDK, fixed a bug in CrumbPath when allocating points, now checking for more GCC warnings.
-
-Version 1.2
-- Option kCLLocationAccuracyBestForNavigation turned off by default, sound feedback on location updates added as an option.
-
-Version 1.1
-- Updated to support background processing in tracking the user's location, now uses kCLLocationAccuracyBestForNavigation.
-
-Version 1.0
-- First version.
 
 ===========================================================================
-Copyright (C) 2010-2011 Apple Inc. All rights reserved.
+Copyright (C) 2010-2012 Apple Inc. All rights reserved.

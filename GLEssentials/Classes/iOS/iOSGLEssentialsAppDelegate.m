@@ -1,7 +1,7 @@
 /*
-     File: iOSGLEssentialPracticesAppDelegate.m
- Abstract: The application delegate.
-  Version: 1.0
+     File: iOSGLEssentialsAppDelegate.m
+ Abstract: The application delegate
+  Version: 1.7
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,28 +41,30 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010~2011 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
 
 #import "iOSGLEssentialsAppDelegate.h"
+#import "MainViewController.h"
 #import "EAGLView.h"
 
 @implementation iOSGLEssentialPracticesAppDelegate
 
-@synthesize window;
-@synthesize glView;
+UIWindow *window;
+EAGLView *glView;
 
 #pragma mark -
 #pragma mark Application lifecycle
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {    
-    
     // Override point for customization after application launch.
-	
-	[glView startAnimation];
-    [window makeKeyAndVisible];
+    
+	self.window.rootViewController = self.mainViewController;
+    [self.window makeKeyAndVisible];
+    
+	[self.glView startAnimation];
 
     return YES;
 }
@@ -129,8 +131,8 @@
 
 
 - (void)dealloc {
-    [glView release];
-    [window release];
+    [_glView release];
+    [_window release];
     [super dealloc];
 }
 

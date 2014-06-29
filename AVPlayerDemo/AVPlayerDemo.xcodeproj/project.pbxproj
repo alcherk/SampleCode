@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 45;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -21,6 +21,7 @@
 		83CFBB2511ABFB6800A337F0 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83CFBB2411ABFB6800A337F0 /* CoreMedia.framework */; };
 		83CFBB2711ABFB6800A337F0 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83CFBB2611ABFB6800A337F0 /* QuartzCore.framework */; };
 		83CFBB3511AC00AD00A337F0 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83CFBB3411AC00AD00A337F0 /* MobileCoreServices.framework */; };
+		84C18D42172F40C900E0F687 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84C18D41172F40C900E0F687 /* Default-568h@2x.png */; };
 		AF23D2E2133D524A00A5E64A /* AVPlayerDemoMetadataView.xib in Resources */ = {isa = PBXBuildFile; fileRef = AF23D2E1133D524A00A5E64A /* AVPlayerDemoMetadataView.xib */; };
 		AF23D2E8133D527B00A5E64A /* AVPlayerDemoWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = AF23D2E7133D527B00A5E64A /* AVPlayerDemoWindow.xib */; };
 		AF23D330133D563900A5E64A /* AVPlayerDemoMetadataView-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = AF23D32F133D563900A5E64A /* AVPlayerDemoMetadataView-iPad.xib */; };
@@ -68,6 +69,7 @@
 		83CFBB2411ABFB6800A337F0 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		83CFBB2611ABFB6800A337F0 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		83CFBB3411AC00AD00A337F0 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		84C18D41172F40C900E0F687 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* AVPlayerDemo-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "AVPlayerDemo-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		AF23D2D9133D523500A5E64A /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/AVPlayerDemoMetadataView.xib; sourceTree = "<group>"; };
 		AF23D2DC133D523500A5E64A /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/AVPlayerDemoWindow.xib; sourceTree = "<group>"; };
@@ -173,6 +175,7 @@
 				AF23D333133D565700A5E64A /* AVPlayerDemoPlaybackView-iPad.xib */,
 				AF23D32F133D563900A5E64A /* AVPlayerDemoMetadataView-iPad.xib */,
 				AFFB6C28133C5AD500530D6D /* images */,
+				84C18D41172F40C900E0F687 /* Default-568h@2x.png */,
 				8D1107310486CEB800E47090 /* AVPlayerDemo-Info.plist */,
 			);
 			name = Resources;
@@ -197,8 +200,8 @@
 		AF57CD9013733B9900FA154A /* Asset Browser */ = {
 			isa = PBXGroup;
 			children = (
-				AFCF602613940F9B00D7A99C /* AssetBrowserController.m */,
 				AFCF602713940F9B00D7A99C /* AssetBrowserController.h */,
+				AFCF602613940F9B00D7A99C /* AssetBrowserController.m */,
 				AFCF602213940F9B00D7A99C /* AssetBrowserSource.m */,
 				AFCF602313940F9B00D7A99C /* AssetBrowserSource.h */,
 				AFCF602413940F9B00D7A99C /* AssetBrowserItem.m */,
@@ -277,8 +280,11 @@
 /* Begin PBXProject section */
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0460;
+			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "AVPlayerDemo" */;
-			compatibilityVersion = "Xcode 3.1";
+			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
@@ -321,6 +327,7 @@
 				AFB5B8451399843F006D0A2D /* Browser-ErrorLoading.png in Resources */,
 				AFB5B8461399843F006D0A2D /* Browser-AudioOnly@2x.png in Resources */,
 				AFB5B8471399843F006D0A2D /* Browser-AudioOnly.png in Resources */,
+				84C18D42172F40C900E0F687 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -439,15 +446,19 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = NO;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
-				PREBINDING = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PROVISIONING_PROFILE = "";
+				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -462,16 +473,20 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = NO;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				PREBINDING = NO;
 				PROVISIONING_PROFILE = "";
+				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 45;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -32,6 +32,7 @@
 		49AC89E80E67642700E74CBA /* Brick_4.pvr in Resources */ = {isa = PBXBuildFile; fileRef = 49AC89E40E67642700E74CBA /* Brick_4.pvr */; };
 		49AC89E90E67642700E74CBA /* Brick_mipmap_2.pvr in Resources */ = {isa = PBXBuildFile; fileRef = 49AC89E50E67642700E74CBA /* Brick_mipmap_2.pvr */; };
 		49AC89EA0E67642700E74CBA /* Brick_mipmap_4.pvr in Resources */ = {isa = PBXBuildFile; fileRef = 49AC89E60E67642700E74CBA /* Brick_mipmap_4.pvr */; };
+		AFA068C518CE5EC500ED5DAB /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = AFA068C418CE5EC500ED5DAB /* Default-568h@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -69,6 +70,7 @@
 		49AC89E50E67642700E74CBA /* Brick_mipmap_2.pvr */ = {isa = PBXFileReference; lastKnownFileType = file; name = Brick_mipmap_2.pvr; path = Images/Brick_mipmap_2.pvr; sourceTree = "<group>"; };
 		49AC89E60E67642700E74CBA /* Brick_mipmap_4.pvr */ = {isa = PBXFileReference; lastKnownFileType = file; name = Brick_mipmap_4.pvr; path = Images/Brick_mipmap_4.pvr; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AFA068C418CE5EC500ED5DAB /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +117,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				AFA068C418CE5EC500ED5DAB /* Default-568h@2x.png */,
 				4941A0890EB7D3ED000DA1A1 /* ReadMe.txt */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
@@ -194,8 +197,12 @@
 /* Begin PBXProject section */
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0510;
+			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "PVRTextureLoader" */;
-			compatibilityVersion = "Xcode 3.1";
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -226,6 +233,7 @@
 				49A7DEAF0EE48FEF00642B27 /* Brick.png in Resources */,
 				187C89EA11CABAD40075D29C /* Icon-Small.png in Resources */,
 				187C89EB11CABAD40075D29C /* Icon-Small@2x.png in Resources */,
+				AFA068C518CE5EC500ED5DAB /* Default-568h@2x.png in Resources */,
 				187C89EC11CABAD40075D29C /* Icon.png in Resources */,
 				187C89ED11CABAD40075D29C /* Icon@2x.png in Resources */,
 				186FBE7111CADD4C000061EC /* MainWindow.xib in Resources */,
@@ -297,7 +305,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = PVRTextureLoader_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = PVRTextureLoader;
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -309,36 +319,36 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = PVRTextureLoader_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = PVRTextureLoader;
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
-				SDKROOT = iphoneos4.0;
+				SDKROOT = iphoneos;
 			};
 			name = Debug;
 		};
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PREBINDING = NO;
-				SDKROOT = iphoneos4.0;
+				SDKROOT = iphoneos;
 			};
 			name = Release;
 		};

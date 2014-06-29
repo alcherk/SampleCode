@@ -1,7 +1,7 @@
 /*
      File: RecipeTableViewCell.m 
  Abstract: A UITableViewCell for displaying a Recipe in the RecipeListTableViewController 
-  Version: 1.1 
+  Version: 1.2 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2011 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2014 Apple Inc. All Rights Reserved. 
   
  */ 
 
@@ -54,6 +54,12 @@
 #define PREP_TIME_WIDTH     80.0
 
 @implementation RecipeTableViewCell
+{
+    UIImageView *imageView;
+    UILabel *nameLabel;
+    UILabel *descriptionLabel;
+    UILabel *prepTimeLabel;
+}
 
 /*
  Since this sample is intended to focus more on printing versus UI demonstration, see the
@@ -71,7 +77,6 @@
         [self.contentView addSubview:descriptionLabel];
 
         prepTimeLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        prepTimeLabel.textAlignment = UITextAlignmentRight;
         [prepTimeLabel setFont:[UIFont systemFontOfSize:12.0]];
         [prepTimeLabel setTextColor:[UIColor blackColor]];
         [prepTimeLabel setHighlightedTextColor:[UIColor whiteColor]];
@@ -131,31 +136,16 @@
 }
 
 - (void)setRecipe:(Recipe *)newRecipe {
-    if (newRecipe != recipe) {
-        [recipe release];
-        recipe = [newRecipe retain];
+    if (newRecipe != _recipe) {
+        _recipe = newRecipe;
         
-        imageView.image = recipe.thumbnailImage;
-        nameLabel.text = recipe.name;
-        descriptionLabel.text = recipe.description;
-        prepTimeLabel.text = recipe.prepTime;
+        imageView.image = _recipe.thumbnailImage;
+        nameLabel.text = _recipe.name;
+        descriptionLabel.text = _recipe.description;
+        prepTimeLabel.text = _recipe.prepTime;
     }
 }
 
-/*
- Set the recipe object onto the table view cell.
- */
-- (Recipe *)recipe {
-    return recipe;
-}
 
-- (void)dealloc {
-    [recipe release];
-    [imageView release];
-    [nameLabel release];
-    [descriptionLabel release];
-    [prepTimeLabel release];
-	[super dealloc];
-}
 
 @end

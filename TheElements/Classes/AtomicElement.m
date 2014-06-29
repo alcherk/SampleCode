@@ -1,7 +1,7 @@
 /*
      File: AtomicElement.m
  Abstract: Simple object that encapsulate the Atomic Element values and images for the states.
-  Version: 1.11
+  Version: 1.12
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,29 +41,27 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
 
 #import "AtomicElement.h"
 
+@interface AtomicElement ()
+
+@property (nonatomic, strong) NSNumber *vertPos;
+@property (nonatomic, strong) NSNumber *horizPos;
+@property (readonly) CGPoint positionForElement;
+@property  BOOL radioactive;
+
+@end
 
 @implementation AtomicElement
 
-@synthesize atomicNumber;
-@synthesize name;
-@synthesize symbol;
-@synthesize state;
-@synthesize group;
-@synthesize period;
-@synthesize vertPos;
-@synthesize horizPos;
-@synthesize radioactive;
-@synthesize atomicWeight;
-@synthesize discoveryYear;
-
 - (id)initWithDictionary:(NSDictionary *)aDictionary {
-	if ([self init]) {
+    
+	self = [[AtomicElement alloc] init];
+    if (self) {
 		self.atomicNumber = [aDictionary valueForKey:@"atomicNumber"];
 		self.atomicWeight = [aDictionary valueForKey:@"atomicWeight"];
 		self.discoveryYear = [aDictionary valueForKey:@"discoveryYear"];
@@ -75,55 +73,40 @@
 		self.period = [aDictionary valueForKey:@"period"];
 		self.vertPos = [aDictionary valueForKey:@"vertPos"];
 		self.horizPos = [aDictionary valueForKey:@"horizPos"];
-
 	}
 	return self;
 }
 
-- (void)dealloc {
-	[atomicNumber release];
-	[atomicWeight release];
-	[discoveryYear release];
-	[name release];
-	[symbol release];
-	[state release];
-	[group release];
-	[period release];
-	[vertPos release];
-	[horizPos release];
-	[super dealloc];
-}
  
 // this returns the position of the element in the classic periodic table locations
--(CGPoint)positionForElement {
-	return CGPointMake([[self horizPos] intValue] * 26-8,[[self vertPos] intValue]*26+35);
-	
+- (CGPoint)positionForElement {
+    
+	return CGPointMake([[self horizPos] intValue] * 26-8, [[self vertPos] intValue]*26+35);
 }
 
 - (UIImage *)stateImageForAtomicElementTileView {
-	return [UIImage imageNamed:[NSString stringWithFormat:@"%@_37.png",state]];
+    
+	return [UIImage imageNamed:[NSString stringWithFormat:@"%@_37.png", self.state]];
 }
 
-
 - (UIImage *)stateImageForAtomicElementView {
-	return [UIImage imageNamed:[NSString stringWithFormat:@"%@_256.png",state]];
+	return [UIImage imageNamed:[NSString stringWithFormat:@"%@_256.png", self.state]];
 }
 
 - (UIImage *)stateImageForPeriodicTableView {
-	return [UIImage imageNamed:[NSString stringWithFormat:@"%@_24.png",state]];
+	return [UIImage imageNamed:[NSString stringWithFormat:@"%@_24.png", self.state]];
 }
-
 
 - (UIImage *)flipperImageForAtomicElementNavigationItem {
 	
 	// return a 30 x 30 image that is a reduced version
 	// of the AtomicElementTileView content
 	// this is used to display the flipper button in the navigation bar
-	CGSize itemSize=CGSizeMake(30.0,30.0);
+	CGSize itemSize = CGSizeMake(30.0,30.0);
 	UIGraphicsBeginImageContext(itemSize);
 	
-	UIImage *backgroundImage = [UIImage imageNamed:[NSString stringWithFormat:@"%@_30.png",state]];
-	CGRect elementSymbolRectangle = CGRectMake(0,0, itemSize.width, itemSize.height);
+	UIImage *backgroundImage = [UIImage imageNamed:[NSString stringWithFormat:@"%@_30.png", self.state]];
+	CGRect elementSymbolRectangle = CGRectMake(0, 0, itemSize.width, itemSize.height);
 	[backgroundImage drawInRect:elementSymbolRectangle];
 
 	// draw the element name
@@ -145,7 +128,5 @@
 	UIGraphicsEndImageContext();
 	return theImage;
 }
-
-
 
 @end

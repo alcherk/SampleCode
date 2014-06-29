@@ -1,7 +1,7 @@
 /*
      File: PeriodicElements.h
  Abstract: Encapsulates the collection of elements and returns them in presorted states.
-  Version: 1.11
+  Version: 1.12
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,38 +41,25 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
 
 #import <Foundation/Foundation.h>
 
+@interface PeriodicElements : NSObject
 
-@interface PeriodicElements : NSObject {
-	NSMutableDictionary *elementsDictionary;
-	NSMutableDictionary *statesDictionary;
-	
-	NSMutableDictionary *nameIndexesDictionary;
-	NSArray *elementNameIndexArray;
-	
-	NSArray *elementsSortedByNumber;
-	NSArray *elementsSortedBySymbol;
-	NSArray *elementPhysicalStatesArray;
-
-}
-
-@property (nonatomic,retain) NSMutableDictionary *statesDictionary;
-@property (nonatomic,retain) NSMutableDictionary *elementsDictionary;
-@property (nonatomic,retain) NSMutableDictionary *nameIndexesDictionary;
-@property (nonatomic,retain) NSArray *elementNameIndexArray;
-@property (nonatomic,retain) NSArray *elementsSortedByNumber;
-@property (nonatomic,retain) NSArray *elementsSortedBySymbol;
-@property (nonatomic,retain) NSArray *elementPhysicalStatesArray;
+@property (nonatomic, strong) NSMutableDictionary *statesDictionary;
+@property (nonatomic, strong) NSMutableDictionary *elementsDictionary;
+@property (nonatomic, strong) NSMutableDictionary *nameIndexesDictionary;
+@property (nonatomic, strong) NSArray *elementNameIndexArray;
+@property (nonatomic, strong) NSArray *elementsSortedByNumber;
+@property (nonatomic, strong) NSArray *elementsSortedBySymbol;
+@property (nonatomic, strong) NSArray *elementPhysicalStatesArray;
 
 + (PeriodicElements*)sharedPeriodicElements;
-- (NSArray *)elementsWithPhysicalState:(NSString*)aState;
 
+- (NSArray *)elementsWithPhysicalState:(NSString*)aState;
 - (NSArray *)elementsWithInitialLetter:(NSString*)aKey;
 
- 
 @end

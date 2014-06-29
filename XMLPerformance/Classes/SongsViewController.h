@@ -1,7 +1,7 @@
 /*
      File: SongsViewController.h
  Abstract: Creates and runs an instance of the parser type chosen by the user, and displays the parsed songs in a table. Selecting a row in the table navigates to a detail view for that song.
-  Version: 1.3
+  Version: 1.4
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,29 +41,16 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
 */
 
 #import <UIKit/UIKit.h>
 #import "iTunesRSSParser.h"
 
-@class DetailController;
+@interface SongsViewController : UITableViewController <iTunesRSSParserDelegate>
 
-@interface SongsViewController : UITableViewController <iTunesRSSParserDelegate> {
-    NSMutableArray *songs;
-    DetailController *detailController;
-    iTunesRSSParser *parser;
-}
-
-@property (nonatomic, retain) NSMutableArray *songs;
-@property (nonatomic, retain, readonly) DetailController *detailController;
-@property (nonatomic, retain) iTunesRSSParser *parser;
-
-// Called by the ParserChoiceViewController based on the selected parser type.
+// called by the ParserChoiceViewController based on the selected parser type
 - (void)parseWithParserType:(XMLParserType)parserType;
-
-// When the parsing is finished, the user can return to the ParserChoiceViewController by touching the button associated with this action.
-- (IBAction)returnToParserChoices;
 
 @end

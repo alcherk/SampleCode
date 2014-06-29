@@ -1,7 +1,7 @@
 /*
      File: PhotoViewController.h
  Abstract: Configures and displays the paging scroll view and handles tiling and page configuration.
-  Version: 1.2
+  Version: 1.3
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following

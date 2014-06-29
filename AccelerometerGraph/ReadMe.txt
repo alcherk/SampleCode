@@ -11,12 +11,12 @@ Run this sample on the device to learn how the accelerometer behaves when moving
 ===========================================================================
 BUILD REQUIREMENTS:
 
-iOS 4.0 SDK
+iOS 6.0 SDK or later
 
 ===========================================================================
 RUNTIME REQUIREMENTS:
 
-iPhone OS 3.2 or later
+iOS 5.0 or later
 
 ===========================================================================
 PACKAGING LIST:
@@ -38,6 +38,9 @@ Entry point for the application. Creates the application object, sets its delega
 
 ===========================================================================
 CHANGES FROM PREVIOUS VERSIONS:
+
+Version 2.6
+- Upgraded for iOS 6.0, now using Automatic Reference Counting (ARC), updated to adopt current best practices for Objective-C.
 
 Version 2.5
 - Added CFBundleIconFiles in Info.plist.
@@ -79,4 +82,4 @@ Version 1.2
 - Added an icon and a default.png file.
 
 ===========================================================================
-Copyright (C) 2008-2010 Apple Inc. All rights reserved.
+Copyright (C) 2008-2013 Apple Inc. All rights reserved.

@@ -1,7 +1,7 @@
 /*
      File: MultichannelMixerController.mm 
  Abstract: The Controller Class for the AUGraph. 
-  Version: 1.1 
+  Version: 1.1.1 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,75 +41,51 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2010 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
 */
 
 #import "MultiChannelMixerController.h"
 
-const Float64 kGraphSampleRate = 44100.0;
-
-#pragma mark- AUComponentDescription
-
-// a simple wrapper for AudioComponentDescription
-class AUComponentDescription : public AudioComponentDescription
-{
-public:
-	AUComponentDescription()
-	{
-		 	componentType = 0;
-			componentSubType = 0;
-			componentManufacturer = 0;
-			componentFlags = 0;
-			componentFlagsMask = 0;
-	};
-	
-			
-	AUComponentDescription(OSType inType,
-                           OSType inSubType,
-                           OSType inManufacturer = 0,
-                           unsigned long inFlags = 0,
-                           unsigned long inFlagsMask = 0 )
-	{
-		 	componentType = inType;
-			componentSubType = inSubType;
-			componentManufacturer = inManufacturer;
-			componentFlags = inFlags;
-			componentFlagsMask = inFlagsMask;
-	};
-
-	AUComponentDescription(const AudioComponentDescription &inDescription) 
-    {
-		*(AudioComponentDescription*)this = inDescription;
-	};
-};
+const Float64 kGraphSampleRate = 44100.0; // 48000.0 optional tests
 
 #pragma mark- RenderProc
 
-// audio render procedure, don't allocate memory, don't take any locks, don't waste time
+// audio render procedure, don't allocate memory, don't take any locks, don't waste time, printf statements for debugging only may adversly affect render you have been warned
 static OSStatus renderInput(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData)
 {
     SoundBufferPtr sndbuf = (SoundBufferPtr)inRefCon;
     
-    UInt32 bufSamples = sndbuf[inBusNumber].numFrames;
-	AudioUnitSampleType *in = sndbuf[inBusNumber].data;
+    UInt32 sample = sndbuf[inBusNumber].sampleNum;      // frame number to start from
+    UInt32 bufSamples = sndbuf[inBusNumber].numFrames;  // total number of frames in the sound buffer
+	AudioUnitSampleType *in = sndbuf[inBusNumber].data; // audio data buffer
 
-	AudioUnitSampleType *outA = (AudioUnitSampleType *)ioData->mBuffers[0].mData;
-	AudioUnitSampleType *outB = (AudioUnitSampleType *)ioData->mBuffers[1].mData;
+	AudioUnitSampleType *outA = (AudioUnitSampleType *)ioData->mBuffers[0].mData; // output audio buffer for L channel
+	AudioUnitSampleType *outB = (AudioUnitSampleType *)ioData->mBuffers[1].mData; // output audio buffer for R channel
     
-    UInt32 sample = sndbuf[inBusNumber].sampleNum;
+    // for demonstration purposes we've configured 2 stereo input busses for the mixer unit
+    // but only provide a single channel of data from each input bus when asked and silence for the other channel
+    // alternating as appropriate when asked to render bus 0 or bus 1's input
 	for (UInt32 i = 0; i < inNumberFrames; ++i) {
+        
         if (1 == inBusNumber) {
             outA[i] = 0;
             outB[i] = in[sample++];
         } else {
-             outA[i] = in[sample++];
-             outB[i] = 0;
+            outA[i] = in[sample++];
+            outB[i] = 0;
         }
-        if (sample >= bufSamples) sample = 0;
+        
+        if (sample > bufSamples) {
+            // start over from the beginning of the data, our audio simply loops
+            printf("looping data for bus %d after %ld source frames rendered\n", (unsigned int)inBusNumber, sample-1);
+            sample = 0;
+        }
     }
-    sndbuf[inBusNumber].sampleNum = sample;
-   // printf("bus %d sample %d\n", inBusNumber, sample);
+
+    sndbuf[inBusNumber].sampleNum = sample; // keep track of where we are in the source data buffer
+    
+    //printf("bus %d sample %d\n", (unsigned int)inBusNumber, (unsigned int)sample);
     
 	return noErr;
 }
@@ -172,15 +148,17 @@ static OSStatus renderInput(void *inRefCon, AudioUnitRenderActionFlags *ioAction
     
     // create a new AUGraph
 	result = NewAUGraph(&mGraph);
-    if (result) { printf("NewAUGraph result %d %08X %4.4s\n", result, result, (char*)&result); return; }
+    if (result) { printf("NewAUGraph result %ld %08lX %4.4s\n", result, result, (char*)&result); return; }
 	
     // create two AudioComponentDescriptions for the AUs we want in the graph
     
     // output unit
-	AUComponentDescription output_desc(kAudioUnitType_Output, kAudioUnitSubType_RemoteIO, kAudioUnitManufacturer_Apple);
+	CAComponentDescription output_desc(kAudioUnitType_Output, kAudioUnitSubType_RemoteIO, kAudioUnitManufacturer_Apple);
+    CAShowComponentDescription(&output_desc);
     
     // multichannel mixer unit
-	AUComponentDescription mixer_desc(kAudioUnitType_Mixer, kAudioUnitSubType_MultiChannelMixer, kAudioUnitManufacturer_Apple);
+	CAComponentDescription mixer_desc(kAudioUnitType_Mixer, kAudioUnitSubType_MultiChannelMixer, kAudioUnitManufacturer_Apple);
+    CAShowComponentDescription(&mixer_desc);
 
     printf("new nodes\n");
 
@@ -197,10 +175,10 @@ static OSStatus renderInput(void *inRefCon, AudioUnitRenderActionFlags *ioAction
 	
     // open the graph AudioUnits are open but not initialized (no resource allocation occurs here)
 	result = AUGraphOpen(mGraph);
-	if (result) { printf("AUGraphOpen result %d %08X %4.4s\n", result, result, (char*)&result); return; }
+	if (result) { printf("AUGraphOpen result %ld %08lX %4.4s\n", result, result, (char*)&result); return; }
 	
 	result = AUGraphNodeInfo(mGraph, mixerNode, NULL, &mMixer);
-    if (result) { printf("AUGraphNodeInfo result %d %08X %4.4s\n", result, result, (char*)&result); return; }
+    if (result) { printf("AUGraphNodeInfo result %ld %08lX %4.4s\n", result, result, (char*)&result); return; }
 
     // set bus count
 	UInt32 numbuses = 2;
@@ -209,7 +187,7 @@ static OSStatus renderInput(void *inRefCon, AudioUnitRenderActionFlags *ioAction
     printf("set input bus count %lu\n", numbuses);
 	
     result = AudioUnitSetProperty(mMixer, kAudioUnitProperty_ElementCount, kAudioUnitScope_Input, 0, &numbuses, sizeof(UInt32));
-    if (result) { printf("AudioUnitSetProperty result %d %08X %4.4s\n", result, result, (char*)&result); return; }
+    if (result) { printf("AudioUnitSetProperty result %ld %08lX %4.4s\n", result, result, (char*)&result); return; }
 
 	for (int i = 0; i < numbuses; ++i) {
 		// setup render callback struct
@@ -222,14 +200,14 @@ static OSStatus renderInput(void *inRefCon, AudioUnitRenderActionFlags *ioAction
         // Set a callback for the specified node's specified input
         result = AUGraphSetNodeInputCallback(mGraph, mixerNode, i, &rcbs);
 		// equivalent to AudioUnitSetProperty(mMixer, kAudioUnitProperty_SetRenderCallback, kAudioUnitScope_Input, i, &rcbs, sizeof(rcbs));
-        if (result) { printf("AUGraphSetNodeInputCallback result %d %08X %4.4s\n", result, result, (char*)&result); return; }
+        if (result) { printf("AUGraphSetNodeInputCallback result %ld %08lX %4.4s\n", result, result, (char*)&result); return; }
 
         // set input stream format to what we want
         printf("get kAudioUnitProperty_StreamFormat\n");
 		
         size = sizeof(desc);
 		result = AudioUnitGetProperty(mMixer, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, i, &desc, &size);
-        if (result) { printf("AudioUnitGetProperty result %d %08X %4.4s\n", result, result, (char*)&result); return; }
+        if (result) { printf("AudioUnitGetProperty result %ld %08lX %4.4s\n", result, result, (char*)&result); return; }
 		
 		desc.ChangeNumberChannels(2, false);						
 		desc.mSampleRate = kGraphSampleRate;
@@ -237,14 +215,14 @@ static OSStatus renderInput(void *inRefCon, AudioUnitRenderActionFlags *ioAction
 		printf("set kAudioUnitProperty_StreamFormat\n");
         
 		result = AudioUnitSetProperty(mMixer, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, i, &desc, sizeof(desc));
-        if (result) { printf("AudioUnitSetProperty result %d %08X %4.4s\n", result, result, (char*)&result); return; }
+        if (result) { printf("AudioUnitSetProperty result %ld %08lX %4.4s\n", result, result, (char*)&result); return; }
 	}
 	
 	// set output stream format to what we want
     printf("get kAudioUnitProperty_StreamFormat\n");
 	
     result = AudioUnitGetProperty(mMixer, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Output, 0, &desc, &size);
-    if (result) { printf("AudioUnitGetProperty result %d %08X %4.4s\n", result, result, (char*)&result); return; }
+    if (result) { printf("AudioUnitGetProperty result %ld %08lX %4.4s\n", result, result, (char*)&result); return; }
 	
 	desc.ChangeNumberChannels(2, false);						
 	desc.mSampleRate = kGraphSampleRate;
@@ -252,13 +230,15 @@ static OSStatus renderInput(void *inRefCon, AudioUnitRenderActionFlags *ioAction
     printf("set kAudioUnitProperty_StreamFormat\n");
     
 	result = AudioUnitSetProperty(mMixer, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Output, 0, &desc, sizeof(desc));
-    if (result) { printf("AudioUnitSetProperty result %d %08X %4.4s\n", result, result, (char*)&result); return; }
+    if (result) { printf("AudioUnitSetProperty result %ld %08lX %4.4s\n", result, result, (char*)&result); return; }
 		
     printf("AUGraphInitialize\n");
 								
     // now that we've set everything up we can initialize the graph, this will also validate the connections
 	result = AUGraphInitialize(mGraph);
-    if (result) { printf("AUGraphInitialize result %d %08X %4.4s\n", result, result, (char*)&result); return; }
+    if (result) { printf("AUGraphInitialize result %ld %08lX %4.4s\n", result, result, (char*)&result); return; }
+    
+    CAShow(mGraph);
 }
 
 // load up audio data from the demo files into mSoundBuffer.data used in the render proc
@@ -271,31 +251,37 @@ static OSStatus renderInput(void *inRefCon, AudioUnitRenderActionFlags *ioAction
         
         // open one of the two source files
         OSStatus result = ExtAudioFileOpenURL(sourceURL[i], &xafref);
-        if (result || !xafref) { printf("ExtAudioFileOpenURL result %d %08X %4.4s\n", result, result, (char*)&result); return; }
+        if (result || !xafref) { printf("ExtAudioFileOpenURL result %ld %08lX %4.4s\n", result, result, (char*)&result); return; }
         
         // get the file data format, this represents the file's actual data format
         CAStreamBasicDescription clientFormat;
         UInt32 propSize = sizeof(clientFormat);
         
         result = ExtAudioFileGetProperty(xafref, kExtAudioFileProperty_FileDataFormat, &propSize, &clientFormat);
-        if (result) { printf("ExtAudioFileGetProperty kExtAudioFileProperty_FileDataFormat result %d %08X %4.4s\n", result, result, (char*)&result); return; }
+        if (result) { printf("ExtAudioFileGetProperty kExtAudioFileProperty_FileDataFormat result %ld %08lX %4.4s\n", result, result, (char*)&result); return; }
+        printf("File %d, File Audio Data Format:\n", i);
+        clientFormat.Print();
         
         // set the client format to be what we want back
         double rateRatio = kGraphSampleRate / clientFormat.mSampleRate;
         clientFormat.mSampleRate = kGraphSampleRate;
         clientFormat.SetAUCanonical(1, true);
+        printf("Audio File Client Format (format we want back from ExtAudioFile):\n");
+        clientFormat.Print();
         
         propSize = sizeof(clientFormat);
         result = ExtAudioFileSetProperty(xafref, kExtAudioFileProperty_ClientDataFormat, propSize, &clientFormat);
-        if (result) { printf("ExtAudioFileSetProperty kExtAudioFileProperty_ClientDataFormat %d %08X %4.4s\n", result, result, (char*)&result); return; }
+        if (result) { printf("ExtAudioFileSetProperty kExtAudioFileProperty_ClientDataFormat %ld %08lX %4.4s\n", result, result, (char*)&result); return; }
         
         // get the file's length in sample frames
         UInt64 numFrames = 0;
         propSize = sizeof(numFrames);
         result = ExtAudioFileGetProperty(xafref, kExtAudioFileProperty_FileLengthFrames, &propSize, &numFrames);
-        if (result) { printf("ExtAudioFileGetProperty kExtAudioFileProperty_FileLengthFrames result %d %08X %4.4s\n", result, result, (char*)&result); return; }
+        if (result) { printf("ExtAudioFileGetProperty kExtAudioFileProperty_FileLengthFrames result %ld %08lX %4.4s\n", result, result, (char*)&result); return; }
+        printf("File %d, Number of Sample Frames: %lld\n", i, numFrames);
         
         numFrames = (UInt32)(numFrames * rateRatio); // account for any sample rate conversion
+        printf("File %d, Number of Sample Frames after rate conversion (if any): %lld\n", i, numFrames);
         
         // set up our buffer
         mSoundBuffer[i].numFrames = numFrames;
@@ -316,7 +302,7 @@ static OSStatus renderInput(void *inRefCon, AudioUnitRenderActionFlags *ioAction
         UInt32 numPackets = numFrames;
         result = ExtAudioFileRead(xafref, &numPackets, &bufList);
         if (result) {
-            printf("ExtAudioFileRead result %d %08X %4.4s\n", result, result, (char*)&result); 
+            printf("ExtAudioFileRead result %ld %08lX %4.4s\n", result, result, (char*)&result);
             free(mSoundBuffer[i].data);
             mSoundBuffer[i].data = 0;
             return;
@@ -332,10 +318,10 @@ static OSStatus renderInput(void *inRefCon, AudioUnitRenderActionFlags *ioAction
 // enable or disables a specific bus
 - (void)enableInput:(UInt32)inputNum isOn:(AudioUnitParameterValue)isONValue
 {
-    printf("BUS %d isON %f\n", inputNum, isONValue);
+    printf("BUS %d isON %f\n", (unsigned int)inputNum, isONValue);
          
     OSStatus result = AudioUnitSetParameter(mMixer, kMultiChannelMixerParam_Enable, kAudioUnitScope_Input, inputNum, isONValue, 0);
-    if (result) { printf("AudioUnitSetParameter kMultiChannelMixerParam_Enable result %d %08X %4.4s\n", result, result, (char*)&result); return; }
+    if (result) { printf("AudioUnitSetParameter kMultiChannelMixerParam_Enable result %ld %08lX %4.4s\n", result, result, (char*)&result); return; }
 
 }
 
@@ -343,14 +329,14 @@ static OSStatus renderInput(void *inRefCon, AudioUnitRenderActionFlags *ioAction
 - (void)setInputVolume:(UInt32)inputNum value:(AudioUnitParameterValue)value
 {
 	OSStatus result = AudioUnitSetParameter(mMixer, kMultiChannelMixerParam_Volume, kAudioUnitScope_Input, inputNum, value, 0);
-    if (result) { printf("AudioUnitSetParameter kMultiChannelMixerParam_Volume Input result %d %08X %4.4s\n", result, result, (char*)&result); return; }
+    if (result) { printf("AudioUnitSetParameter kMultiChannelMixerParam_Volume Input result %ld %08lX %4.4s\n", result, result, (char*)&result); return; }
 }
 
 // sets the overall mixer output volume
 - (void)setOutputVolume:(AudioUnitParameterValue)value
 {
 	OSStatus result = AudioUnitSetParameter(mMixer, kMultiChannelMixerParam_Volume, kAudioUnitScope_Output, 0, value, 0);
-    if (result) { printf("AudioUnitSetParameter kMultiChannelMixerParam_Volume Output result %d %08X %4.4s\n", result, result, (char*)&result); return; }
+    if (result) { printf("AudioUnitSetParameter kMultiChannelMixerParam_Volume Output result %ld %08lX %4.4s\n", result, result, (char*)&result); return; }
 }
 
 // stars render
@@ -359,7 +345,7 @@ static OSStatus renderInput(void *inRefCon, AudioUnitRenderActionFlags *ioAction
     printf("PLAY\n");
     
 	OSStatus result = AUGraphStart(mGraph);
-    if (result) { printf("AUGraphStart result %d %08X %4.4s\n", result, result, (char*)&result); return; }
+    if (result) { printf("AUGraphStart result %ld %08lX %4.4s\n", result, result, (char*)&result); return; }
 	isPlaying = true;
 }
 
@@ -371,11 +357,11 @@ static OSStatus renderInput(void *inRefCon, AudioUnitRenderActionFlags *ioAction
     Boolean isRunning = false;
     
     OSStatus result = AUGraphIsRunning(mGraph, &isRunning);
-    if (result) { printf("AUGraphIsRunning result %d %08X %4.4s\n", result, result, (char*)&result); return; }
+    if (result) { printf("AUGraphIsRunning result %ld %08lX %4.4s\n", result, result, (char*)&result); return; }
     
     if (isRunning) {
         result = AUGraphStop(mGraph);
-        if (result) { printf("AUGraphStop result %d %08X %4.4s\n", result, result, (char*)&result); return; }
+        if (result) { printf("AUGraphStop result %ld %08lX %4.4s\n", result, result, (char*)&result); return; }
         isPlaying = false;
     }
 }

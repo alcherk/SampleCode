@@ -1,7 +1,7 @@
 /*
      File: TiledImageView.m 
  Abstract: View backed by CATiledLayer which is good for particularly large views. 
-  Version: 1.0 
+  Version: 1.1 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2011 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2014 Apple Inc. All Rights Reserved. 
   
 */
 
@@ -64,11 +64,11 @@
 }
 
 // Create a new TiledImageView with the desired frame and scale.
--(id)initWithFrame:(CGRect)_frame image:(UIImage*)_image scale:(CGFloat)_scale {
+-(id)initWithFrame:(CGRect)_frame image:(UIImage*)img scale:(CGFloat)scale {
     if ((self = [super initWithFrame:_frame])) {
-		self.image = _image;
+		self.image = img;
         imageRect = CGRectMake(0.0f, 0.0f, CGImageGetWidth(image.CGImage), CGImageGetHeight(image.CGImage));
-		imageScale = _scale;
+		imageScale = scale;
  		CATiledLayer *tiledLayer = (CATiledLayer *)[self layer];
 		// levelsOfDetail and levelsOfDetailBias determine how
 		// the layer is rendered at different zoom levels.  This
@@ -82,7 +82,7 @@
     return self;
 }
 
--(void)drawRect:(CGRect)_rect {
+-(void)drawRect:(CGRect)rect {
     CGContextRef context = UIGraphicsGetCurrentContext();    
 	CGContextSaveGState(context);
 	// Scale the context so that the image is rendered 

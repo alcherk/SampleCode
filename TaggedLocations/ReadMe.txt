@@ -1,91 +1,62 @@
-### Locations ###
 
-===========================================================================
-DESCRIPTION:
+Simple Core Data Relationships
+==============================
 
-This sample illustrates how to manipulate attributes and relationships in an iPhone application.
+The TaggedLocations application illustrates how you can manipulate Core Data attributes and relationships in an iOS application.
 
-The application extends the the completed project from the Core Data Tutorial for iPhone OS. The first screen displays a table view of events, which encapsulate a time stamp, a geographical location expressed in latitude and longitude, and a name for the event. The user can add, remove, and edit events using the first screen.
+The first screen displays a table view of events, which encapsulate a time stamp, a geographical location expressed in latitude and longitude, and a name for the event. The user can add, remove, and edit events using the first screen.
 
 Events have a to-many relationship to tags (which have an inverse to-many relationship to events). Tags have a name which describes a feature of an event. Tags are displayed in a second table view; when a tag is related to the selected event, a check mark is displayed in the corresponding row.
 
 
-===========================================================================
-BUILD REQUIREMENTS:
 
-iOS 4.0 SDK
-
-
-===========================================================================
-RUNTIME REQUIREMENTS:
-
-iPhone OS 3.2 or later
-
-===========================================================================
-PACKAGING LIST:
+Main Components
+===============
 
 View Controllers
 ----------------
-RootViewController.{h,m}
+APLEventsTableViewController
 The table view controller responsible for displaying the list of events, supporting additional functionality:
- * Addition of new new events
+ * Addition of new events
  * Deletion of existing events using UITableView's tableView:commitEditingStyle:forRowAtIndexPath: method
  * Editing an event's name
 
-TagSelectionController.{h,m}
+APLTagSelectionController
 The table view controller responsible for displaying and editing tags.
 The rows show a check mark if the selected event is related to the corresponding tag. 
 
 Model
 -----
-TaggedLocations.xcdatamodel
+TaggedLocations.xcdatamodeld
 The Core Data managed object model for the application.
 
-Event.{h,m}
+APLEvent
 A Core Data managed object class to represent an event containing geographical coordinates and a time stamp.
 
-Tag.{h,m}
+APLTag
 A Core Data managed object class to represent a tag.
 
 Table View Cells
 ----------------
-EventTableViewCell.{h,m}
-EventTableViewCell.xib
+APLEventTableViewCell
 Table view cell to display information about an event.
-The File's Owner is the RootViewController table view controller which acts as:
+The delegate is the RootViewController table view controller which acts as:
 * The name text field's delegate to respond to editing operations
 * The target of the tag button to initiate tag editing
 
 
-EditableTableViewCell.{h,m}
-EditableTableViewCell.xib
+APLEditableTableViewCell
 Table view cell to present an editable text field.
-The File's Owner is the TagSelectionController table view controller which acts as the text field's delegate to respond to editing operations.
 
 
 Application configuration
 -------------------------
-LocationsAppDelegate.{h,m}
-Configures the Core Data stack and the first view controller.
+APLAppDelegate
+Configures the Core Data stack and passes a managed object context to the first view controller.
 
-MainWindow.xib
-Loaded automatically by the application. Creates the application's delegate and window.
+MainStoryboard.storyboard
+Loaded automatically by the application.
 
-
-===========================================================================
-CHANGES FROM PREVIOUS VERSIONS:
-
-Version 1.3
-- Added CFBundleIconFiles in Info.plist.
-
-Version 1.2
-- Upgraded project to build with the iOS 4.0 SDK.
-
-Version 1.1
-- Added identifier to table view cell in EditableTableViewCell.xib.
-
-Version 1.0
-- First version.
 
 ===========================================================================
-Copyright (C) 2009-2010 Apple Inc. All rights reserved.
+Copyright (C) 2009-2013 Apple Inc. All rights reserved.

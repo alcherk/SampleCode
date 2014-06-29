@@ -3,53 +3,42 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 45;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1D3623260D0F684500981E51 /* MessageComposerAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* MessageComposerAppDelegate.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765A50DF7441C002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765A40DF7441C002DB57D /* CoreGraphics.framework */; };
-		28D7ACF80DDB3853001CB0EB /* MessageComposerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28D7ACF70DDB3853001CB0EB /* MessageComposerViewController.m */; };
-		7E19D3E811D1898D000002E9 /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = 7E19D3E711D1898D000002E9 /* iTunesArtwork */; };
 		7E311C6811D157E300EB2D81 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E311C5F11D157E300EB2D81 /* Default.png */; };
-		7E311C6911D157E300EB2D81 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E311C6011D157E300EB2D81 /* Icon-72.png */; };
-		7E311C6A11D157E300EB2D81 /* Icon-Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E311C6111D157E300EB2D81 /* Icon-Small-50.png */; };
-		7E311C6B11D157E300EB2D81 /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E311C6211D157E300EB2D81 /* Icon-Small.png */; };
-		7E311C6C11D157E300EB2D81 /* Icon-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E311C6311D157E300EB2D81 /* Icon-Small@2x.png */; };
-		7E311C6D11D157E300EB2D81 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E311C6411D157E300EB2D81 /* Icon.png */; };
-		7E311C6E11D157E300EB2D81 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7E311C6511D157E300EB2D81 /* Icon@2x.png */; };
-		7E5328ED1198CF9900BCC65C /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7E5328E91198CF9900BCC65C /* MainWindow.xib */; };
-		7E5328EE1198CF9900BCC65C /* MessageComposerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7E5328EB1198CF9900BCC65C /* MessageComposerViewController.xib */; };
-		7E8EEBBC119764BF0073914C /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E8EEBBB119764BF0073914C /* MessageUI.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		7E8EEBBC119764BF0073914C /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E8EEBBB119764BF0073914C /* MessageUI.framework */; settings = {ATTRIBUTES = (Required, ); }; };
+		D00F5F2317414FD200F26C5F /* MessageComposerAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D00F5F2017414FD200F26C5F /* MessageComposerAppDelegate.m */; };
+		D00F5F2417414FD200F26C5F /* MessageComposerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D00F5F2217414FD200F26C5F /* MessageComposerViewController.m */; };
+		D029D45D17417A7A00E200C9 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D029D45B17417A7A00E200C9 /* Default-568h@2x.png */; };
+		D029D45E17417A7A00E200C9 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D029D45C17417A7A00E200C9 /* Default@2x.png */; };
+		D055FDCD16FBC9F5003AF0E3 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D055FDCF16FBC9F5003AF0E3 /* MainStoryboard.storyboard */; };
 		EDA2139E1278CF9E003F0221 /* rainy.jpg in Resources */ = {isa = PBXBuildFile; fileRef = EDA2139D1278CF9E003F0221 /* rainy.jpg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		1D3623240D0F684500981E51 /* MessageComposerAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageComposerAppDelegate.h; sourceTree = "<group>"; };
-		1D3623250D0F684500981E51 /* MessageComposerAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageComposerAppDelegate.m; sourceTree = "<group>"; };
 		1D6058910D05DD3D006BFB54 /* MessageComposer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MessageComposer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		288765A40DF7441C002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		28D7ACF60DDB3853001CB0EB /* MessageComposerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageComposerViewController.h; sourceTree = "<group>"; };
-		28D7ACF70DDB3853001CB0EB /* MessageComposerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageComposerViewController.m; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* MessageComposer_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageComposer_Prefix.pch; sourceTree = "<group>"; };
-		7E19D3E711D1898D000002E9 /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; name = iTunesArtwork; path = Images/iTunesArtwork; sourceTree = "<group>"; };
 		7E311C5F11D157E300EB2D81 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = Images/Default.png; sourceTree = "<group>"; };
-		7E311C6011D157E300EB2D81 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72.png"; path = "Images/Icon-72.png"; sourceTree = "<group>"; };
-		7E311C6111D157E300EB2D81 /* Icon-Small-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small-50.png"; path = "Images/Icon-Small-50.png"; sourceTree = "<group>"; };
-		7E311C6211D157E300EB2D81 /* Icon-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small.png"; path = "Images/Icon-Small.png"; sourceTree = "<group>"; };
-		7E311C6311D157E300EB2D81 /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small@2x.png"; path = "Images/Icon-Small@2x.png"; sourceTree = "<group>"; };
-		7E311C6411D157E300EB2D81 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = Images/Icon.png; sourceTree = "<group>"; };
-		7E311C6511D157E300EB2D81 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "Images/Icon@2x.png"; sourceTree = "<group>"; };
-		7E5328EA1198CF9900BCC65C /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainWindow.xib; sourceTree = "<group>"; };
-		7E5328EC1198CF9900BCC65C /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MessageComposerViewController.xib; sourceTree = "<group>"; };
 		7E8EEBBB119764BF0073914C /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		8D1107310486CEB800E47090 /* MessageComposer-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "MessageComposer-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		D00F5F1F17414FD200F26C5F /* MessageComposerAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageComposerAppDelegate.h; sourceTree = "<group>"; };
+		D00F5F2017414FD200F26C5F /* MessageComposerAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageComposerAppDelegate.m; sourceTree = "<group>"; };
+		D00F5F2117414FD200F26C5F /* MessageComposerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageComposerViewController.h; sourceTree = "<group>"; };
+		D00F5F2217414FD200F26C5F /* MessageComposerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageComposerViewController.m; sourceTree = "<group>"; };
+		D00F5F2A174165CA00F26C5F /* ReadMe.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = ReadMe.txt; sourceTree = "<group>"; };
+		D029D45B17417A7A00E200C9 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "Images/Default-568h@2x.png"; sourceTree = "<group>"; };
+		D029D45C17417A7A00E200C9 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x.png"; path = "Images/Default@2x.png"; sourceTree = "<group>"; };
+		D055FDCE16FBC9F5003AF0E3 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
 		EDA2139D1278CF9E003F0221 /* rainy.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = rainy.jpg; path = Images/rainy.jpg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -68,17 +57,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		080E96DDFE201D6D7F000001 /* Classes */ = {
-			isa = PBXGroup;
-			children = (
-				1D3623240D0F684500981E51 /* MessageComposerAppDelegate.h */,
-				1D3623250D0F684500981E51 /* MessageComposerAppDelegate.m */,
-				28D7ACF60DDB3853001CB0EB /* MessageComposerViewController.h */,
-				28D7ACF70DDB3853001CB0EB /* MessageComposerViewController.m */,
-			);
-			path = Classes;
-			sourceTree = "<group>";
-		};
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -90,33 +68,27 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				080E96DDFE201D6D7F000001 /* Classes */,
-				29B97315FDCFA39411CA2CEA /* Other Sources */,
-				29B97317FDCFA39411CA2CEA /* Resources */,
+				D00F5F2A174165CA00F26C5F /* ReadMe.txt */,
+				D00F5F1E17414FA000F26C5F /* MessageComposer */,
+				7E311C5D11D157D600EB2D81 /* Images */,
+				29B97315FDCFA39411CA2CEA /* Supporting Files */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
 			name = CustomTemplate;
 			sourceTree = "<group>";
 		};
-		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
+		29B97315FDCFA39411CA2CEA /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				8D1107310486CEB800E47090 /* MessageComposer-Info.plist */,
 				32CA4F630368D1EE00C91783 /* MessageComposer_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
+				D029D45B17417A7A00E200C9 /* Default-568h@2x.png */,
+				D029D45C17417A7A00E200C9 /* Default@2x.png */,
+				7E311C5F11D157E300EB2D81 /* Default.png */,
 			);
-			name = "Other Sources";
-			sourceTree = "<group>";
-		};
-		29B97317FDCFA39411CA2CEA /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				7E311C5D11D157D600EB2D81 /* Images */,
-				7E5328E91198CF9900BCC65C /* MainWindow.xib */,
-				7E5328EB1198CF9900BCC65C /* MessageComposerViewController.xib */,
-				8D1107310486CEB800E47090 /* MessageComposer-Info.plist */,
-			);
-			name = Resources;
+			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
@@ -133,17 +105,21 @@
 		7E311C5D11D157D600EB2D81 /* Images */ = {
 			isa = PBXGroup;
 			children = (
-				7E19D3E711D1898D000002E9 /* iTunesArtwork */,
-				7E311C5F11D157E300EB2D81 /* Default.png */,
-				7E311C6011D157E300EB2D81 /* Icon-72.png */,
-				7E311C6111D157E300EB2D81 /* Icon-Small-50.png */,
-				7E311C6211D157E300EB2D81 /* Icon-Small.png */,
-				7E311C6311D157E300EB2D81 /* Icon-Small@2x.png */,
-				7E311C6411D157E300EB2D81 /* Icon.png */,
-				7E311C6511D157E300EB2D81 /* Icon@2x.png */,
 				EDA2139D1278CF9E003F0221 /* rainy.jpg */,
 			);
 			name = Images;
+			sourceTree = "<group>";
+		};
+		D00F5F1E17414FA000F26C5F /* MessageComposer */ = {
+			isa = PBXGroup;
+			children = (
+				D00F5F1F17414FD200F26C5F /* MessageComposerAppDelegate.h */,
+				D00F5F2017414FD200F26C5F /* MessageComposerAppDelegate.m */,
+				D055FDCF16FBC9F5003AF0E3 /* MainStoryboard.storyboard */,
+				D00F5F2117414FD200F26C5F /* MessageComposerViewController.h */,
+				D00F5F2217414FD200F26C5F /* MessageComposerViewController.m */,
+			);
+			name = MessageComposer;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -171,8 +147,11 @@
 /* Begin PBXProject section */
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0460;
+			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "MessageComposer" */;
-			compatibilityVersion = "Xcode 3.1";
+			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
@@ -196,17 +175,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7E5328ED1198CF9900BCC65C /* MainWindow.xib in Resources */,
-				7E5328EE1198CF9900BCC65C /* MessageComposerViewController.xib in Resources */,
 				7E311C6811D157E300EB2D81 /* Default.png in Resources */,
-				7E311C6911D157E300EB2D81 /* Icon-72.png in Resources */,
-				7E311C6A11D157E300EB2D81 /* Icon-Small-50.png in Resources */,
-				7E311C6B11D157E300EB2D81 /* Icon-Small.png in Resources */,
-				7E311C6C11D157E300EB2D81 /* Icon-Small@2x.png in Resources */,
-				7E311C6D11D157E300EB2D81 /* Icon.png in Resources */,
-				7E311C6E11D157E300EB2D81 /* Icon@2x.png in Resources */,
-				7E19D3E811D1898D000002E9 /* iTunesArtwork in Resources */,
 				EDA2139E1278CF9E003F0221 /* rainy.jpg in Resources */,
+				D055FDCD16FBC9F5003AF0E3 /* MainStoryboard.storyboard in Resources */,
+				D029D45D17417A7A00E200C9 /* Default-568h@2x.png in Resources */,
+				D029D45E17417A7A00E200C9 /* Default@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -218,28 +191,20 @@
 			buildActionMask = 2147483647;
 			files = (
 				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
-				1D3623260D0F684500981E51 /* MessageComposerAppDelegate.m in Sources */,
-				28D7ACF80DDB3853001CB0EB /* MessageComposerViewController.m in Sources */,
+				D00F5F2317414FD200F26C5F /* MessageComposerAppDelegate.m in Sources */,
+				D00F5F2417414FD200F26C5F /* MessageComposerViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		7E5328E91198CF9900BCC65C /* MainWindow.xib */ = {
+		D055FDCF16FBC9F5003AF0E3 /* MainStoryboard.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				7E5328EA1198CF9900BCC65C /* en */,
+				D055FDCE16FBC9F5003AF0E3 /* en */,
 			);
-			name = MainWindow.xib;
-			sourceTree = SOURCE_ROOT;
-		};
-		7E5328EB1198CF9900BCC65C /* MessageComposerViewController.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				7E5328EC1198CF9900BCC65C /* en */,
-			);
-			name = MessageComposerViewController.xib;
+			name = MainStoryboard.storyboard;
 			sourceTree = SOURCE_ROOT;
 		};
 /* End PBXVariantGroup section */
@@ -255,7 +220,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = MessageComposer_Prefix.pch;
 				INFOPLIST_FILE = "MessageComposer-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = MessageComposer;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -267,7 +234,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = MessageComposer_Prefix.pch;
 				INFOPLIST_FILE = "MessageComposer-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = MessageComposer;
+				TARGETED_DEVICE_FAMILY = 1;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -276,13 +245,21 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.1.3;
-				PREBINDING = NO;
-				SDKROOT = iphoneos4.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				RUN_CLANG_STATIC_ANALYZER = YES;
+				SDKROOT = iphoneos;
 			};
 			name = Debug;
 		};
@@ -290,14 +267,21 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.1.3;
-				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				PREBINDING = NO;
-				SDKROOT = iphoneos4.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				RUN_CLANG_STATIC_ANALYZER = YES;
+				SDKROOT = iphoneos;
 			};
 			name = Release;
 		};

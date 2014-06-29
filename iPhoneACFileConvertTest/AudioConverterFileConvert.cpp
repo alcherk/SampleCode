@@ -1,7 +1,7 @@
 /*
         File: AudioConverterFileConvert.cpp
     Abstract: Demonstrates converting audio using AudioConverterFillComplexBuffer.
-     Version: 1.0
+     Version: 1.0.3
     
     Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
     Inc. ("Apple") in consideration of your agreement to the following
@@ -41,7 +41,7 @@
     STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
     
-    Copyright (C) 2010 Apple Inc. All Rights Reserved.
+    Copyright (C) 2014 Apple Inc. All Rights Reserved.
     
 */
 
@@ -71,6 +71,9 @@ To handle an interruption during hardware-assisted encoding, take two things int
 1. The codec may or may not be able to resume encoding after the interruption ends.
 2. The codec may be unavailable, probably due to an interruption.
 
+Note: iOS 7 provides for software AAC encode, devices with hardware encoder will show as having two encoders, devices such as the iPhone 5s only has
+      a software encoder that is much faster and more flexible than the older hardware encoders.
+
 Encoding takes place as you repeatedly call the AudioConverterFillComplexBuffer function supplying new buffers of input audio data via the input data procedure
 producing buffers of audio encoded in the output format.
 To handle an interruption, you respond to the function’s result code, as described here:
@@ -80,8 +83,8 @@ In this case, your application must stop calling AudioConverterFillComplexBuffer
 the audio session. In your interruption-end handler, reactivate the session and then resume converting the audio data.
 
 To check if the AAC codec can resume, obtain the value of the associated converter’s kAudioConverterPropertyCanResumeFromInterruption property.
-The value is 1 (can resume) or 0 (cannot resume). You can obtain this value any time after instantiating the converter—immediately after instantiation,
-upon interruption, or after interruption ends.
+The value is 1 (can resume) or 0 (cannot resume) or the property itself may not be supported (implies software codec use where we can resume).
+You can obtain this value any time after instantiating the converter—immediately after instantiation, upon interruption, or after interruption ends.
 
 If the converter cannot resume, then on interruption you must abandon the conversion. After the interruption ends, or after the user relaunches your application
 and indicates they want to resume conversion, re-instantiate the extended audio file object and perform the conversion again.
@@ -495,14 +498,26 @@ OSStatus DoConvertFile(CFURLRef sourceURL, CFURLRef destinationURL, OSType outpu
         printf("              Source format: "); srcFormat.Print();
         printf("    Destination File format: "); dstFormat.Print();
         
-        // if encoding to AAC set the bitrate to 192k which is a nice value for this demo
+        // if encoding to AAC set the bitrate
         // kAudioConverterEncodeBitRate is a UInt32 value containing the number of bits per second to aim for when encoding data
+        // when you explicitly set the bit rate and the sample rate, this tells the encoder to stick with both bit rate and sample rate
+        //     but there are combinations (also depending on the number of channels) which will not be allowed
+        // if you do not explicitly set a bit rate the encoder will pick the correct value for you depending on samplerate and number of channels
+        // bit rate also scales with the number of channels, therefore one bit rate per sample rate can be used for mono cases
+        //    and if you have stereo or more, you can multiply that number by the number of channels.
         if (dstFormat.mFormatID == kAudioFormatMPEG4AAC) {
-            UInt32 outputBitRate = 192000; // 192k
+            UInt32 outputBitRate = 64000; // 64kbs
             UInt32 propSize = sizeof(outputBitRate);
-       
-            // ignore errors as setting may be invalid depending on format specifics such as samplerate
-            AudioConverterSetProperty(converter, kAudioConverterEncodeBitRate, propSize, &outputBitRate);
+            
+            if (dstFormat.mSampleRate >= 44100) {
+                outputBitRate = 192000; // 192kbs
+            } else if (dstFormat.mSampleRate < 22000) {
+                outputBitRate = 32000; // 32kbs
+            }
+            
+            // set the bit rate depending on the samplerate chosen
+            XThrowIfError(AudioConverterSetProperty(converter, kAudioConverterEncodeBitRate, propSize, &outputBitRate),
+                           "AudioConverterSetProperty kAudioConverterEncodeBitRate failed!");
             
             // get it back and print it out
             AudioConverterGetProperty(converter, kAudioConverterEncodeBitRate, &propSize, &outputBitRate);
@@ -530,7 +545,7 @@ OSStatus DoConvertFile(CFURLRef sourceURL, CFURLRef destinationURL, OSType outpu
             // we are always going to be able to resume conversion after an interruption
             
             if (kAudioConverterErr_PropertyNotSupported == error) {
-                printf("kAudioConverterPropertyCanResumeFromInterruption property not supported\n");
+                printf("kAudioConverterPropertyCanResumeFromInterruption property not supported - see comments in source for more info.\n");
             } else {
                 printf("AudioConverterGetProperty kAudioConverterPropertyCanResumeFromInterruption result %ld, paramErr is OK if PCM\n", error);
             }
@@ -575,7 +590,7 @@ OSStatus DoConvertFile(CFURLRef sourceURL, CFURLRef destinationURL, OSType outpu
         
         if (outputSizePerPacket == 0) {
             // if the destination format is VBR, we need to get max size per packet from the converter
-            UInt32 size = sizeof(outputSizePerPacket);
+            size = sizeof(outputSizePerPacket);
             XThrowIfError(AudioConverterGetProperty(converter, kAudioConverterPropertyMaximumOutputPacketSize, &size, &outputSizePerPacket), "AudioConverterGetProperty kAudioConverterPropertyMaximumOutputPacketSize failed!");
             
             // allocate memory for the PacketDescription structures describing the layout of each packet
@@ -617,6 +632,7 @@ OSStatus DoConvertFile(CFURLRef sourceURL, CFURLRef destinationURL, OSType outpu
 
             // convert data
             UInt32 ioOutputDataPackets = numOutputPackets;
+            printf("AudioConverterFillComplexBuffer...\n");
             error = AudioConverterFillComplexBuffer(converter, EncoderDataProc, &afio, &ioOutputDataPackets, &fillBufList, outputPacketDescriptions);
             // if interrupted in the process of the conversion call, we must handle the error appropriately
             if (error) {
@@ -638,7 +654,7 @@ OSStatus DoConvertFile(CFURLRef sourceURL, CFURLRef destinationURL, OSType outpu
                 UInt32 inNumBytes = fillBufList.mBuffers[0].mDataByteSize;
                 XThrowIfError(AudioFileWritePackets(destinationFileID, false, inNumBytes, outputPacketDescriptions, outputFilePos, &ioOutputDataPackets, outputBuffer), "AudioFileWritePackets failed!");
             
-                //printf("Convert Output: Write %lu packets at position %lld, size: %ld\n", ioOutputDataPackets, outputFilePos, inNumBytes);
+                printf("Convert Output: Write %lu packets at position %lld, size: %ld\n", ioOutputDataPackets, outputFilePos, inNumBytes);
                 
                 // advance output file packet position
                 outputFilePos += ioOutputDataPackets;
@@ -646,7 +662,7 @@ OSStatus DoConvertFile(CFURLRef sourceURL, CFURLRef destinationURL, OSType outpu
                 if (dstFormat.mFramesPerPacket) { 
                     // the format has constant frames per packet
                     totalOutputFrames += (ioOutputDataPackets * dstFormat.mFramesPerPacket);
-                } else {
+                } else if (outputPacketDescriptions != NULL) {
                     // variable frames per packet require doing this for each packet (adding up the number of sample frames of data in each packet)
                     for (UInt32 i = 0; i < ioOutputDataPackets; ++i)
                         totalOutputFrames += outputPacketDescriptions[i].mVariableFramesInPacket;

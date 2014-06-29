@@ -44,7 +44,7 @@ AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE),
 STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
-Copyright (C) 2010-2011 Apple Inc. All Rights Reserved.
+Copyright (C) 2010-2013 Apple Inc. All Rights Reserved.
 
 */
 
@@ -72,9 +72,9 @@ NSString * const kCurrentItemKey	= @"currentItem";
 - (void)showPlayButton;
 - (void)showStopButton;
 - (void)syncScrubber;
-- (void)beginScrubbing:(id)sender;
-- (void)scrub:(id)sender;
-- (void)endScrubbing:(id)sender;
+- (IBAction)beginScrubbing:(id)sender;
+- (IBAction)scrub:(id)sender;
+- (IBAction)endScrubbing:(id)sender;
 - (BOOL)isScrubbing;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil;
 - (id)init;
@@ -153,17 +153,17 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
 	if (YES == seekToZeroBeforePlay) 
 	{
 		seekToZeroBeforePlay = NO;
-		[mPlayer seekToTime:kCMTimeZero];
+		[self.mPlayer seekToTime:kCMTimeZero];
 	}
 
-	[mPlayer play];
+	[self.mPlayer play];
 	
     [self showStopButton];    
 }
 
 - (IBAction)pause:(id)sender
 {
-	[mPlayer pause];
+	[self.mPlayer pause];
 
     [self showPlayButton];
 }
@@ -173,9 +173,9 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
 {
 	AVPlayerDemoMetadataViewController* metadataViewController = [[AVPlayerDemoMetadataViewController alloc] init];
 
-	[metadataViewController setMetadata:[[[mPlayer currentItem] asset] commonMetadata]];
+	[metadataViewController setMetadata:[[[self.mPlayer currentItem] asset] commonMetadata]];
 	
-	[self presentModalViewController:metadataViewController animated:YES];
+	[self presentViewController:metadataViewController animated:YES completion:NULL];
 
 	[metadataViewController release];
 }
@@ -186,17 +186,17 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
 /* Show the stop button in the movie player controller. */
 -(void)showStopButton
 {
-    NSMutableArray *toolbarItems = [NSMutableArray arrayWithArray:[mToolbar items]];
-    [toolbarItems replaceObjectAtIndex:0 withObject:mStopButton];
-    mToolbar.items = toolbarItems;
+    NSMutableArray *toolbarItems = [NSMutableArray arrayWithArray:[self.mToolbar items]];
+    [toolbarItems replaceObjectAtIndex:0 withObject:self.mStopButton];
+    self.mToolbar.items = toolbarItems;
 }
 
 /* Show the play button in the movie player controller. */
 -(void)showPlayButton
 {
-    NSMutableArray *toolbarItems = [NSMutableArray arrayWithArray:[mToolbar items]];
-    [toolbarItems replaceObjectAtIndex:0 withObject:mPlayButton];
-    mToolbar.items = toolbarItems;
+    NSMutableArray *toolbarItems = [NSMutableArray arrayWithArray:[self.mToolbar items]];
+    [toolbarItems replaceObjectAtIndex:0 withObject:self.mPlayButton];
+    self.mToolbar.items = toolbarItems;
 }
 
 /* If the media is playing, show the stop button; otherwise, show the play button. */
@@ -244,12 +244,12 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
 	double duration = CMTimeGetSeconds(playerDuration);
 	if (isfinite(duration))
 	{
-		CGFloat width = CGRectGetWidth([mScrubber bounds]);
+		CGFloat width = CGRectGetWidth([self.mScrubber bounds]);
 		interval = 0.5f * duration / width;
 	}
 
 	/* Update the scrubber during normal playback. */
-	mTimeObserver = [[mPlayer addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(interval, NSEC_PER_SEC) 
+	mTimeObserver = [[self.mPlayer addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(interval, NSEC_PER_SEC) 
 								queue:NULL /* If you pass NULL, the main queue is used. */
 								usingBlock:^(CMTime time) 
                                             {
@@ -271,19 +271,19 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
 	double duration = CMTimeGetSeconds(playerDuration);
 	if (isfinite(duration))
 	{
-		float minValue = [mScrubber minimumValue];
-		float maxValue = [mScrubber maximumValue];
-		double time = CMTimeGetSeconds([mPlayer currentTime]);
+		float minValue = [self.mScrubber minimumValue];
+		float maxValue = [self.mScrubber maximumValue];
+		double time = CMTimeGetSeconds([self.mPlayer currentTime]);
 		
-		[mScrubber setValue:(maxValue - minValue) * time / duration + minValue];
+		[self.mScrubber setValue:(maxValue - minValue) * time / duration + minValue];
 	}
 }
 
 /* The user is dragging the movie controller thumb to scrub through the movie. */
 - (IBAction)beginScrubbing:(id)sender
 {
-	mRestoreAfterScrubbingRate = [mPlayer rate];
-	[mPlayer setRate:0.f];
+	mRestoreAfterScrubbingRate = [self.mPlayer rate];
+	[self.mPlayer setRate:0.f];
 	
 	/* Remove previous timer. */
 	[self removePlayerTimeObserver];
@@ -310,7 +310,7 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
 			
 			double time = duration * (value - minValue) / (maxValue - minValue);
 			
-			[mPlayer seekToTime:CMTimeMakeWithSeconds(time, NSEC_PER_SEC)];
+			[self.mPlayer seekToTime:CMTimeMakeWithSeconds(time, NSEC_PER_SEC)];
 		}
 	}
 }
@@ -329,10 +329,10 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
 		double duration = CMTimeGetSeconds(playerDuration);
 		if (isfinite(duration))
 		{
-			CGFloat width = CGRectGetWidth([mScrubber bounds]);
+			CGFloat width = CGRectGetWidth([self.mScrubber bounds]);
 			double tolerance = 0.5f * duration / width;
 
-			mTimeObserver = [[mPlayer addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(tolerance, NSEC_PER_SEC) queue:NULL usingBlock:
+			mTimeObserver = [[self.mPlayer addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(tolerance, NSEC_PER_SEC) queue:NULL usingBlock:
 			^(CMTime time)
 			{
 				[self syncScrubber];
@@ -342,7 +342,7 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
 
 	if (mRestoreAfterScrubbingRate)
 	{
-		[mPlayer setRate:mRestoreAfterScrubbingRate];
+		[self.mPlayer setRate:mRestoreAfterScrubbingRate];
 		mRestoreAfterScrubbingRate = 0.f;
 	}
 }
@@ -369,7 +369,7 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
 {
 	if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]))
 	{
-		mPlayer = nil;		
+		[self setPlayer:nil];
 		
 		[self setWantsFullScreenLayout:YES];
 	}
@@ -407,7 +407,7 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
 
 - (void)viewDidLoad
 {    
-	mPlayer = nil;
+	[self setPlayer:nil];
 
 	UIView* view  = [self view];
 
@@ -421,14 +421,14 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
 	[view addGestureRecognizer:swipeDownRecognizer];
 	[swipeDownRecognizer release];
 
-    UIBarButtonItem *scrubberItem = [[UIBarButtonItem alloc] initWithCustomView:mScrubber];
+    UIBarButtonItem *scrubberItem = [[UIBarButtonItem alloc] initWithCustomView:self.mScrubber];
     UIBarButtonItem *flexItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     
     UIButton *infoButton = [UIButton buttonWithType:UIButtonTypeInfoLight];
     [infoButton addTarget:self action:@selector(showMetadata:) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *infoItem = [[UIBarButtonItem alloc] initWithCustomView:infoButton];
 
-    mToolbar.items = [NSArray arrayWithObjects:mPlayButton, flexItem, scrubberItem, infoItem, nil];
+    self.mToolbar.items = [NSArray arrayWithObjects:self.mPlayButton, flexItem, scrubberItem, infoItem, nil];
     [scrubberItem release];
     [flexItem release];
     [infoItem release];
@@ -443,7 +443,7 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-	[mPlayer pause];
+	[self.mPlayer pause];
 	
 	[super viewWillDisappear:animated];
 }
@@ -459,7 +459,7 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
     self.title = [mURL lastPathComponent];
     
     /* Or if the item has a AVMetadataCommonKeyTitle metadata, use that instead. */
-	for (AVMetadataItem* item in ([[[mPlayer currentItem] asset] commonMetadata]))
+	for (AVMetadataItem* item in ([[[self.mPlayer currentItem] asset] commonMetadata]))
 	{
 		NSString* commonKey = [item commonKey];
 		
@@ -505,27 +505,27 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
 	{
 		if (direction == UISwipeGestureRecognizerDirectionDown)
 		{
-            if (![mToolbar isHidden])
+            if (![self.mToolbar isHidden])
 			{
 				[UIView animateWithDuration:0.2f animations:
 				^{
-					[mToolbar setTransform:CGAffineTransformMakeTranslation(0.f, CGRectGetHeight([mToolbar bounds]))];
+					[self.mToolbar setTransform:CGAffineTransformMakeTranslation(0.f, CGRectGetHeight([self.mToolbar bounds]))];
 				} completion:
 				^(BOOL finished)
 				{
-					[mToolbar setHidden:YES];
+					[self.mToolbar setHidden:YES];
 				}];
 			}
 		}
 		else if (direction == UISwipeGestureRecognizerDirectionUp)
 		{
-            if ([mToolbar isHidden])
+            if ([self.mToolbar isHidden])
 			{
-				[mToolbar setHidden:NO];
+				[self.mToolbar setHidden:NO];
 				
 				[UIView animateWithDuration:0.2f animations:
 				^{
-					[mToolbar setTransform:CGAffineTransformIdentity];
+					[self.mToolbar setTransform:CGAffineTransformIdentity];
 				} completion:^(BOOL finished){}];
 			}
 		}
@@ -536,11 +536,11 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
 {
 	[self removePlayerTimeObserver];
 	
-	[mPlayer removeObserver:self forKeyPath:@"rate"];
+	[self.mPlayer removeObserver:self forKeyPath:@"rate"];
 	[mPlayer.currentItem removeObserver:self forKeyPath:@"status"];
 	
-	[mPlayer pause];
-	[mPlayer release];
+	[self.mPlayer pause];
+	self.mPlayer = nil;
 	
 	[mURL release];
 	
@@ -555,7 +555,7 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
 
 - (BOOL)isPlaying
 {
-	return mRestoreAfterScrubbingRate != 0.f || [mPlayer rate] != 0.f;
+	return mRestoreAfterScrubbingRate != 0.f || [self.mPlayer rate] != 0.f;
 }
 
 /* Called when the player item has played to its end time. */
@@ -572,7 +572,7 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
 
 - (CMTime)playerItemDuration
 {
-	AVPlayerItem *playerItem = [mPlayer currentItem];
+	AVPlayerItem *playerItem = [self.mPlayer currentItem];
 	if (playerItem.status == AVPlayerItemStatusReadyToPlay)
 	{
         /* 
@@ -601,7 +601,7 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
 {
 	if (mTimeObserver)
 	{
-		[mPlayer removeTimeObserver:mTimeObserver];
+		[self.mPlayer removeTimeObserver:mTimeObserver];
 		[mTimeObserver release];
 		mTimeObserver = nil;
 	}
@@ -714,7 +714,7 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
     seekToZeroBeforePlay = NO;
 	
     /* Create new player, if we don't already have one. */
-    if (![self player])
+    if (!self.mPlayer)
     {
         /* Get a new AVPlayer initialized to play the specified player item. */
         [self setPlayer:[AVPlayer playerWithPlayerItem:self.mPlayerItem]];	
@@ -740,12 +740,12 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
         /* Replace the player item with a new player item. The item replacement occurs 
          asynchronously; observe the currentItem property to find out when the 
          replacement will/did occur*/
-        [[self player] replaceCurrentItemWithPlayerItem:self.mPlayerItem];
+        [self.mPlayer replaceCurrentItemWithPlayerItem:self.mPlayerItem];
         
         [self syncPlayPauseButtons];
     }
 	
-    [mScrubber setValue:0.0];
+    [self.mScrubber setValue:0.0];
 }
 
 #pragma mark -
@@ -834,13 +834,13 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
         else /* Replacement of player currentItem has occurred */
         {
             /* Set the AVPlayer for which the player layer displays visual output. */
-            [mPlaybackView setPlayer:mPlayer];
+            [self.mPlaybackView setPlayer:mPlayer];
             
             [self setViewDisplayName];
             
             /* Specifies that the player should preserve the video’s aspect ratio and 
              fit the video within the layer’s bounds. */
-            [mPlaybackView setVideoFillMode:AVLayerVideoGravityResizeAspect];
+            [self.mPlaybackView setVideoFillMode:AVLayerVideoGravityResizeAspect];
             
             [self syncPlayPauseButtons];
         }

@@ -2,7 +2,7 @@
 
     File: MyViewController.m
 Abstract: MyViewController is the view controller responsible for managing the views that make up the user interface.
- Version: 1.5
+ Version: 1.6
 
 Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
 Inc. ("Apple") in consideration of your agreement to the following
@@ -42,7 +42,7 @@ AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE),
 STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
-Copyright (C) 2010 Apple Inc. All Rights Reserved.
+Copyright (C) 2014 Apple Inc. All Rights Reserved.
 
 
 */
@@ -55,19 +55,19 @@ Copyright (C) 2010 Apple Inc. All Rights Reserved.
 
 - (void)changeCompression:(id)sender
 {
-	[(EAGLView *)self.view setCompressionSetting:[sender selectedSegmentIndex]];
+	[(EAGLView *)self.view setCompressionSetting:(int)[sender selectedSegmentIndex]];
 }
 
 
 - (void)changeMipmap:(id)sender
 {
-	[(EAGLView *)self.view setMipmapFilterSetting:[sender selectedSegmentIndex]];
+	[(EAGLView *)self.view setMipmapFilterSetting:(int)[sender selectedSegmentIndex]];
 }
 
 
 - (void)changeFilter:(id)sender
 {
-	[(EAGLView *)self.view setFilterSetting:[sender selectedSegmentIndex]];
+	[(EAGLView *)self.view setFilterSetting:(int)[sender selectedSegmentIndex]];
 }
 
 - (void)viewDidLoad
@@ -101,7 +101,7 @@ Copyright (C) 2010 Apple Inc. All Rights Reserved.
 	for (int i=0; i < numControls; i++)
 	{			
 		controls[i] = [[[UISegmentedControl alloc] initWithItems:[controlText objectAtIndex:i]] autorelease];
-		[controls[i] setSegmentedControlStyle:UISegmentedControlStyleBar];
+        [controls[i] setSegmentedControlStyle:UISegmentedControlStyleBar];
 		[controls[i] setSelectedSegmentIndex:0];
 		controlFrame = controls[i].frame;
 		
@@ -131,6 +131,10 @@ Copyright (C) 2010 Apple Inc. All Rights Reserved.
 	[self.view addSubview:_controlView];
 }
 
+- (BOOL)shouldAutorotate
+{
+    return NO;
+}
 
 - (void)didReceiveMemoryWarning
 {

@@ -1,7 +1,7 @@
 /*
      File: AppController.m
  Abstract: UIApplication's delegate class, the central controller of the application.
-  Version: 1.8
+  Version: 2.0
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,298 +41,443 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
 
 #import "AppController.h"
-#import "Picker.h"
 
-#define kNumPads 3
+#import "TapViewController.h"
+#import "PickerViewController.h"
+#import "QServer.h"
 
-// The Bonjour application protocol, which must:
-// 1) be no longer than 14 characters
-// 2) contain only lower-case letters, digits, and hyphens
-// 3) begin and end with lower-case letter or digit
-// It should also be descriptive and human-readable
-// See the following for more information:
-// http://developer.apple.com/networking/bonjour/faq.html
-#define kGameIdentifier		@"witap"
+// The Bonjour service type consists of an IANA service name (see RFC 6335) 
+// prefixed by an underscore (as per RFC 2782).
+//
+// <http://www.ietf.org/rfc/rfc6335.txt>
+// 
+// <http://www.ietf.org/rfc/rfc2782.txt>
+// 
+// See Section 5.1 of RFC 6335 for the specifics requirements.
+// 
+// To avoid conflicts, you must register your service type with IANA before 
+// shipping.
+// 
+// To help network administrators indentify your service, you should choose a 
+// service name that's reasonably human readable.
 
+static NSString * kWiTapBonjourType = @"_witap2._tcp.";
 
-@interface AppController ()
-- (void) setup;
-- (void) presentPicker:(NSString *)name;
+@interface AppController () <
+    UIApplicationDelegate, 
+    TapViewControllerDelegate, 
+    PickerDelegate, 
+    UIActionSheetDelegate,
+    QServerDelegate,
+    NSStreamDelegate
+>
+
+@property (nonatomic, strong, readwrite) TapViewController *    tapViewController;
+@property (nonatomic, strong, readwrite) QServer *              server;
+@property (nonatomic, strong, readwrite) NSInputStream *        inputStream;
+@property (nonatomic, strong, readwrite) NSOutputStream *       outputStream;
+@property (nonatomic, assign, readwrite) NSUInteger             streamOpenCount;
+@property (nonatomic, strong, readwrite) PickerViewController * picker;
+
 @end
-
 
 #pragma mark -
 @implementation AppController
 
-- (void) _showAlert:(NSString *)title
+@synthesize window = _window;
+
+- (void)applicationDidFinishLaunching:(UIApplication *)application
 {
-	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title message:@"Check your networking configuration." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-	[alertView show];
-	[alertView release];
+    #pragma unused(application)
+    
+    // Create a full-screen window
+
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    
+    // Create the root view controller
+    
+    self.tapViewController = [[TapViewController alloc] init];
+    self.tapViewController.delegate = self;
+    
+    // Show the window
+    
+    self.window.rootViewController = self.tapViewController;
+    [self.window makeKeyAndVisible];
+    
+    // Create and advertise our server.  We only want the service to be registered on 
+    // local networks so we pass in the "local." domain.
+
+    self.server = [[QServer alloc] initWithDomain:@"local." type:kWiTapBonjourType name:nil preferredPort:0];
+    [self.server setDelegate:self];
+    [self.server start];
+    
+    // Set up for a new game, which presents a Bonjour browser that displays other 
+    // available games.
+
+    [self setupForNewGame];
 }
 
-- (void) applicationDidFinishLaunching:(UIApplication *)application
+- (void)applicationDidEnterBackground:(UIApplication *)application
 {
-	CGRect		rect;
-	UIView*		view;
-	NSUInteger	x, y;
-	
-	//Create a full-screen window
-	_window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-	[_window setBackgroundColor:[UIColor darkGrayColor]];
-	
-	//Create the tap views and add them to the view controller's view
-	rect = [[UIScreen mainScreen] applicationFrame];
-	for(y = 0; y < kNumPads; ++y) {
-		for(x = 0; x < kNumPads; ++x) {
-			view = [[TapView alloc] initWithFrame:CGRectMake(rect.origin.x + x * rect.size.width / (float)kNumPads, rect.origin.y + y * rect.size.height / (float)kNumPads, rect.size.width / (float)kNumPads, rect.size.height / (float)kNumPads)];
-			[view setMultipleTouchEnabled:NO];
-			[view setBackgroundColor:[UIColor colorWithHue:((y * kNumPads + x) / (float)(kNumPads * kNumPads)) saturation:0.75 brightness:0.75 alpha:1.0]];
-			[view setTag:(y * kNumPads + x + 1)];
-			[_window addSubview:view];
-			[view release];
-		}
-	}
-	
-	//Show the window
-	[_window makeKeyAndVisible];
-	
-	//Create and advertise a new game and discover other availble games
-	[self setup];
+    #pragma unused(application)
+    
+    // If there's a game playing, shut it down.  Whether this is the right thing to do 
+    // depends on your app.  In some cases it might be more sensible to leave the connection 
+    // in place for a short while to see if the user comes back to the app.  This issue is 
+    // discussed in more depth in Technote 2277 "Networking and Multitasking".
+    //
+    // <https://developer.apple.com/library/ios/#technotes/tn2277/_index.html>
+    
+    if (self.inputStream) {
+        [self setupForNewGame];
+    }
+    
+    // Quiesce the server and service browser, if any.
+    
+    [self.server stop];
+    if (self.picker != nil) {
+        [self.picker stop];
+    }
 }
 
-- (void) dealloc
-{	
-	[_inStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
-	[_inStream release];
-
-	[_outStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
-	[_outStream release];
-
-	[_server release];
-	
-	[_picker release];
-	
-	[_window release];
-	
-	[super dealloc];
-}
-
-- (void) setup {
-	[_server release];
-	_server = nil;
-	
-	[_inStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-	[_inStream release];
-	_inStream = nil;
-	_inReady = NO;
-
-	[_outStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-	[_outStream release];
-	_outStream = nil;
-	_outReady = NO;
-	
-	_server = [TCPServer new];
-	[_server setDelegate:self];
-	NSError *error = nil;
-	if(_server == nil || ![_server start:&error]) {
-		if (error == nil) {
-			NSLog(@"Failed creating server: Server instance is nil");
-		} else {
-		NSLog(@"Failed creating server: %@", error);
-		}
-		[self _showAlert:@"Failed creating server"];
-		return;
-	}
-	
-	//Start advertising to clients, passing nil for the name to tell Bonjour to pick use default name
-	if(![_server enableBonjourWithDomain:@"local" applicationProtocol:[TCPServer bonjourTypeFromIdentifier:kGameIdentifier] name:nil]) {
-		[self _showAlert:@"Failed advertising server"];
-		return;
-	}
-
-	[self presentPicker:nil];
-}
-
-// Make sure to let the user know what name is being used for Bonjour advertisement.
-// This way, other players can browse for and connect to this game.
-// Note that this may be called while the alert is already being displayed, as
-// Bonjour may detect a name conflict and rename dynamically.
-- (void) presentPicker:(NSString *)name {
-	if (!_picker) {
-		_picker = [[Picker alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame] type:[TCPServer bonjourTypeFromIdentifier:kGameIdentifier]];
-		_picker.delegate = self;
-	}
-	
-	_picker.gameName = name;
-
-	if (!_picker.superview) {
-		[_window addSubview:_picker];
-	}
-}
-
-- (void) destroyPicker {
-	[_picker removeFromSuperview];
-	[_picker release];
-	_picker = nil;
-}
-
-// If we display an error or an alert that the remote disconnected, handle dismissal and return to setup
-- (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+- (void)applicationWillEnterForeground:(UIApplication *)application
 {
-	[self setup];
+    #pragma unused(application)
+    
+    // Quicken the server.  Once this is done it will quicken the picker, if there's one up.
+    
+    [self.server start];
+    if (self.server.registeredName != nil) {
+        [self startPicker];
+    }
 }
 
-- (void) send:(const uint8_t)message
+- (void)setupForNewGame
 {
-	if (_outStream && [_outStream hasSpaceAvailable])
-		if([_outStream write:(const uint8_t *)&message maxLength:sizeof(const uint8_t)] == -1)
-			[self _showAlert:@"Failed sending data to peer"];
+    // Reset our tap view state to avoid old taps appearing in the new game.
+
+    [self.tapViewController resetTouches];
+
+    // If there's a connection, shut it down.
+
+    [self closeStreams];
+    
+    // If our server is deregistered, reregister it.
+    
+    if (self.server.isDeregistered) {
+        [self.server reregister];
+    }
+    
+    // And show the service picker.
+    
+    [self presentPicker];
 }
 
-- (void) activateView:(TapView *)view
+#pragma mark - Picker management
+
+- (void)startPicker
 {
-	[self send:[view tag] | 0x80];
+    NSNetService *  registeredService;
+    
+    // Tell the picker about our registration.  It uses this to a) filter out our game 
+    // from the results, and b) display our game name in its table view header.
+    
+    registeredService = [[NSNetService alloc] initWithDomain:@"local." type:kWiTapBonjourType name:self.server.registeredName];
+    self.picker.localService = registeredService;
+    
+    // Start it up.
+    
+    [self.picker start];
 }
 
-- (void) deactivateView:(TapView *)view
+- (void)presentPicker
 {
-	[self send:[view tag] & 0x7f];
+    if (self.picker != nil) {
+        // If the picker is already on screen then we're here because of a connection failure. 
+        // In that case we just cancel the picker's connection UI and the user can choose another 
+        // service.
+        
+        [self.picker cancelConnect];
+    } else {
+        // Create the service picker and put it up on screen.  We only start the picker 
+        // if our server has completed its registration (the picker needs to know our 
+        // service name so that it can exclude us from the list).  If that's not the 
+        // case then the picker remains stopped until -serverDidStart: runs.
+        
+        self.picker = [[PickerViewController alloc] initWithType:kWiTapBonjourType];
+        self.picker.delegate = self;
+        if (self.server.registeredName != nil) {
+            [self startPicker];
+        }
+
+        [self.tapViewController presentViewController:self.picker animated:NO completion:nil];
+    }
 }
 
-- (void) openStreams
+- (void)dismissPicker
 {
-	_inStream.delegate = self;
-	[_inStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-	[_inStream open];
-	_outStream.delegate = self;
-	[_outStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-	[_outStream open];
+    assert(self.picker != nil);
+    
+    [self.tapViewController dismissViewControllerAnimated:NO completion:nil];
+    [self.picker stop];
+    self.picker = nil;
 }
 
-- (void) browserViewController:(BrowserViewController *)bvc didResolveInstance:(NSNetService *)netService
+- (void)pickerViewController:(PickerViewController *)controller connectToService:(NSNetService *)service
+    // Called by the picker when the user has chosen a service for us to connect to. 
+    // The picker is already displaying its connection-in-progress UI.
 {
-	if (!netService) {
-		[self setup];
-		return;
-	}
+    BOOL                success;
+    NSInputStream *     inStream;
+    NSOutputStream *    outStream;
 
-	// note the following method returns _inStream and _outStream with a retain count that the caller must eventually release
-	if (![netService getInputStream:&_inStream outputStream:&_outStream]) {
-		[self _showAlert:@"Failed connecting to server"];
-		return;
-	}
+    assert(controller == self.picker);
+    #pragma unused(controller)
+    assert(service != nil);
+    
+    assert(self.inputStream == nil);
+    assert(self.outputStream == nil);
 
-	[self openStreams];
+    // Create and open streams for the service.
+    // 
+    // -getInputStream:outputStream: just creates the streams, it doesn't hit the 
+    // network, and thus it shouldn't fail under normal circumstances (in fact, its 
+    // CFNetService equivalent, CFStreamCreatePairWithSocketToNetService, returns no status 
+    // at all).  So, I didn't spend too much time worrying about the error case here.  If 
+    // we do get an error, you end up staying in the picker.  OTOH, actual connection errors 
+    // get handled via the NSStreamEventErrorOccurred event.
+    
+    success = [service getInputStream:&inStream outputStream:&outStream];
+    if ( ! success ) {
+        [self setupForNewGame];
+    } else {
+        self.inputStream  = inStream;
+        self.outputStream = outStream;
+
+        [self openStreams];
+    }
 }
 
-@end
-
-
-#pragma mark -
-@implementation AppController (NSStreamDelegate)
-
-- (void) stream:(NSStream *)stream handleEvent:(NSStreamEvent)eventCode
+- (void)pickerViewControllerDidCancelConnect:(PickerViewController *)controller
+    // Called by the picker when the user taps the Cancel button in its 
+    // connection-in-progress UI.  We respond by closing our in-progress connection.
 {
-	UIAlertView *alertView;
-	switch(eventCode) {
-		case NSStreamEventOpenCompleted:
-		{
-			[self destroyPicker];
-			
-			[_server release];
-			_server = nil;
-
-			if (stream == _inStream)
-				_inReady = YES;
-			else
-				_outReady = YES;
-			
-			if (_inReady && _outReady) {
-				alertView = [[UIAlertView alloc] initWithTitle:@"Game started!" message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Continue", nil];
-				[alertView show];
-				[alertView release];
-			}
-			break;
-		}
-		case NSStreamEventHasBytesAvailable:
-		{
-			if (stream == _inStream) {
-				uint8_t b;
-				int len = 0;
-				len = [_inStream read:&b maxLength:sizeof(uint8_t)];
-				if(len <= 0) {
-					if ([stream streamStatus] != NSStreamStatusAtEnd)
-						[self _showAlert:@"Failed reading data from peer"];
-				} else {
-					//We received a remote tap update, forward it to the appropriate view
-					if(b & 0x80)
-						[(TapView *)[_window viewWithTag:b & 0x7f] touchDown:YES];
-					else
-						[(TapView *)[_window viewWithTag:b] touchUp:YES];
-				}
-			}
-			break;
-		}
-		case NSStreamEventErrorOccurred:
-		{
-			NSLog(@"%s", _cmd);
-			[self _showAlert:@"Error encountered on stream!"];			
-			break;
-		}
-			
-		case NSStreamEventEndEncountered:
-		{
-			NSArray		*array = [_window subviews];
-			TapView		*view;
-			UIAlertView	*alertView;
-			
-			NSLog(@"%s", _cmd);
-			
-			//Notify all tap views
-			for(view in array)
-				[view touchUp:YES];
-			
-			alertView = [[UIAlertView alloc] initWithTitle:@"Peer Disconnected!" message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"Continue", nil];
-			[alertView show];
-			[alertView release];
-
-			break;
-		}
-	}
+    #pragma unused(controller)
+    [self closeStreams];
 }
 
-@end
+#pragma mark - Connection management
 
-
-#pragma mark -
-@implementation AppController (TCPServerDelegate)
-
-- (void) serverDidEnableBonjour:(TCPServer *)server withName:(NSString *)string
+- (void)stream:(NSStream *)stream handleEvent:(NSStreamEvent)eventCode
 {
-	NSLog(@"%s", _cmd);
-	[self presentPicker:string];
+    #pragma unused(stream)
+    
+    switch(eventCode) {
+
+        case NSStreamEventOpenCompleted: {
+            self.streamOpenCount += 1;
+            assert(self.streamOpenCount <= 2);
+            
+            // Once both streams are open we hide the picker and the game is on.
+            
+            if (self.streamOpenCount == 2) {
+                [self dismissPicker];
+                
+                [self.server deregister];
+            }
+        } break;
+        
+        case NSStreamEventHasSpaceAvailable: {
+            assert(stream == self.outputStream);
+            // do nothing
+        } break;
+        
+        case NSStreamEventHasBytesAvailable: {
+            uint8_t     b;
+            NSInteger   bytesRead;
+
+            assert(stream == self.inputStream);
+
+            bytesRead = [self.inputStream read:&b maxLength:sizeof(uint8_t)];
+            if (bytesRead <= 0) {
+                // Do nothing; we'll handle EOF and error in the 
+                // NSStreamEventEndEncountered and NSStreamEventErrorOccurred case, 
+                // respectively.
+            } else {
+                // We received a remote tap update, forward it to the appropriate view
+                if ( (b >= 'A') && (b < ('A' + kTapViewControllerTapItemCount))) {
+                    [self.tapViewController remoteTouchDownOnItem:b - 'A'];
+                } else if ( (b >= 'a') && (b < ('a' + kTapViewControllerTapItemCount))) {
+                    [self.tapViewController remoteTouchUpOnItem:b - 'a'];
+                } else {
+                    // Ignore the bogus input.  This is important because it allows us 
+                    // to telnet in to the app in order to test its behaviour.  telnet 
+                    // sends all sorts of odd characters, so ignoring them is a good thing.
+                }
+            }
+        } break;
+
+        default:
+            assert(NO);
+            // fall through
+        case NSStreamEventErrorOccurred:
+            // fall through
+        case NSStreamEventEndEncountered: {
+            [self setupForNewGame];
+        } break;
+    }
 }
 
-- (void)didAcceptConnectionForServer:(TCPServer *)server inputStream:(NSInputStream *)istr outputStream:(NSOutputStream *)ostr
+- (void)openStreams
 {
-	if (_inStream || _outStream || server != _server)
-		return;
-	
-	[_server release];
-	_server = nil;
-	
-	_inStream = istr;
-	[_inStream retain];
-	_outStream = ostr;
-	[_outStream retain];
-	
-	[self openStreams];
+    assert(self.inputStream != nil);            // streams must exist but aren't open
+    assert(self.outputStream != nil);
+    assert(self.streamOpenCount == 0);
+    
+    [self.inputStream  setDelegate:self];
+    [self.inputStream  scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+    [self.inputStream  open];
+    
+    [self.outputStream setDelegate:self];
+    [self.outputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+    [self.outputStream open];
+}
+
+- (void)closeStreams
+{
+    assert( (self.inputStream != nil) == (self.outputStream != nil) );      // should either have both or neither
+    if (self.inputStream != nil) {
+        [self.server closeOneConnection:self];
+        
+        [self.inputStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+        [self.inputStream close];
+        self.inputStream = nil;
+        
+        [self.outputStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+        [self.outputStream close];
+        self.outputStream = nil;
+    }
+    self.streamOpenCount = 0;
+}
+
+- (void)send:(uint8_t)message
+{
+    assert(self.streamOpenCount == 2);
+
+    // Only write to the stream if it has space available, otherwise we might block. 
+    // In a real app you have to handle this case properly but in this sample code it's 
+    // OK to ignore it; if the stream stops transferring data the user is going to have 
+    // to tap a lot before we fill up our stream buffer (-:
+
+    if ( [self.outputStream hasSpaceAvailable] ) {
+        NSInteger   bytesWritten;
+        
+        bytesWritten = [self.outputStream write:&message maxLength:sizeof(message)];
+        if (bytesWritten != sizeof(message)) {
+            [self setupForNewGame];
+        }
+    }
+}
+
+- (void)tapViewController:(TapViewController *)controller localTouchDownOnItem:(NSUInteger)tapItemIndex
+{
+    assert(controller == self.tapViewController);
+    #pragma unused(controller)
+    [self send:(uint8_t) (tapItemIndex + 'A')];
+}
+
+- (void)tapViewController:(TapViewController *)controller localTouchUpOnItem:(NSUInteger)tapItemIndex
+{
+    assert(controller == self.tapViewController);
+    #pragma unused(controller)
+    [self send:(uint8_t) (tapItemIndex + 'a')];
+}
+
+- (void)tapViewControllerDidClose:(TapViewController *)controller
+{
+    assert(controller == self.tapViewController);
+    #pragma unused(controller)
+    [self setupForNewGame];
+}
+
+#pragma mark - QServer delegate
+
+- (void)serverDidStart:(QServer *)server
+{
+    #pragma unused(server)
+    if (self.picker != nil) {
+        // If our server wasn't started when we brought up the picker, we 
+        // left the picker stopped (because without our service name it can't 
+        // filter us out of its list).  In that case we have to start the picker 
+        // now.
+        
+        [self startPicker];
+    }
+}
+
+- (id)server:(QServer *)server connectionForInputStream:(NSInputStream *)inputStream outputStream:(NSOutputStream *)outputStream
+{
+    id  result;
+    
+    assert(server == self.server);
+    #pragma unused(server)
+    assert(inputStream != nil);
+    assert(outputStream != nil);
+    
+    assert( (self.inputStream != nil) == (self.outputStream != nil) );      // should either have both or neither
+    
+    if (self.inputStream != nil) {
+        // We already have a game in place; reject this new one.
+        result = nil;
+    } else {
+        // Start up the new game.  Start by deregistering the server, to discourage 
+        // other folks from connecting to us (and being disappointed when we reject 
+        // the connection).
+
+        [self.server deregister];
+        
+        // Latch the input and output sterams and kick off an open.
+        
+        self.inputStream  = inputStream;
+        self.outputStream = outputStream;
+        
+        [self openStreams];
+        
+        // This is kinda bogus.  Because we only support a single input stream 
+        // we use the app delegate as the connection object.  It makes sense if 
+        // you think about it long enough, but it's definitely strange.
+        
+        result = self;
+    }
+    
+    return result;
+}
+
+- (void)server:(QServer *)server didStopWithError:(NSError *)error
+    // This is called when the server stops of its own accord.  The only reason 
+    // that might happen is if the Bonjour registration fails when we reregister 
+    // the server, and that's hard to trigger because we use auto-rename.  I've 
+    // left an assert here so that, if this does happen, we can figure out why it 
+    // happens and then decide how best to handle it.
+{
+    assert(server == self.server);
+    #pragma unused(server)
+    #pragma unused(error)
+    assert(NO);
+}
+
+- (void)server:(QServer *)server closeConnection:(id)connection
+{
+    // This is called when the server shuts down, which currently never happens.
+    assert(server == self.server);
+    #pragma unused(server)
+    #pragma unused(connection)
+    assert(NO);
 }
 
 @end

@@ -1,7 +1,7 @@
 /*
      File: CABufferList.cpp 
  Abstract:  CABufferList.h  
-  Version: 1.01 
+  Version: 1.0.4 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2012 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
 */
 #include "CABufferList.h"
@@ -248,10 +248,15 @@ extern "C" int CrashIfClientProvidedBogusAudioBufferList(const AudioBufferList *
 			anyNull = 1;
 			if (nullok) continue;
 		}
+        
+        // if client provided a bogus ABL, we want to crash here
 		unsigned datasize = buf->mDataByteSize;
 		if (datasize >= sizeof(int)) {
+            // turn off the analyzer warning in this case since crash if any, is intended            
+#ifndef __clang_analyzer__
 			sum += p[0];
 			sum += p[datasize / sizeof(int) - 1];
+#endif            
 		}
 	}
 	return anyNull | (sum & ~1);

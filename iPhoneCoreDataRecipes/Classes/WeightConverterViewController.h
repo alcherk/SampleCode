@@ -3,7 +3,7 @@
  Abstract: View controller to manage conversion of metric to imperial units of weight and vice versa.
  The controller uses two UIPicker objects to allow the user to select the weight in metric or imperial units.
  
-  Version: 1.4
+  Version: 1.5
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -43,38 +43,11 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
-@class MetricPickerController;
-@class ImperialPickerController;
-
-@interface WeightConverterViewController : UIViewController {
-	
-    UIView *pickerViewContainer;
-    MetricPickerController *metricPickerController;
-    UIView *metricPickerViewContainer;
-	
-    UIView *imperialPickerViewContainer;
-    ImperialPickerController *imperialPickerController;
-    
-	UISegmentedControl *segmentedControl;
-    
-	NSUInteger selectedUnit;
-}
-
-@property (nonatomic, retain) IBOutlet UIView *pickerViewContainer;
-
-@property (nonatomic, retain) IBOutlet MetricPickerController *metricPickerController;
-@property (nonatomic, retain) IBOutlet UIView *metricPickerViewContainer;
-
-@property (nonatomic, retain) IBOutlet ImperialPickerController *imperialPickerController;
-@property (nonatomic, retain) IBOutlet UIView *imperialPickerViewContainer;
-
-@property (nonatomic, retain) IBOutlet UISegmentedControl *segmentedControl;
-
-- (IBAction)toggleUnit;
+@interface WeightConverterViewController : UIViewController
 
 @end
 

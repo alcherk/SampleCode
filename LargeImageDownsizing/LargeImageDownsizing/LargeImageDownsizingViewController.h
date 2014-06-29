@@ -1,7 +1,7 @@
 /*
      File: LargeImageDownsizingViewController.h 
  Abstract: The primary view controller for this project. 
-  Version: 1.0 
+  Version: 1.1 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2011 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2014 Apple Inc. All Rights Reserved. 
   
 */
 
@@ -84,9 +84,9 @@
 // because it is accessed off the main thread.
 @property (retain) UIImage* destImage; 
 
--(void)downsize:(id)_arg;
--(void)updateScrollView:(id)_arg;
--(void)initializeScrollView:(id)_arg;
+-(void)downsize:(id)arg;
+-(void)updateScrollView:(id)arg;
+-(void)initializeScrollView:(id)arg;
 -(void)createImageFromContext;
 
 @end

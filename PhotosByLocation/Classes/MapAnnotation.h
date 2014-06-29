@@ -1,7 +1,7 @@
 /*
      File: MapAnnotation.h 
  Abstract: n/a 
-  Version: 1.1 
+  Version: 1.2 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -57,4 +57,5 @@
 @property (nonatomic, retain) ALAsset *annotationAsset;
 
 - (id)initWithAsset:(ALAsset *)asset;
+- (NSComparisonResult)compareByDate:(MapAnnotation *)other;
 @end

@@ -1,7 +1,7 @@
 /*
      File: CAHALAudioObject.h 
  Abstract:  Part of CoreAudio Utility Classes  
-  Version: 1.01 
+  Version: 1.0.4 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2012 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
 */
 #if !defined(__CAHALAudioObject_h__)
@@ -53,6 +53,7 @@
 
 //	PublicUtility Includes
 #include "CADebugMacros.h"
+#include "CAException.h"
 
 //	System Includes
 #if !defined(__COREAUDIO_USE_FLAT_INCLUDES__)
@@ -87,6 +88,8 @@ public:
 	CFStringRef					CopyNameForElement(AudioObjectPropertyScope inScope, AudioObjectPropertyElement inElement) const;
 	CFStringRef					CopyCategoryNameForElement(AudioObjectPropertyScope inScope, AudioObjectPropertyElement inElement) const;
 	CFStringRef					CopyNumberNameForElement(AudioObjectPropertyScope inScope, AudioObjectPropertyElement inElement) const;
+	
+	static bool					ObjectExists(AudioObjectID inObjectID);
 
 //	Owned Objects
 public:
@@ -128,16 +131,25 @@ public:
 	void						AddPropertyListener(const AudioObjectPropertyAddress& inAddress, AudioObjectPropertyListenerProc inListenerProc, void* inClientData);
 	void						RemovePropertyListener(const AudioObjectPropertyAddress& inAddress, AudioObjectPropertyListenerProc inListenerProc, void* inClientData);
 
-#if 0
-//#if defined(__BLOCKS__) && (__MAC_OS_X_VERSION_MAX_ALLOWED > __MAC_10_6)
 	void						AddPropertyListenerBlock(const AudioObjectPropertyAddress& inAddress, dispatch_queue_t inDispatchQueue, AudioObjectPropertyListenerBlock inListenerBlock);
 	void						RemovePropertyListenerBlock(const AudioObjectPropertyAddress& inAddress, dispatch_queue_t inDispatchQueue, AudioObjectPropertyListenerBlock inListenerBlock);
-#endif
 
 //	Implementation
 protected:
 	AudioObjectID				mObjectID;
 
 };
+
+inline void	CAHALAudioObject::AddPropertyListenerBlock(const AudioObjectPropertyAddress& inAddress, dispatch_queue_t inDispatchQueue, AudioObjectPropertyListenerBlock inListenerBlock)
+{
+	OSStatus theError = AudioObjectAddPropertyListenerBlock(mObjectID, &inAddress, inDispatchQueue, inListenerBlock);
+	ThrowIfError(theError, CAException(theError), "CAHALAudioObject::AddPropertyListenerBlock: got an error adding a property listener");
+}
+
+inline void	CAHALAudioObject::RemovePropertyListenerBlock(const AudioObjectPropertyAddress& inAddress, dispatch_queue_t inDispatchQueue, AudioObjectPropertyListenerBlock inListenerBlock)
+{
+	OSStatus theError = AudioObjectRemovePropertyListenerBlock(mObjectID, &inAddress, inDispatchQueue, inListenerBlock);
+	ThrowIfError(theError, CAException(theError), "CAHALAudioObject::RemovePropertyListener: got an error removing a property listener");
+}
 
 #endif

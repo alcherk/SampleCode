@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2011 Apple Inc. All Rights Reserved.
+ Copyright (C) 2011-2013 Apple Inc. All Rights Reserved.
  
 */
 
@@ -386,8 +386,8 @@ enum {
 	for (NSIndexPath *path in objOrEnumerator) 
 	{
 		NSArray *assetItemsInSection = [[activeAssetSources objectAtIndex:path.section] items];
-		AssetBrowserItem *assetItem = ([assetItemsInSection count] > path.row) ? [assetItemsInSection objectAtIndex:path.row] : nil;
-		
+		AssetBrowserItem *assetItem = ((NSInteger)[assetItemsInSection count] > path.row) ? [assetItemsInSection objectAtIndex:path.row] : nil;
+        
 		if (assetItem) {
 			__block NSInteger runningRequests = 0;
 			if (assetItem.thumbnailImage == nil) {

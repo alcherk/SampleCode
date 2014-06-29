@@ -1,7 +1,7 @@
 /*
     File: BannerViewController.h
 Abstract: A container view controller that manages an ADBannerView and a content view controller
- Version: 2.1
+ Version: 2.2
 
 Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
 Inc. ("Apple") in consideration of your agreement to the following
@@ -41,7 +41,7 @@ AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE),
 STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
-Copyright (C) 2012 Apple Inc. All Rights Reserved.
+Copyright (C) 2013 Apple Inc. All Rights Reserved.
 
 */
 

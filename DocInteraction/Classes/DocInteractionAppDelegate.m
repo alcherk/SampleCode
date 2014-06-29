@@ -1,7 +1,7 @@
 /* 
      File: DocInteractionAppDelegate.m
- Abstract: n/a
-  Version: 1.4
+ Abstract: The delegate for the DocInteraction application
+  Version: 1.6
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,46 +41,21 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2012 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
 #import "DocInteractionAppDelegate.h"
-#import "DITableViewController.h"
+
+@interface DocInteractionAppDelegate ()
+@end
 
 @implementation DocInteractionAppDelegate
-
-@synthesize window, navController;
-
-
-#pragma mark -
-#pragma mark Application lifecycle
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // override point for customization after application launch.
-
-    [window addSubview:navController.view];
-    [window makeKeyAndVisible];
-	
-	return YES;
-}
-
-#pragma mark -
-#pragma mark Memory management
-
-- (void)applicationDidReceiveMemoryWarning:(UIApplication *)application
-{
-    // Free up as much memory as possible by purging cached data objects that can be recreated
-    // (or reloaded from disk) later.
-}
-
-- (void)dealloc
-{
-    [navController release];
-    [window release];
-    
-    [super dealloc];
+    return YES;
 }
 
 @end

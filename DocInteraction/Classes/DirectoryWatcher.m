@@ -4,7 +4,7 @@
  Object used to monitor the contents of a given directory by using
  "kqueue": a kernel event notification mechanism.
   
-  Version: 1.4 
+  Version: 1.6 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -44,7 +44,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2012 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2014 Apple Inc. All Rights Reserved. 
   
  */ 
 
@@ -70,9 +70,9 @@
 
 @synthesize delegate;
 
-- (id)init
+- (instancetype)init
 {
-	self= [super init];
+	self = [super init];
 	delegate = NULL;
 
 	dirFD = -1;
@@ -85,7 +85,6 @@
 - (void)dealloc
 {
 	[self invalidate];
-	[super dealloc];
 }
 
 + (DirectoryWatcher *)watchFolderWithPath:(NSString *)watchPath delegate:(id)watchDelegate
@@ -93,7 +92,7 @@
 	DirectoryWatcher *retVal = NULL;
 	if ((watchDelegate != NULL) && (watchPath != NULL))
 	{
-		DirectoryWatcher *tempManager = [[[DirectoryWatcher alloc] init] autorelease];
+		DirectoryWatcher *tempManager = [[DirectoryWatcher alloc] init];
 		tempManager.delegate = watchDelegate;		
 		if ([tempManager startMonitoringDirectory: watchPath])
 		{
@@ -152,7 +151,7 @@ static void KQCallback(CFFileDescriptorRef kqRef, CFOptionFlags callBackTypes, v
 {
     DirectoryWatcher *obj;
 	
-    obj = (DirectoryWatcher *)info;
+    obj = (__bridge DirectoryWatcher *)info;
     assert([obj isKindOfClass:[DirectoryWatcher class]]);
     assert(kqRef == obj->dirKQRef);
     assert(callBackTypes == kCFFileDescriptorReadCallBack);
@@ -184,7 +183,7 @@ static void KQCallback(CFFileDescriptorRef kqRef, CFOptionFlags callBackTypes, v
 				int errNum = kevent(kq, &eventToAdd, 1, NULL, 0, NULL);
 				if (errNum == 0)
 				{
-					CFFileDescriptorContext context = { 0, self, NULL, NULL, NULL };
+					CFFileDescriptorContext context = { 0, (__bridge void *)(self), NULL, NULL, NULL };
 					CFRunLoopSourceRef      rls;
 
 					// Passing true in the third argument so CFFileDescriptorInvalidate will close kq.
@@ -218,4 +217,5 @@ static void KQCallback(CFFileDescriptorRef kqRef, CFOptionFlags callBackTypes, v
 	}
 	return NO;
 }
+
 @end

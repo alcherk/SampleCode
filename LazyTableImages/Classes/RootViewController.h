@@ -13,7 +13,7 @@
     Images are scaled to the desired height.
     If rapid scrolling is in progress, downloads do not begin until scrolling has ended.
   
-  Version: 1.3 
+  Version: 1.4 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -53,22 +53,15 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2012 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
  */
 
 #import <UIKit/UIKit.h>
-#import "IconDownloader.h"
 
-@interface RootViewController : UITableViewController <UIScrollViewDelegate, IconDownloaderDelegate>
-{
-	NSArray *entries;   // the main data model for our UITableView
-    NSMutableDictionary *imageDownloadsInProgress;  // the set of IconDownloader objects for each app
-}
+@interface RootViewController : UITableViewController
 
-@property (nonatomic, retain) NSArray *entries;
-@property (nonatomic, retain) NSMutableDictionary *imageDownloadsInProgress;
-
-- (void)appImageDidLoad:(NSIndexPath *)indexPath;
+// the main data model for our UITableView
+@property (nonatomic, strong) NSArray *entries;
 
 @end

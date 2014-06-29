@@ -23,4 +23,4 @@ requirement. Due to the app's heavy use of CPU, performance may be sub-optimal
 when running debug builds on certain devices.
  
 ================================================================================
-Copyright (C) 2011 Apple Inc. All rights reserved.
+Copyright (C) 2011-2013 Apple Inc. All rights reserved.

@@ -12,12 +12,12 @@ Further details are given as comments in the code.
 ===========================================================================
 BUILD REQUIREMENTS:
 
-iOS 4.0 SDK
+iOS 6.0 SDK
 
 ===========================================================================
 RUNTIME REQUIREMENTS:
 
-iPhone OS 3.2 or later
+iPhone OS 6.0 or later
 
 ===========================================================================
 PACKAGING LIST:
@@ -39,6 +39,11 @@ These are the pvr files generated from the Brick.png image by the "Encode Images
 
 ===========================================================================
 CHANGES FROM PREVIOUS VERSIONS:
+
+Version 1.6
+- Removed warnings.
+- Updated for iOS 7.
+- Updated for 64-bit.
 
 Version 1.5 
 - Changed deployment target back to iPhone OS 3.2 and added CFBundleIconFiles in Info.plist.
@@ -62,4 +67,4 @@ Version 1.0
 - First version.
 
 ===========================================================================
-Copyright (C) 2008-2010 Apple Inc. All rights reserved.
+Copyright (C) 2008-2014 Apple Inc. All rights reserved.

@@ -1,8 +1,6 @@
 
-### DateSectionTitles ###
-
-===========================================================================
-DESCRIPTION:
+DateSectionTitles
+=================
 
 This application shows how to create section information for NSFetchedResultsController using dates.
 
@@ -16,40 +14,17 @@ A single table view controller displays events sorted by date and grouped into s
 
 The sorting is all done at fetch time by the fetched results controller. The section name transformations are UI level and have no effect on the order of data.
 
-
-===========================================================================
-BUILD REQUIREMENTS:
-
-iOS 4.0 SDK
-
-===========================================================================
-RUNTIME REQUIREMENTS:
-
-iPhone OS 3.2 or later
-
-===========================================================================
-PACKAGING LIST:
-
-DateSectionTitlesAppDelegate.{h,m}
+Main Classes
+------------
+APLAppDelegate
 Application delegate that configures the Core Data stack.
 
-RootViewController.{h,m}
+APLMasterViewController
 A table view controller that presents events by section.
 
-Event.{h,m}
+APLEvent
 A managed object class to represent an event in time.
 
-===========================================================================
-CHANGES FROM PREVIOUS VERSIONS:
-
-Version 1.2
-- Changed deployment target back to iPhone OS 3.2 and added CFBundleIconFiles in Info.plist.
-
-Version 1.1
-- Upgraded project to build with the iOS 4 SDK.
-
-Version 1.0
-- First version.
 
 ===========================================================================
-Copyright (C) 2009-2010 Apple Inc. All rights reserved.
+Copyright (C) 2009-2013 Apple Inc. All rights reserved.

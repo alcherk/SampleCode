@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2012 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
 
@@ -280,8 +280,12 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 - (void)setupAVCapture
 {
     //-- Create CVOpenGLESTextureCacheRef for optimal CVImageBufferRef to GLES texture conversion.
+#if COREVIDEO_USE_EAGLCONTEXT_CLASS_IN_API
+    CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, _context, NULL, &_videoTextureCache);
+#else
     CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, (__bridge void *)_context, NULL, &_videoTextureCache);
-    if (err) 
+#endif
+    if (err)
     {
         NSLog(@"Error at CVOpenGLESTextureCacheCreate %d", err);
         return;

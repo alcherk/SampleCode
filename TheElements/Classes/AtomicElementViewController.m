@@ -2,7 +2,7 @@
      File: AtomicElementViewController.m
  Abstract: Controller that manages the full tile view of the atomic information,
  creating the reflection, and the flipping of the tile.
-  Version: 1.11
+  Version: 1.12
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -42,7 +42,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
  
@@ -51,188 +51,155 @@
 #import "AtomicElementFlippedView.h"
 #import "AtomicElement.h"
 
-@implementation AtomicElementViewController
 
-@synthesize element;
-@synthesize atomicElementFlippedView;
-@synthesize atomicElementView;
-@synthesize containerView;
-@synthesize reflectionView;
-@synthesize flipIndicatorButton;
-@synthesize frontViewIsVisible;
-
-
+#define kFlipTransitionDuration 0.75
 #define reflectionFraction 0.35
 #define reflectionOpacity 0.5
 
+@interface AtomicElementViewController ()
 
-- (id)init {
-	if (self = [super init]) {
-		element = nil;
-		atomicElementView = nil;
-		atomicElementFlippedView = nil;
-		self.frontViewIsVisible=YES;
-		self.hidesBottomBarWhenPushed = YES;
+@property (assign) BOOL frontViewIsVisible;
+@property (nonatomic, strong) AtomicElementView *atomicElementView;
+@property (nonatomic, strong) UIImageView *reflectionView;
+@property (nonatomic, strong) AtomicElementFlippedView *atomicElementFlippedView;
+@property (nonatomic, strong) UIButton *flipIndicatorButton;
 
-	}
-	return self;
-}
+@end
 
 
-- (void)loadView {	
-	// create and store a container view
+#pragma mark -
 
-	UIView *localContainerView = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
-	self.containerView = localContainerView;
-	[localContainerView release];
-	
-	containerView.backgroundColor = [UIColor blackColor];
-	
+@implementation AtomicElementViewController
+
+- (void)viewDidLoad {
+    
+    [super viewDidLoad];
+    
+    self.frontViewIsVisible = YES;
+    
 	CGSize preferredAtomicElementViewSize = [AtomicElementView preferredViewSize];
 	
-	CGRect viewRect = CGRectMake((containerView.bounds.size.width-preferredAtomicElementViewSize.width)/2,
-								 (containerView.bounds.size.height-preferredAtomicElementViewSize.height)/2-40,
-								 preferredAtomicElementViewSize.width,preferredAtomicElementViewSize.height);
+	CGRect viewRect = CGRectMake((CGRectGetWidth(self.view.bounds) - preferredAtomicElementViewSize.width)/2,
+								 (CGRectGetHeight(self.view.bounds) - preferredAtomicElementViewSize.height)/2 - 40,
+								 preferredAtomicElementViewSize.width,
+                                 preferredAtomicElementViewSize.height);
 	
 	// create the atomic element view
 	AtomicElementView *localAtomicElementView = [[AtomicElementView alloc] initWithFrame:viewRect];
 	self.atomicElementView = localAtomicElementView;
-	[localAtomicElementView release];
 	
-	// add the atomic element view to the containerView
-	atomicElementView.element = element;	
-	[containerView addSubview:atomicElementView];
+	// add the atomic element view to the view controller's view
+	self.atomicElementView.element = self.element;	
+	[self.view addSubview:self.atomicElementView];
 	
-	atomicElementView.viewController = self;
-	self.view = containerView;
+	self.atomicElementView.viewController = self;
 	
 	// create the atomic element flipped view
 	
 	AtomicElementFlippedView *localAtomicElementFlippedView = [[AtomicElementFlippedView alloc] initWithFrame:viewRect];
 	self.atomicElementFlippedView = localAtomicElementFlippedView;
-	[localAtomicElementFlippedView release];
 	
-	atomicElementFlippedView.element = element;	
-	atomicElementFlippedView.viewController = self;
-
+	self.atomicElementFlippedView.element = self.element;	
+	self.atomicElementFlippedView.viewController = self;
 
 	// create the reflection view
-	CGRect reflectionRect=viewRect;
+	CGRect reflectionRect = viewRect;
 
 	// the reflection is a fraction of the size of the view being reflected
-	reflectionRect.size.height=reflectionRect.size.height*reflectionFraction;
+    reflectionRect.size.height = CGRectGetHeight(reflectionRect) * reflectionFraction;
 	
 	// and is offset to be at the bottom of the view being reflected
-	reflectionRect=CGRectOffset(reflectionRect,0,viewRect.size.height);
+    reflectionRect = CGRectOffset(reflectionRect, 0, CGRectGetHeight(viewRect));
 	
 	UIImageView *localReflectionImageView = [[UIImageView alloc] initWithFrame:reflectionRect];
 	self.reflectionView = localReflectionImageView;
-	[localReflectionImageView release];
 	
 	// determine the size of the reflection to create
-	NSUInteger reflectionHeight=atomicElementView.bounds.size.height*reflectionFraction;
+	NSUInteger reflectionHeight = CGRectGetHeight(self.atomicElementView.bounds) * reflectionFraction;
+    
+	// create the reflection image, assign it to the UIImageView and add the image view to the view controller's view
+	self.reflectionView.image = [self.atomicElementView reflectedImageRepresentationWithHeight:reflectionHeight];
+	self.reflectionView.alpha = reflectionOpacity;
 	
-	// create the reflection image, assign it to the UIImageView and add the image view to the containerView
-	reflectionView.image=[self.atomicElementView reflectedImageRepresentationWithHeight:reflectionHeight];
-	reflectionView.alpha=reflectionOpacity;
-	
-	[containerView addSubview:reflectionView];
+	[self.view addSubview:self.reflectionView];
 
-	
-	UIButton *localFlipIndicator=[[UIButton alloc] initWithFrame:CGRectMake(0,0,30,30)];
-	self.flipIndicatorButton=localFlipIndicator;
-	[localFlipIndicator release];
+	// setup our flip indicator button (placed as a nav bar item to the right)
+    UIButton *localFlipIndicator = [[UIButton alloc] initWithFrame:CGRectMake(0.0, 0.0, 30.0, 30.0)];
+	self.flipIndicatorButton = localFlipIndicator;
 	
 	// front view is always visible at first
-	[flipIndicatorButton setBackgroundImage:[UIImage imageNamed:@"flipper_list_blue.png"] forState:UIControlStateNormal];
+	[self.flipIndicatorButton setBackgroundImage:[UIImage imageNamed:@"flipper_list_blue.png"] forState:UIControlStateNormal];
 	
 	UIBarButtonItem *flipButtonBarItem;
-	flipButtonBarItem=[[UIBarButtonItem alloc] initWithCustomView:flipIndicatorButton];
-	
-	[self.navigationItem setRightBarButtonItem:flipButtonBarItem animated:YES];
-	[flipButtonBarItem release];
-	
-	[flipIndicatorButton addTarget:self action:@selector(flipCurrentView) forControlEvents:(UIControlEventTouchDown   )];
-	 
-
+	flipButtonBarItem = [[UIBarButtonItem alloc] initWithCustomView:self.flipIndicatorButton];
+	[self.flipIndicatorButton addTarget:self
+                                 action:@selector(flipCurrentView)
+                       forControlEvents:(UIControlEventTouchDown)];
+    [self.navigationItem setRightBarButtonItem:flipButtonBarItem animated:YES];
 }
 
-
-
 - (void)flipCurrentView {
+    
 	NSUInteger reflectionHeight;
 	UIImage *reflectedImage;
 	
-	// disable user interaction during the flip
-	containerView.userInteractionEnabled = NO;
-	flipIndicatorButton.userInteractionEnabled = NO;
+	// disable user interaction during the flip animation
+	self.view.userInteractionEnabled = NO;
+	self.flipIndicatorButton.userInteractionEnabled = NO;
 	
 	// setup the animation group
 	[UIView beginAnimations:nil context:nil];
-    [UIView setAnimationDuration:0.75];
+    [UIView setAnimationDuration:kFlipTransitionDuration];
     [UIView setAnimationDelegate:self];
     [UIView setAnimationDidStopSelector:@selector(myTransitionDidStop:finished:context:)];
 	
 	// swap the views and transition
-    if (frontViewIsVisible==YES) {
-        [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromRight forView:containerView cache:YES];
-        [atomicElementView removeFromSuperview];
-        [containerView addSubview:atomicElementFlippedView];
-		
+    if (self.frontViewIsVisible == YES) {
+        [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromRight forView:self.view cache:YES];
+        [self.atomicElementView removeFromSuperview];
+        [self.view addSubview:self.atomicElementFlippedView];
 		
 		// update the reflection image for the new view
-		reflectionHeight=atomicElementFlippedView.bounds.size.height*reflectionFraction;
-		reflectedImage = [atomicElementFlippedView reflectedImageRepresentationWithHeight:reflectionHeight];
-		reflectionView.image=reflectedImage;
+		reflectionHeight = CGRectGetHeight(self.atomicElementFlippedView.bounds) * reflectionFraction;
+        reflectedImage = [self.atomicElementFlippedView reflectedImageRepresentationWithHeight:reflectionHeight];
+		_reflectionView.image = reflectedImage;
     } else {
-        [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:containerView cache:YES];
-        [atomicElementFlippedView removeFromSuperview];
-        [containerView addSubview:atomicElementView];
+        [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:self.view cache:YES];
+        [self.atomicElementFlippedView removeFromSuperview];
+        [self.view addSubview:self.atomicElementView];
 		// update the reflection image for the new view
-		reflectionHeight=atomicElementView.bounds.size.height*reflectionFraction;
-		reflectedImage = [atomicElementView reflectedImageRepresentationWithHeight:reflectionHeight];
-		reflectionView.image=reflectedImage;
+		reflectionHeight = CGRectGetHeight(self.atomicElementView.bounds) * reflectionFraction;
+        reflectedImage = [self.atomicElementView reflectedImageRepresentationWithHeight:reflectionHeight];
+		self.reflectionView.image = reflectedImage;
     }
 	[UIView commitAnimations];
 	
-	
+	// swap the nav bar button views
 	[UIView beginAnimations:nil context:nil];
-    [UIView setAnimationDuration:0.75];
+    [UIView setAnimationDuration:kFlipTransitionDuration];
     [UIView setAnimationDelegate:self];
     [UIView setAnimationDidStopSelector:@selector(myTransitionDidStop:finished:context:)];
 
-	if (frontViewIsVisible==YES)
-	{
-		[UIView setAnimationTransition:UIViewAnimationTransitionFlipFromRight forView:flipIndicatorButton cache:YES];
-		[flipIndicatorButton setBackgroundImage:element.flipperImageForAtomicElementNavigationItem forState:UIControlStateNormal];
+	if (self.frontViewIsVisible == YES) {
+		[UIView setAnimationTransition:UIViewAnimationTransitionFlipFromRight forView:self.flipIndicatorButton cache:YES];
+		[self.flipIndicatorButton setBackgroundImage:self.element.flipperImageForAtomicElementNavigationItem forState:UIControlStateNormal];
 	}
-	else
-	{
-		[UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:flipIndicatorButton cache:YES];
-		[flipIndicatorButton setBackgroundImage:[UIImage imageNamed:@"flipper_list_blue.png"] forState:UIControlStateNormal];
+	else {
+		[UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:self.flipIndicatorButton cache:YES];
+		[self.flipIndicatorButton setBackgroundImage:[UIImage imageNamed:@"flipper_list_blue.png"] forState:UIControlStateNormal];
 		
 	}
 	[UIView commitAnimations];
-	frontViewIsVisible=!frontViewIsVisible;
+    
+    // invert the front view state
+    self.frontViewIsVisible =! self.frontViewIsVisible;
 }
-
 
 - (void)myTransitionDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
-	// re-enable user interaction when the flip is completed.
-	containerView.userInteractionEnabled = YES;
-	flipIndicatorButton.userInteractionEnabled = YES;
-
+    
+	// re-enable user interaction when the flip animation is completed
+	self.view.userInteractionEnabled = YES;
+	self.flipIndicatorButton.userInteractionEnabled = YES;
 }
-
-
-
-- (void)dealloc {
-	[atomicElementView release];
-	[reflectionView release];
-	[atomicElementFlippedView release];
-	[element release];
-	[super dealloc];
-}
-
 
 @end

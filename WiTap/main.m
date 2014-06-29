@@ -1,7 +1,7 @@
 /*
      File: main.m
- Abstract: his file is included for support purposes and isn't necessary for understanding this sample.
-  Version: 1.8
+ Abstract: Application main.
+  Version: 2.0
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
 
@@ -49,8 +49,8 @@
 
 int main(int argc, char *argv[])
 {
-	NSAutoreleasePool *pool = [NSAutoreleasePool new];
-	UIApplicationMain(argc, argv, nil, @"AppController");
-	[pool release];
-	return 0;
+    @autoreleasepool {
+        UIApplicationMain(argc, argv, nil, @"AppController");
+    }
+    return EXIT_SUCCESS;
 }

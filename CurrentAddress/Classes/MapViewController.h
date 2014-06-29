@@ -1,7 +1,7 @@
 /*
      File: MapViewController.h
  Abstract: Controls the map view and manages the reverse geocoder to get the current address.
-  Version: 1.2
+  Version: 1.4
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,26 +41,14 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
 
 #import <UIKit/UIKit.h>
 #import <MapKit/MapKit.h>
 
-@interface MapViewController : UIViewController <MKMapViewDelegate, MKReverseGeocoderDelegate>
-{
-    MKMapView *mapView;
-    MKReverseGeocoder *reverseGeocoder;
-    
-    UIBarButtonItem *getAddressButton;
-}
-
-@property (nonatomic, retain) IBOutlet MKMapView *mapView;
-@property (nonatomic, retain) MKReverseGeocoder *reverseGeocoder;
-@property (nonatomic, retain) IBOutlet UIBarButtonItem *getAddressButton;
-
-- (IBAction)reverseGeocodeCurrentLocation;
+@interface MapViewController : UIViewController <MKMapViewDelegate>
 
 @end
 

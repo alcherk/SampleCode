@@ -1,7 +1,7 @@
 /*
      File: RootViewController.m
- Abstract: The view controller displays what each icon does on iOS. The proper orientations supported by each device type are configured in the -shouldAutorotateToInterfaceOrientation: method.
-  Version: 1.0
+ Abstract: The view controller displays what each icon does on iOS.
+  Version: 1.2
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,58 +41,123 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
 #import "RootViewController.h"
 
+#define kTopBottomMargins 20
+
+NSString * const kIconName = @"IconName";
+NSString * const kIconDescription = @"IconDescription";
+NSString * const kIconCellHeight = @"kIconCellHeight";
+
+
+@interface RootViewController ()
+//! Icon information.
+@property (nonatomic, strong) NSArray *icons;
+@end
+
+
 @implementation RootViewController
 
-/*
- // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
-    if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
-        // Custom initialization
-    }
-    return self;
-}
-*/
-
-/*
-// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
-- (void)viewDidLoad {
+//| ----------------------------------------------------------------------------
+- (void)viewDidLoad
+{
     [super viewDidLoad];
-}
-*/
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-	// Following the HIG for supported orientations per device.
-	// Do not support UIInterfaceOrientationPortraitUpsideDown if the device is not an iPad.
-	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone && interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown) {
-		return NO;
-	}
-	
-    return YES;
-}
-
-- (void)didReceiveMemoryWarning {
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
     
-    // Release any cached data, images, etc that aren't in use.
+    self.icons = @[
+                   @{kIconName: @"Icon-60@2x",
+                     kIconDescription: @"Home screen on iPhone/iPod Touch with retina display (iOS 7)",
+                     kIconCellHeight: @(60)},
+                   
+                   @{kIconName: @"Icon-76",
+                     kIconDescription: @"Home screen on iPad (iOS 7)",
+                     kIconCellHeight: @(76)},
+                   
+                   @{kIconName: @"Icon-76@2x",
+                     kIconDescription: @"Home screen on iPad with retina display (iOS 7)",
+                     kIconCellHeight: @(76)},
+                   
+                   @{kIconName: @"Icon-Small-40",
+                     kIconDescription: @"Spotlight (iOS 7)",
+                     kIconCellHeight: @(40)},
+                   
+                   @{kIconName: @"Icon-Small-40@2x",
+                     kIconDescription: @"Spotlight on devices with retina display (iOS 7)",
+                     kIconCellHeight: @(40)},
+                   
+                   @{kIconName: @"Icon-Small",
+                     kIconDescription: @"Spotlight on iPhone/iPod Touch (iOS 6.1 and earlier) and Settings",
+                     kIconCellHeight: @(40)},
+                   
+                   @{kIconName: @"Icon-Small@2x",
+                     kIconDescription: @"Spotlight on iPhone/iPod Touch with retina display (iOS 6.1 and earlier) and Settings on devices with retina display",
+                     kIconCellHeight: @(75)},
+                   
+                   @{kIconName: @"Icon",
+                     kIconDescription: @"Home screen on iPhone/iPod touch (iOS 6.1 and earlier)",
+                     kIconCellHeight: @(57)},
+                   
+                   @{kIconName: @"Icon@2x",
+                     kIconDescription: @"Home screen on iPhone/iPod Touch with retina display (iOS 6.1 and earlier)",
+                     kIconCellHeight: @(57)},
+                   
+                   @{kIconName: @"Icon-72",
+                     kIconDescription: @"Home screen on iPad (iOS 6.1 and earlier)",
+                     kIconCellHeight: @(72)},
+                   
+                   @{kIconName: @"Icon-72@2x",
+                     kIconDescription: @"Home screen on iPad with retina display (iOS 6.1 and earlier)",
+                     kIconCellHeight: @(72)},
+                   
+                   @{kIconName: @"Icon-Small-50",
+                     kIconDescription: @"Spotlight on iPad (iOS 6.1 and earlier)",
+                     kIconCellHeight: @(50)},
+                   
+                   @{kIconName: @"Icon-Small-50@2x",
+                     kIconDescription: @"Spotlight on iPad with retina display (iOS 6.1 and earlier)",
+                     kIconCellHeight: @(50)},
+                   ];
 }
 
-- (void)viewDidUnload {
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
+#pragma mark -
+#pragma mark UITableViewDelegate
+
+//| ----------------------------------------------------------------------------
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return [self.icons[indexPath.row][kIconCellHeight] floatValue] + kTopBottomMargins;
+}
+
+#pragma mark -
+#pragma mark UITableViewDataSource
+
+//| ----------------------------------------------------------------------------
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+	return self.icons.count;
 }
 
 
-- (void)dealloc {
-    [super dealloc];
+//| ----------------------------------------------------------------------------
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cellID" forIndexPath:indexPath];
+    
+    cell.detailTextLabel.numberOfLines = 0;
+    cell.detailTextLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    
+    NSString *iconName = self.icons[indexPath.row][kIconName];
+    NSString *iconPath = [[NSBundle mainBundle] pathForResource:iconName ofType:@"png"];
+    BOOL isRetina = [iconName rangeOfString:@"@2x"].location != NSNotFound;
+    
+    cell.imageView.image = [[UIImage alloc] initWithData:[NSData dataWithContentsOfFile:iconPath] scale:(isRetina ? 2 : 1)];
+    cell.textLabel.text = [iconName stringByAppendingString:@".png"];
+	cell.detailTextLabel.text = self.icons[indexPath.row][kIconDescription];
+    
+	return cell;
 }
-
 
 @end

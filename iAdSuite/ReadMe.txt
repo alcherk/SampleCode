@@ -31,6 +31,8 @@ Runtime Requirements
 iOS 5.0 or later, except for MediumRectBanner which requires iOS 6.0.
 
 Changes from Previous Versions
+2.2 - Fixed an issue that could cause BannerViewController to raise an exception if it is used in an iPhone app.
+
 2.1 - Updated for iOS 6.0, removed support for iOS versions prior to 5.0.
 
 2.0 - Updated for iOS 5.0, removed support for iOS 4.1 and below, added samples that use a custom container view controller to manage the ADBannerView, converted all samples to use ARC.

@@ -6,7 +6,7 @@
  
  Note that this file is used in samples for iOS and Mac OS X and has platform-dependent code.
  
-  Version: 1.0
+  Version: 1.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -46,7 +46,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2011 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
 */
 
@@ -320,7 +320,7 @@ static CGColorRef CreateColorFromRGBComponentsArray(NSArray* calibratedRGB) {
 
 @implementation AttributedStringDoc
 
-@synthesize fileName;
+//@synthesize fileName;
 @synthesize attributedString;
 @synthesize pageLayout;
 @synthesize verticalOrientation;
@@ -346,20 +346,15 @@ static CGColorRef CreateColorFromRGBComponentsArray(NSArray* calibratedRGB) {
 }
 
 - (id)initWithFileNameFromBundle:(NSString *)theFileName {
-	[super init];
-	
-	[self setFileName:theFileName];
-	
+	if (self = [super init]) {
+        [self setFileName:theFileName];
+    }
 	return self;
 }
 
 - (void)dealloc {
     [attributedString release];
 	[pageLayout release];
-	if (_backgroundColor) {
-		CGColorRelease(_backgroundColor);
-	}
-	
     [super dealloc];
 }
 
@@ -368,8 +363,13 @@ static CGColorRef CreateColorFromRGBComponentsArray(NSArray* calibratedRGB) {
 	return fileName;
 }
 
-- (void)setFileName:(id)newFileName {	
-    if (fileName != newFileName) {
+- (NSString *)fileName
+{
+    return [[fileName retain] autorelease];
+}
+
+- (void)setFileName:(NSString *)newFileName {
+    if (![fileName isEqualToString:newFileName]) {
         [fileName release];
         fileName = [newFileName retain];
 
@@ -505,7 +505,7 @@ static CGColorRef CreateColorFromRGBComponentsArray(NSArray* calibratedRGB) {
 	NSEnumerator* rangesEnumerator = [ranges objectEnumerator];
 	NSArray* rangeElements;
 	while ((rangeElements = [rangesEnumerator nextObject]) != NULL) {
-		NSRange range = { [(NSNumber*)[rangeElements objectAtIndex:0] intValue], [(NSNumber*)[rangeElements objectAtIndex:1] intValue] }; 
+		NSRange range = { [(NSNumber*)[rangeElements objectAtIndex:0] integerValue], [(NSNumber*)[rangeElements objectAtIndex:1] integerValue] };
 		
 		NSEnumerator* keyEnumerator = [(NSDictionary*)[rangeElements objectAtIndex:2] keyEnumerator];
 		id key;
@@ -540,7 +540,7 @@ static CGColorRef CreateColorFromRGBComponentsArray(NSArray* calibratedRGB) {
 				
 				settings[0].spec = kCTParagraphStyleSpecifierAlignment;
 				settings[0].valueSize = sizeof(CTTextAlignment);
-				alignment = [(NSNumber*)[paragStyles objectAtIndex:0] intValue];
+				alignment = [(NSNumber*)[paragStyles objectAtIndex:0] integerValue];
 				settings[0].value = &alignment;
 
 				settings[1].spec = kCTParagraphStyleSpecifierLineSpacing;
@@ -608,18 +608,20 @@ static CGColorRef CreateColorFromRGBComponentsArray(NSArray* calibratedRGB) {
     
 	// Vertical orientation (not yet supported in iOS)
 	NSNumber* docNumValue = [docDict objectForKey:ASD_PAGE_LAYOUT_VERTICAL];
-	verticalOrientation = (docNumValue && [docNumValue intValue] != 0);
+	verticalOrientation = (docNumValue && [docNumValue integerValue] != 0);
 	
 	// Show page numbers on/off
 	docNumValue = [docDict objectForKey:ASD_SHOW_PAGE_NUMBER];
-	showPageNumbers = (docNumValue && [docNumValue intValue] != 0);
+	showPageNumbers = (docNumValue && [docNumValue integerValue] != 0);
 
 	// Number of text columns
 	docNumValue = [docDict objectForKey:ASD_PAGE_LAYOUT_COLUMNS];
-	columnCount = docNumValue ? [docNumValue intValue] : 1;
+	columnCount = docNumValue ? [docNumValue integerValue] : 1;
 
 	// Background color info
-    [self setColor:CreateColorFromRGBComponentsArray([docDict objectForKey:ASD_PAGE_LAYOUT_BACKGROUND_COLOR])];
+    CGColorRef bkgColor = CreateColorFromRGBComponentsArray([docDict objectForKey:ASD_PAGE_LAYOUT_BACKGROUND_COLOR]);
+    [self setColor:bkgColor];
+    CGColorRelease(bkgColor);
     CGColorRelease(_backgroundColor); //background color was retained by setColor
     
 	// Page layout info

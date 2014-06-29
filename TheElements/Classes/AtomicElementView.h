@@ -1,7 +1,7 @@
 /*
      File: AtomicElementView.h
  Abstract: Displays the Atomic Element information in a large format tile.
-  Version: 1.11
+  Version: 1.12
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
 
@@ -50,14 +50,12 @@
 @class AtomicElement;
 @class AtomicElementViewController;
 
-@interface AtomicElementView : UIView {
-	AtomicElement *element;
-	AtomicElementViewController *viewController;
-}
+@interface AtomicElementView : UIView
 
-@property (nonatomic,retain) AtomicElement *element;
-@property (nonatomic, assign) AtomicElementViewController *viewController;
+@property (nonatomic,strong) AtomicElement *element;
+@property (nonatomic, weak) AtomicElementViewController *viewController;
 
 + (CGSize)preferredViewSize;
 - (UIImage *)reflectedImageRepresentationWithHeight:(NSUInteger)height;
+
 @end

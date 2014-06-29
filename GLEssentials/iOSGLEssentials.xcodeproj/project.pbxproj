@@ -10,7 +10,8 @@
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
-		288765A50DF7441C002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765A40DF7441C002DB57D /* CoreGraphics.framework */; };
+		3A5714C717848CE90060B117 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A5714C617848CE90060B117 /* CoreGraphics.framework */; };
+		3A5714C917848D020060B117 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A5714C817848D020060B117 /* QuartzCore.framework */; };
 		3A609E3C11B9DB4700AA4C48 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A609E3B11B9DB4700AA4C48 /* OpenGLES.framework */; };
 		3A609E4711B9DB6000AA4C48 /* OpenGLRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A609E3F11B9DB6000AA4C48 /* OpenGLRenderer.m */; };
 		3A609E5611B9DB7700AA4C48 /* vectorUtil.c in Sources */ = {isa = PBXBuildFile; fileRef = 3A609E4C11B9DB7700AA4C48 /* vectorUtil.c */; };
@@ -23,20 +24,23 @@
 		3A609E6311B9DB9400AA4C48 /* character.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 3A609E5F11B9DB9400AA4C48 /* character.fsh */; };
 		3A609E6811B9DBE600AA4C48 /* demon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3A609E6511B9DBE600AA4C48 /* demon.png */; };
 		3A609E6911B9DBE600AA4C48 /* demon.model in Resources */ = {isa = PBXBuildFile; fileRef = 3A609E6611B9DBE600AA4C48 /* demon.model */; };
-		3A609EB911B9DCF200AA4C48 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A609EB811B9DCF200AA4C48 /* QuartzCore.framework */; };
+		3A76BA9A177E2ABB00ECD8AF /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3A76BA99177E2ABB00ECD8AF /* MainWindow-iPad.xib */; };
 		3A7DCEBE14BE4E9C00C51D27 /* EAGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A7DCEBD14BE4E9C00C51D27 /* EAGLView.m */; };
+		3AC5C4A816693B6C00FEE565 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3AC5C4A716693B6C00FEE565 /* Default-568h@2x.png */; };
 		3AE0447613D624E400F51EF4 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3AE0447513D624E400F51EF4 /* MainWindow.xib */; };
 		3AE0447E13D6252E00F51EF4 /* ES2Renderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AE0447B13D6252E00F51EF4 /* ES2Renderer.m */; };
 		3AE0447F13D6252E00F51EF4 /* iOSGLEssentialsAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AE0447D13D6252E00F51EF4 /* iOSGLEssentialsAppDelegate.m */; };
 		3AE9119712CAF36A005ED635 /* sourceUtil.c in Sources */ = {isa = PBXBuildFile; fileRef = 3AE9119612CAF36A005ED635 /* sourceUtil.c */; };
+		537E51341635EC17003EA7BA /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 537E51331635EC17003EA7BA /* MainViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		288765A40DF7441C002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* iOSGLEssentials_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iOSGLEssentials_Prefix.pch; sourceTree = "<group>"; };
+		3A5714C617848CE90060B117 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		3A5714C817848D020060B117 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		3A609E3811B9DB3300AA4C48 /* iOSGLEssentials.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOSGLEssentials.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A609E3B11B9DB4700AA4C48 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		3A609E3F11B9DB6000AA4C48 /* OpenGLRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenGLRenderer.m; sourceTree = "<group>"; };
@@ -57,15 +61,18 @@
 		3A609E5F11B9DB9400AA4C48 /* character.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = character.fsh; path = Shaders/character.fsh; sourceTree = "<group>"; };
 		3A609E6511B9DBE600AA4C48 /* demon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = demon.png; path = Resources/demon.png; sourceTree = "<group>"; };
 		3A609E6611B9DBE600AA4C48 /* demon.model */ = {isa = PBXFileReference; lastKnownFileType = file; name = demon.model; path = Resources/demon.model; sourceTree = "<group>"; };
-		3A609EB811B9DCF200AA4C48 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		3A76BA99177E2ABB00ECD8AF /* MainWindow-iPad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = "MainWindow-iPad.xib"; path = "Resources/iOS/MainWindow-iPad.xib"; sourceTree = "<group>"; };
 		3A7DCEBC14BE4E9C00C51D27 /* EAGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EAGLView.h; path = iOS/EAGLView.h; sourceTree = "<group>"; };
 		3A7DCEBD14BE4E9C00C51D27 /* EAGLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EAGLView.m; path = iOS/EAGLView.m; sourceTree = "<group>"; };
+		3AC5C4A716693B6C00FEE565 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		3AE0447513D624E400F51EF4 /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MainWindow.xib; path = Resources/iOS/MainWindow.xib; sourceTree = "<group>"; };
 		3AE0447A13D6252E00F51EF4 /* ES2Renderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ES2Renderer.h; path = iOS/ES2Renderer.h; sourceTree = "<group>"; };
 		3AE0447B13D6252E00F51EF4 /* ES2Renderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ES2Renderer.m; path = iOS/ES2Renderer.m; sourceTree = "<group>"; };
 		3AE0447C13D6252E00F51EF4 /* iOSGLEssentialsAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iOSGLEssentialsAppDelegate.h; path = iOS/iOSGLEssentialsAppDelegate.h; sourceTree = "<group>"; };
 		3AE0447D13D6252E00F51EF4 /* iOSGLEssentialsAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = iOSGLEssentialsAppDelegate.m; path = iOS/iOSGLEssentialsAppDelegate.m; sourceTree = "<group>"; };
 		3AE9119612CAF36A005ED635 /* sourceUtil.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sourceUtil.c; path = UtilSrc/sourceUtil.c; sourceTree = "<group>"; };
+		537E51321635EC17003EA7BA /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MainViewController.h; path = iOS/MainViewController.h; sourceTree = "<group>"; };
+		537E51331635EC17003EA7BA /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MainViewController.m; path = iOS/MainViewController.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* iOSGLEssentials-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "iOSGLEssentials-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		AF31B2271301C52D006A0A99 /* Readme.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Readme.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -75,11 +82,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3A5714C917848D020060B117 /* QuartzCore.framework in Frameworks */,
+				3A5714C717848CE90060B117 /* CoreGraphics.framework in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
-				288765A50DF7441C002DB57D /* CoreGraphics.framework in Frameworks */,
 				3A609E3C11B9DB4700AA4C48 /* OpenGLES.framework in Frameworks */,
-				3A609EB911B9DCF200AA4C48 /* QuartzCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -89,14 +96,16 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				3A7DCEBC14BE4E9C00C51D27 /* EAGLView.h */,
-				3A7DCEBD14BE4E9C00C51D27 /* EAGLView.m */,
-				3A609E3F11B9DB6000AA4C48 /* OpenGLRenderer.m */,
-				3A609E4011B9DB6000AA4C48 /* OpenGLRenderer.h */,
-				3AE0447A13D6252E00F51EF4 /* ES2Renderer.h */,
-				3AE0447B13D6252E00F51EF4 /* ES2Renderer.m */,
 				3AE0447C13D6252E00F51EF4 /* iOSGLEssentialsAppDelegate.h */,
 				3AE0447D13D6252E00F51EF4 /* iOSGLEssentialsAppDelegate.m */,
+				537E51321635EC17003EA7BA /* MainViewController.h */,
+				537E51331635EC17003EA7BA /* MainViewController.m */,
+				3A7DCEBC14BE4E9C00C51D27 /* EAGLView.h */,
+				3A7DCEBD14BE4E9C00C51D27 /* EAGLView.m */,
+				3A609E4011B9DB6000AA4C48 /* OpenGLRenderer.h */,
+				3A609E3F11B9DB6000AA4C48 /* OpenGLRenderer.m */,
+				3AE0447A13D6252E00F51EF4 /* ES2Renderer.h */,
+				3AE0447B13D6252E00F51EF4 /* ES2Renderer.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -112,6 +121,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				3AC5C4A716693B6C00FEE565 /* Default-568h@2x.png */,
 				AF31B2271301C52D006A0A99 /* Readme.txt */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
@@ -146,6 +156,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				3A76BA99177E2ABB00ECD8AF /* MainWindow-iPad.xib */,
 				3AE0447513D624E400F51EF4 /* MainWindow.xib */,
 				3A609E6511B9DBE600AA4C48 /* demon.png */,
 				3A609E6611B9DBE600AA4C48 /* demon.model */,
@@ -157,11 +168,11 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3A5714C817848D020060B117 /* QuartzCore.framework */,
+				3A5714C617848CE90060B117 /* CoreGraphics.framework */,
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
-				288765A40DF7441C002DB57D /* CoreGraphics.framework */,
 				3A609E3B11B9DB4700AA4C48 /* OpenGLES.framework */,
-				3A609EB811B9DCF200AA4C48 /* QuartzCore.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -230,12 +241,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				3A609E6811B9DBE600AA4C48 /* demon.png in Resources */,
+				3A76BA9A177E2ABB00ECD8AF /* MainWindow-iPad.xib in Resources */,
+				3AE0447613D624E400F51EF4 /* MainWindow.xib in Resources */,
 				3A609E6911B9DBE600AA4C48 /* demon.model in Resources */,
 				3A609E6011B9DB9400AA4C48 /* reflect.vsh in Resources */,
 				3A609E6111B9DB9400AA4C48 /* reflect.fsh in Resources */,
 				3A609E6211B9DB9400AA4C48 /* character.vsh in Resources */,
 				3A609E6311B9DB9400AA4C48 /* character.fsh in Resources */,
-				3AE0447613D624E400F51EF4 /* MainWindow.xib in Resources */,
+				3AC5C4A816693B6C00FEE565 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -256,6 +269,7 @@
 				3AE0447E13D6252E00F51EF4 /* ES2Renderer.m in Sources */,
 				3AE0447F13D6252E00F51EF4 /* iOSGLEssentialsAppDelegate.m in Sources */,
 				3A7DCEBE14BE4E9C00C51D27 /* EAGLView.m in Sources */,
+				537E51341635EC17003EA7BA /* MainViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -266,6 +280,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_WARN_OBJC_MISSING_PROPERTY_SYNTHESIS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -273,7 +288,9 @@
 				GCC_PREFIX_HEADER = iOSGLEssentials_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = ESSENTIAL_GL_PRACTICES_IOS;
 				INFOPLIST_FILE = "iOSGLEssentials-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = iOSGLEssentials;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -281,12 +298,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_WARN_OBJC_MISSING_PROPERTY_SYNTHESIS = NO;
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = iOSGLEssentials_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = ESSENTIAL_GL_PRACTICES_IOS;
 				INFOPLIST_FILE = "iOSGLEssentials-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = iOSGLEssentials;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -295,6 +315,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_WARN_OBJC_MISSING_PROPERTY_SYNTHESIS = NO;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -308,6 +329,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_WARN_OBJC_MISSING_PROPERTY_SYNTHESIS = NO;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;

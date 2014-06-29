@@ -1,7 +1,7 @@
 /*
      File: PlacemarksListViewController.m 
  Abstract: UITableViewController that Displays a list of CLPlacemarks. 
-  Version: 1.2 
+  Version: 1.3 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2012 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
  */
 
@@ -50,17 +50,24 @@
 
 #import <AddressBookUI/AddressBookUI.h>
 
+@interface PlacemarksListViewController ()
+{
+    NSArray *_placemarks;
+    BOOL _preferCoord;
+}
+
+@property (nonatomic, strong) NSArray *placemarks;
+@end
+
 @implementation PlacemarksListViewController
 
-@synthesize placemarks = _placemarks;
-
- // show the coord in the main textField in the cell if YES
+// show the coord in the main textField in the cell if YES
 - (id)initWithPlacemarks:(NSArray*)placemarks preferCoord:(BOOL)shouldPreferCoord
 {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self)
     {
-        _placemarks = [placemarks retain];
+        _placemarks = placemarks;
         _preferCoord = shouldPreferCoord;
     }
     return self;
@@ -77,20 +84,6 @@
     return [self initWithPlacemarks:nil];
 }
 
-- (void)dealloc
-{
-    [_placemarks release];
-    _placemarks = nil;
-    [super dealloc];
-}
-
-- (void)didReceiveMemoryWarning
-{
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc that aren't in use.
-}
 
 
 #pragma mark - View lifecycle
@@ -103,12 +96,6 @@
 
 
 #pragma mark - Table view data source
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    // return the number of sections
-    return 1;
-}
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -125,7 +112,7 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
     
     if (self.placemarks == nil || self.placemarks.count == 0)
@@ -135,11 +122,10 @@
     }
     else
     {
-        CLPlacemark *placemark = [self.placemarks objectAtIndex:indexPath.row];
+        CLPlacemark *placemark = self.placemarks[indexPath.row];
         
         // use the AddressBook framework to create an address dictionary
-        //••NSString *addressString = ABCreateStringWithAddressDictionary(placemark.addressDictionary, NO);
-        NSString *addressString = CFBridgingRelease(ABCreateStringWithAddressDictionary(placemark.addressDictionary, NO));
+        NSString *addressString = CFBridgingRelease(CFBridgingRetain(ABCreateStringWithAddressDictionary(placemark.addressDictionary, NO)));
         
         CLLocationDegrees latitude = placemark.location.coordinate.latitude;
         CLLocationDegrees longitude = placemark.location.coordinate.longitude;
@@ -159,10 +145,9 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    CLPlacemark *placemark = [self.placemarks objectAtIndex:indexPath.row];
+    CLPlacemark *placemark = self.placemarks[indexPath.row];
     PlacemarkViewController *pvc = [[PlacemarkViewController alloc] initWithPlacemark:placemark preferCoord:_preferCoord];
     [self.navigationController pushViewController:pvc animated:YES];
-    [pvc release];
 }
 
 @end

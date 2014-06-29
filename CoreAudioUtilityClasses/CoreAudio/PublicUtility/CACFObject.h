@@ -1,7 +1,7 @@
 /*
      File: CACFObject.h 
  Abstract:  Part of CoreAudio Utility Classes  
-  Version: 1.01 
+  Version: 1.0.4 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2012 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
 */
 #if !defined(__CACFObject_h__)
@@ -58,6 +58,29 @@
 	#include <CoreAudioTypes.h>
 	#include <CoreFoundation.h>
 #endif
+
+//=============================================================================
+//	Wrappers for CFRetain and CFRelease that check for NULL
+//=============================================================================
+
+template <typename CFObjectType>
+CFObjectType CACFRetain(CFObjectType inObject)
+{
+	CFObjectType theAnswer = inObject;
+	if(inObject != NULL)
+	{
+		theAnswer = reinterpret_cast<CFObjectType>(CFRetain(inObject));
+	}
+	return theAnswer;
+}
+
+inline void	CACFRelease(CFTypeRef inObject)
+{
+	if(inObject != NULL)
+	{
+		CFRelease(inObject);
+	}
+}
 
 //=============================================================================
 //	CACFObject

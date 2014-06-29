@@ -1,10 +1,10 @@
 Read Me About SimpleFTPSample
 =============================
-1.3
+1.4
 
 SimpleFTPSample shows how to do simple FTP transfers using the NSURLConnection and CFFTPStream APIs.
 
-SimpleFTPSample requires iOS 5.0 or later, although the core networking code should work on any version of iOS and any recent version of Mac OS X.
+SimpleFTPSample requires iOS 5.1 or later, although the core networking code should work on any version of iOS and any recent version of OS X.
 
 WARNING
 -------
@@ -48,7 +48,7 @@ The program will download the image and display it on screen.
 
 You can test the list functionality in much the same way.
 
-Testing the put and create directory functionality is a bit trickier.  You will need access to a writeable area on an FTP server.  Historically the easiest way to get this was to enable FTP access on your Mac but, starting with Mac OS X 10.7, this is no longer supported.  Alas, you're on your own on this front.
+Testing the put and create directory functionality is a bit trickier.  You will need access to a writeable area on an FTP server.  Historically the easiest way to get this was to enable FTP access on your Mac but, starting with OS X 10.7, this is no longer supported.  Alas, you're on your own on this front.
 
 Once you know the URL of your FTP server, you can use the following steps to test the put code:
 
@@ -82,7 +82,7 @@ You can use the Create Dir tab to test the directory creation code in a similar 
 
 Building the Sample
 -------------------
-The sample was built using Xcode 4.3. on Mac OS X 10.7.3 with iOS 5.1 SDK.  You should be able to just open the project and choose Build from the Build menu.  The resulting program should be compatible with all devices running iOS 5.0 and later.  The bulk of my testing was done with an iPhone 4S running iOS 5.1.1.
+The sample was built using Xcode 4.6.1 on OS X 10.8.3 with iOS 6.1 SDK.  You should be able to just open the project and choose Build from the Build menu.  The resulting program should be compatible with all devices running iOS 5.1 and later.  The bulk of my testing was done with an iPhone 4S running iOS 6.1.3.
 
 How It Works
 ------------
@@ -138,9 +138,11 @@ If you find any problems with this sample, please file a bug against it.
 
 1.3 (Aug 2012) was an update to adopt the latest tools and techniques (most notably, ARC).
 
+1.4 (Mar 2013) was an update to fix a bug that caused an incompatibility with iOS 6 (r. 13171568), along with other minor changes including (r. 12478239).
+
 Share and Enjoy.
 
 Apple Developer Technical Support
 Core OS/Hardware
 
-1 Aug 2012
+26 Mar 2013

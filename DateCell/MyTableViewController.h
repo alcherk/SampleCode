@@ -1,7 +1,7 @@
 /*
      File: MyTableViewController.h
  Abstract: The main table view controller of this app.
-  Version: 1.1
+  Version: 1.6
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,30 +41,12 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
 #import <UIKit/UIKit.h>
 
 @interface MyTableViewController : UITableViewController
-{
-@private
-	UIDatePicker *pickerView;
-	UIBarButtonItem *doneButton;	// this button appears only when the date picker is open
-	
-	NSArray *dataArray;
-	
-	NSDateFormatter *dateFormatter;
-}
-
-@property (nonatomic, retain) IBOutlet UIDatePicker *pickerView; 
-@property (nonatomic, retain) IBOutlet UIBarButtonItem *doneButton;
-
-@property (nonatomic, retain) NSArray *dataArray; 
-@property (nonatomic, retain) NSDateFormatter *dateFormatter; 
-
-- (IBAction)doneAction:(id)sender;	// when the done button is clicked
-- (IBAction)dateAction:(id)sender;	// when the user has changed the date picke values (m/d/y)
 
 @end

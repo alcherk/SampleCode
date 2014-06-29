@@ -1,7 +1,7 @@
 /*
      File: CAPThread.cpp 
  Abstract:  CAPThread.h  
-  Version: 1.01 
+  Version: 1.0.4 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2012 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
 */
 //=============================================================================
@@ -181,7 +181,7 @@ void	CAPThread::SetPriority(UInt32 inPriority, bool inFixedPriority)
 		
 		//	set the thread's absolute priority which is relative to the priority on which thread_policy_set() is called
 		UInt32 theCurrentThreadPriority = getScheduledPriority(pthread_self(), CAPTHREAD_SET_PRIORITY);
-        thread_precedence_policy_data_t thePrecedencePolicy = { mPriority - theCurrentThreadPriority };
+        thread_precedence_policy_data_t thePrecedencePolicy = { static_cast<integer_t>(mPriority - theCurrentThreadPriority) };
 		theError = thread_policy_set(pthread_mach_thread_np(mPThread), THREAD_PRECEDENCE_POLICY, (thread_policy_t)&thePrecedencePolicy, THREAD_PRECEDENCE_POLICY_COUNT);
         AssertNoKernelError(theError, "CAPThread::SetPriority: failed to set the precedence policy");
 		

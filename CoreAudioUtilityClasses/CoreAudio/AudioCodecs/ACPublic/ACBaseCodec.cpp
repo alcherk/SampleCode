@@ -1,7 +1,7 @@
 /*
      File: ACBaseCodec.cpp 
  Abstract:  ACBaseCodec.h  
-  Version: 1.01 
+  Version: 1.0.4 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2012 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
 */
 //=============================================================================
@@ -50,13 +50,7 @@
 #include <algorithm>
 #include "ACBaseCodec.h"
 
-#include "ACCompatibility.h"
-
 #include "CABundleLocker.h"
-
-#if TARGET_OS_WIN32
-	#include "CAWin32StringResources.h"
-#endif
 
 //=============================================================================
 //	ACBaseCodec

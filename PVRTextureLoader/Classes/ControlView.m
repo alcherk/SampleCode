@@ -2,7 +2,7 @@
 
     File: ControlView.m
 Abstract: ControlView is a UIView subclass responsible for displaying and hidding controls.
- Version: 1.5
+ Version: 1.6
 
 Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
 Inc. ("Apple") in consideration of your agreement to the following
@@ -42,7 +42,7 @@ AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE),
 STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
-Copyright (C) 2010 Apple Inc. All Rights Reserved.
+Copyright (C) 2014 Apple Inc. All Rights Reserved.
 
 
 */
@@ -65,7 +65,7 @@ const float gBarHeight = 30.0f;
 		_contentHeight = frame.size.height - gBarHeight;
 		
 		// Gradient setup for bar
-		float barColors[8] = {
+		CGFloat barColors[8] = {
 			0.30f, 0.30f, 0.30f, 0.75f,
 			0.00f, 0.00f, 0.00f, 0.75f
 		};

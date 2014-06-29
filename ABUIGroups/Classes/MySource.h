@@ -1,7 +1,7 @@
 /*
      File: MySource.h
- Abstract: Definitions for the MySource class.
-  Version: 1.0
+ Abstract: Encapsulates the name and all associated groups of an ABSource object.
+  Version: 1.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,20 +41,15 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2011 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
 */
 
-@interface MySource : NSObject 
-{
-	// Name of an ABSource object
-	NSString *name;
-	// Array of all groups associated with an ABSource object
-	NSMutableArray *groups;
-}
-
-@property(nonatomic, retain) NSString *name;
-@property(nonatomic, retain) NSMutableArray *groups;
+@interface MySource : NSObject
+// Name of an ABSource object
+@property(nonatomic, copy) NSString *name;
+// Array of all groups associated with an ABSource object
+@property(nonatomic, strong) NSMutableArray *groups;
 
 - (id)initWithAllGroups:(NSMutableArray *)allGroups name:(NSString*)sourceName;
 

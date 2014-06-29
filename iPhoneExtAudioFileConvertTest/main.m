@@ -1,7 +1,7 @@
 /*
         File: main.m
     Abstract: main
-     Version: 1.0
+     Version: 1.2.1
     
     Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
     Inc. ("Apple") in consideration of your agreement to the following
@@ -41,16 +41,16 @@
     STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
     
-    Copyright (C) 2010 Apple Inc. All Rights Reserved.
+    Copyright (C) 2014 Apple Inc. All Rights Reserved.
     
-*/ 
+*/
 
+#import "iPhoneExtAudioFileConvertTest.h"
 #import <UIKit/UIKit.h>
 
-int main(int argc, char *argv[]) {
-    
-    NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-    int retVal = UIApplicationMain(argc, argv, nil, nil);
-    [pool release];
-    return retVal;
+int main(int argc, char *argv[])
+{
+    @autoreleasepool {
+        return UIApplicationMain(argc, argv, nil, NSStringFromClass([ExtAudioFileConvertAppDelegate class]));
+    }
 }

@@ -3,11 +3,12 @@
 ================================================================================
 DESCRIPTION:
 
-This sample shows how to use EventKit and EventKitUI frameworks to access and edit calendar data in the Calendar database.
+This sample shows how to use EventKit and EventKitUI frameworks to check and request access to the user’s Calendar database. It also shows how to access and edit calendar data in the Calendar database.
 
 The application uses table views to display EKEvent objects retrieved from an EKEventStore object. It implements EKEventViewController for viewing and editing existing EKEvents, and uses EKEventEditViewController for creating new EKEvents.
 
 Amongst the techniques shown are how to:
+* Check and request access to the Calendar database.
 * Create and initialize an event store object.
 * Create a predicate, or a search query for the Calendar database.
 * Override EKEventEditViewDelegate method to respond to editing events.
@@ -16,12 +17,12 @@ Amongst the techniques shown are how to:
 ================================================================================
 BUILD REQUIREMENTS:
 
-Mac OS X v10.6 or later; Xcode 3.1.3 or later; iPhone OS 4.0.
+iOS SDK 6.0 or later
 
 ================================================================================
 RUNTIME REQUIREMENTS:
 
-iPhone OS 4.0.
+iOS 6.0 or later
 
 ================================================================================
 PACKAGING LIST:
@@ -44,8 +45,8 @@ Table view controller that manages a table view displaying a list of events fetc
 ===========================================================================
 CHANGES FROM PREVIOUS VERSIONS:
 
-Version 1.0
-- First version.
+ 1.1 - Updated for iOS 6.0. Now uses ARC and storyboard. Shows how to check and request access to a user’s Calendar database. You may encounter a CADObjectGetRelatedObjects failed with error Error Domain=NSMachErrorDomain Code=268435459 "The operation couldn’t be completed. (Mach error 268435459 - (ipc/send) invalid destination port)" message when deleting an event. This is a known bug that does not affect running this sample.
+ 1.0 - First version.
 
 ================================================================================
-Copyright (C) 2010 Apple Inc. All rights reserved.
+Copyright (C) 2010-2013 Apple Inc. All rights reserved.

@@ -1,7 +1,8 @@
 /*
      File: LaunchMeAppDelegate.h
- Abstract: 
-  Version: 1.6
+ Abstract: The application's delegate class.  Handles incoming 
+ URL requests.
+  Version: 1.7
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,21 +42,15 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
 
 #import <UIKit/UIKit.h>
 
-@interface LaunchMeAppDelegate : NSObject <UIApplicationDelegate, UIAlertViewDelegate> {
-	IBOutlet UIWindow *window;
-    UIAlertView *usageAlertView;
-    BOOL showUsageAlert;
-}
+@interface LaunchMeAppDelegate : NSObject <UIApplicationDelegate>
 
-@property (nonatomic, retain) UIWindow *window;
-@property (nonatomic, retain) UIAlertView *usageAlertView;
-@property BOOL showUsageAlert;
+@property (nonatomic, strong) UIWindow *window;
 
 @end
 

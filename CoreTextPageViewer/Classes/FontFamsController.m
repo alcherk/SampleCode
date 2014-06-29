@@ -7,7 +7,7 @@
  The table view displays the contents of the fontFamsForDisplay array.
  The view controller has a delegate that it notifies if row in the table view is selected.
  
-  Version: 1.0
+  Version: 1.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -47,7 +47,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2011 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
 */
 
@@ -169,14 +169,15 @@
 
     // filter out the available font families to the specified set below - note 
 	// some platforms may not have all the requested fonts installed 
-    NSSet* fontCandidatesSet = [NSSet setWithObjects:@"Bodoni 72",
-                         @"Bitstream Vera Sans Mono",
-                         @"Didot",
-                         @"Futura",
-                         @"Helvetica",
-                         @"Hoefler Text",
-                         @"Zapfino",
-                         nil ];
+    NSSet* fontCandidatesSet = [NSSet setWithObjects:
+                        @"BodoniSvtyTwoITCTT-Book", //use PostScript names in CTFontCreateWithName() for best performance
+                        @"BitstreamVeraSansMono-Roman",
+                        @"Didot",
+                        @"Futura-Medium",
+                        @"Helvetica",
+                        @"HoeflerText-Regular",
+                        @"Zapfino",
+                        nil ];
     NSMutableSet* familiesSet = [NSMutableSet setWithArray:[UIFont familyNames]];
     [familiesSet intersectSet:fontCandidatesSet];
 	NSMutableArray *fontFamsForDisplayMutable = [NSMutableArray arrayWithCapacity:7];
@@ -198,18 +199,9 @@
 	selectedFontFeature = 0;
 }
 
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+- (BOOL)shouldAutorotate {
     return YES;
 }
-
-
-- (void)viewDidUnload {
-    [super viewDidUnload];
-    self.fontFamsForDisplay = nil;
-	self.selectedFontFam = nil;
-}
-
 
 #pragma mark -
 #pragma mark Table view methods

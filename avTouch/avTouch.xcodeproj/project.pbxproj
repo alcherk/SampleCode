@@ -12,12 +12,13 @@
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765A50DF7441C002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765A40DF7441C002DB57D /* CoreGraphics.framework */; };
-		2899E5220DE3E06400AC0155 /* avTouchViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2899E5210DE3E06400AC0155 /* avTouchViewController.xib */; };
-		28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD733E0D9D9553002E5188 /* MainWindow.xib */; };
 		28D7ACF80DDB3853001CB0EB /* avTouchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28D7ACF70DDB3853001CB0EB /* avTouchViewController.m */; };
+		2B34730818A4563A00566F21 /* ReadMe.txt in Resources */ = {isa = PBXBuildFile; fileRef = 2B34730718A4563A00566F21 /* ReadMe.txt */; };
+		2B638FCD18A1B917002D2702 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B638FCC18A1B917002D2702 /* Default-568h@2x.png */; };
+		2B66420318A44C90002446EC /* avTouchViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2B6641FF18A44C90002446EC /* avTouchViewController.xib */; };
+		2B66420418A44C90002446EC /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2B66420118A44C90002446EC /* MainWindow.xib */; };
 		2BB1C79D12FCBCC2003504D0 /* sample2ch.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 2BB1C79C12FCBCC2003504D0 /* sample2ch.m4a */; };
 		F70B2C370F67152500808913 /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = F70B2C360F67152500808913 /* pause.png */; };
-		F711F4B70F67138B0006A44C /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = F711F4B60F67138B0006A44C /* Default.png */; };
 		F72E6A140F2E4BC60063DC01 /* forward.png in Resources */ = {isa = PBXBuildFile; fileRef = F72E6A0D0F2E4BC60063DC01 /* forward.png */; };
 		F72E6A150F2E4BC60063DC01 /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = F72E6A0E0F2E4BC60063DC01 /* play.png */; };
 		F72E6A160F2E4BC60063DC01 /* rewind.png in Resources */ = {isa = PBXBuildFile; fileRef = F72E6A0F0F2E4BC60063DC01 /* rewind.png */; };
@@ -45,16 +46,17 @@
 		1D6058910D05DD3D006BFB54 /* avTouch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = avTouch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		288765A40DF7441C002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		2899E5210DE3E06400AC0155 /* avTouchViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = avTouchViewController.xib; sourceTree = "<group>"; };
-		28AD733E0D9D9553002E5188 /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
 		28D7ACF60DDB3853001CB0EB /* avTouchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = avTouchViewController.h; sourceTree = "<group>"; };
 		28D7ACF70DDB3853001CB0EB /* avTouchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = avTouchViewController.m; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		2B34730718A4563A00566F21 /* ReadMe.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ReadMe.txt; sourceTree = "<group>"; };
+		2B638FCC18A1B917002D2702 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		2B66420018A44C90002446EC /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/avTouchViewController.xib; sourceTree = SOURCE_ROOT; };
+		2B66420218A44C90002446EC /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainWindow.xib; sourceTree = SOURCE_ROOT; };
 		2BB1C79C12FCBCC2003504D0 /* sample2ch.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = sample2ch.m4a; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* avTouch_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = avTouch_Prefix.pch; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F70B2C360F67152500808913 /* pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pause.png; sourceTree = "<group>"; };
-		F711F4B60F67138B0006A44C /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		F72E6A0D0F2E4BC60063DC01 /* forward.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = forward.png; sourceTree = "<group>"; };
 		F72E6A0E0F2E4BC60063DC01 /* play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = play.png; sourceTree = "<group>"; };
 		F72E6A0F0F2E4BC60063DC01 /* rewind.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rewind.png; sourceTree = "<group>"; };
@@ -123,6 +125,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				2B34730718A4563A00566F21 /* ReadMe.txt */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -149,10 +152,10 @@
 				F7C741C20EA7F7CE00657C30 /* icon.png */,
 				F775554C0E77297300A99FCA /* audio */,
 				F775553A0E77272200A99FCA /* images */,
-				2899E5210DE3E06400AC0155 /* avTouchViewController.xib */,
-				28AD733E0D9D9553002E5188 /* MainWindow.xib */,
+				2B6641FF18A44C90002446EC /* avTouchViewController.xib */,
+				2B66420118A44C90002446EC /* MainWindow.xib */,
 				8D1107310486CEB800E47090 /* Info.plist */,
-				F711F4B60F67138B0006A44C /* Default.png */,
+				2B638FCC18A1B917002D2702 /* Default-568h@2x.png */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -233,6 +236,9 @@
 /* Begin PBXProject section */
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0500;
+			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "avTouch" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
@@ -242,6 +248,7 @@
 				Japanese,
 				French,
 				German,
+				en,
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* CustomTemplate */;
 			projectDirPath = "";
@@ -257,19 +264,20 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */,
-				2899E5220DE3E06400AC0155 /* avTouchViewController.xib in Resources */,
 				F7502B920E773F5A00592D54 /* sample.m4a in Resources */,
 				F7C742080EA7FAE100657C30 /* icon.png in Resources */,
 				F72E6A140F2E4BC60063DC01 /* forward.png in Resources */,
 				F72E6A150F2E4BC60063DC01 /* play.png in Resources */,
 				F72E6A160F2E4BC60063DC01 /* rewind.png in Resources */,
 				F72E6A170F2E4BC60063DC01 /* sound_meter_background.png in Resources */,
+				2B638FCD18A1B917002D2702 /* Default-568h@2x.png in Resources */,
 				F72E6A180F2E4BC60063DC01 /* sound_meter_glare.png in Resources */,
 				F72E6A190F2E4BC60063DC01 /* volume_down.png in Resources */,
 				F72E6A1A0F2E4BC60063DC01 /* volume_up.png in Resources */,
-				F711F4B70F67138B0006A44C /* Default.png in Resources */,
+				2B66420418A44C90002446EC /* MainWindow.xib in Resources */,
+				2B66420318A44C90002446EC /* avTouchViewController.xib in Resources */,
 				F70B2C370F67152500808913 /* pause.png in Resources */,
+				2B34730818A4563A00566F21 /* ReadMe.txt in Resources */,
 				2BB1C79D12FCBCC2003504D0 /* sample2ch.m4a in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -294,6 +302,27 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXVariantGroup section */
+		2B6641FF18A44C90002446EC /* avTouchViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2B66420018A44C90002446EC /* en */,
+			);
+			name = avTouchViewController.xib;
+			path = images;
+			sourceTree = "<group>";
+		};
+		2B66420118A44C90002446EC /* MainWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2B66420218A44C90002446EC /* en */,
+			);
+			name = MainWindow.xib;
+			path = images;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
 		1D6058940D05DD3E006BFB54 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -305,6 +334,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = avTouch_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = avTouch;
 			};
 			name = Debug;
@@ -317,6 +347,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = avTouch_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = avTouch;
 			};
 			name = Release;
@@ -324,7 +355,6 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -332,6 +362,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
 				PROVISIONING_PROFILE = "";
+				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -339,13 +370,13 @@
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
 				PROVISIONING_PROFILE = "";
+				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
 			};
 			name = Release;

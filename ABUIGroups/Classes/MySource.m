@@ -1,8 +1,7 @@
 /*
      File: MySource.m
- Abstract: Encapsulates the name and all associated groups 
- of an ABSource object.
-  Version: 1.0
+ Abstract: Encapsulates the name and all associated groups of an ABSource object.
+  Version: 1.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -42,32 +41,23 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2011 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
 */
 
 #import "MySource.h"
 
 @implementation MySource
-@synthesize name, groups;
 
 - (id)initWithAllGroups:(NSMutableArray *)allGroups name:(NSString*)sourceName
 {
 	self = [super init];
 	if(self != nil) 
     {
-		self.groups = allGroups;
-		self.name = sourceName;
+		_groups = allGroups;
+		_name = sourceName;
     }
 	return self;
-}
-
-
-- (void)dealloc 
-{
-	[name release];
-	[groups release];
-	[super dealloc];
 }
 
 @end

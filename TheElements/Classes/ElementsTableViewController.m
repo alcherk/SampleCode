@@ -2,7 +2,7 @@
      File: ElementsTableViewController.m
  Abstract: Coordinates the tableviews and element data sources. It also responds
  to changes of selection in the table view and provides the cells.
-  Version: 1.11
+  Version: 1.12
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -42,7 +42,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
 
@@ -57,107 +57,60 @@
 
 @implementation ElementsTableViewController
 
-@synthesize theTableView;
-@synthesize dataSource;
- 
-
-// this is the custom initialization method for the ElementsTableViewController
-// it expects an object that conforms to both the UITableViewDataSource protocol
-// which provides data to the tableview, and the ElementDataSource protocol which
-// provides information about the elements data that is displayed,
-- (id)initWithDataSource:(id<ElementsDataSource,UITableViewDataSource>)theDataSource {
-	if ([self init]) {
-		theTableView = nil;
-		
-		// retain the data source
-		self.dataSource = theDataSource;
-		// set the title, and tab bar images from the dataSource
-		// object. These are part of the ElementsDataSource Protocol
-		self.title = [dataSource name];
-		self.tabBarItem.image = [dataSource tabBarImage];
-
-		// set the long name shown in the navigation bar
-		self.navigationItem.title=[dataSource navigationBarName];
-
-		// create a custom navigation bar button and set it to always say "back"
-		UIBarButtonItem *temporaryBarButtonItem=[[UIBarButtonItem alloc] init];
-		temporaryBarButtonItem.title=@"Back";
-		self.navigationItem.backBarButtonItem = temporaryBarButtonItem;
-		[temporaryBarButtonItem release];
-		
-	}
-	return self;
+- (void)setDataSource:(id<ElementsDataSource,UITableViewDataSource>)dataSource {
+    
+    // retain the data source
+    _dataSource = dataSource;
+    
+    // set the title, and tab bar images from the dataSource
+    // object. These are part of the ElementsDataSource Protocol
+    self.title = [_dataSource name];
+    self.tabBarItem.image = [_dataSource tabBarImage];
+    
+    // set the long name shown in the navigation bar
+    self.navigationItem.title = [_dataSource navigationBarName];
 }
 
-
-- (void)dealloc {
-	theTableView.delegate = nil;
-	theTableView.dataSource = nil;
-	[theTableView release];
-	[dataSource release];
-	[super dealloc];
+- (void)viewDidLoad {
+    
+    [super viewDidLoad];
+    
+    self.tableView.sectionIndexMinimumDisplayRowCount = 10;
+    
+    self.tableView.delegate = self;
+	self.tableView.dataSource = self.dataSource;
+    
+    // create a custom navigation bar button and set it to always say "back"
+    UIBarButtonItem *temporaryBarButtonItem = [[UIBarButtonItem alloc] init];
+    temporaryBarButtonItem.title = @"Back";
+    self.navigationItem.backBarButtonItem = temporaryBarButtonItem;
 }
 
-
-- (void)loadView {
-	
-	// create a new table using the full application frame
-	// we'll ask the datasource which type of table to use (plain or grouped)
-	UITableView *tableView = [[UITableView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame] 
-														  style:[dataSource tableViewStyle]];
-	
-	// set the autoresizing mask so that the table will always fill the view
-	tableView.autoresizingMask = (UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight);
-	
-	// set the cell separator to a single straight line.
-	tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
-	
-	// set the tableview delegate to this object and the datasource to the datasource which has already been set
-	tableView.delegate = self;
-	tableView.dataSource = dataSource;
-	
-	tableView.sectionIndexMinimumDisplayRowCount=10;
-
-	// set the tableview as the controller view
-    self.theTableView = tableView;
-	self.view = tableView;
-	[tableView release];
-
-}
-
--(void)viewWillAppear:(BOOL)animated
-{
+- (void)viewWillAppear:(BOOL)animated {
+    
 	// force the tableview to load
-
-	[theTableView reloadData];
+	[self.tableView reloadData];
 }
 
 
-//
-//
-// UITableViewDelegate methods
-//
-//
+#pragma mark - UITableViewDelegate
 
-// the user selected a row in the table.
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)newIndexPath {
-	// deselect the new row using animation
-    [tableView deselectRowAtIndexPath:newIndexPath animated:YES];
-	
-	// get the element that is represented by the selected row.
-	AtomicElement *element = [dataSource atomicElementForIndexPath:newIndexPath];
-	
-	// create an AtomicElementViewController. This controller will display the full size tile for the element
-	AtomicElementViewController *elementController = [[AtomicElementViewController alloc] init];
-
-	// set the element for the controller
-	elementController.element = element;
-	
-	// push the element view controller onto the navigation stack to display it
-	[[self navigationController] pushViewController:elementController animated:YES];
-	[elementController release];
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
+    if ([segue.identifier isEqualToString:@"showDetail"]) {
+        NSIndexPath *selectedIndexPath = [self.tableView indexPathForSelectedRow];
+        
+        // find the right view controller
+        AtomicElement *element = [self.dataSource atomicElementForIndexPath:selectedIndexPath];
+        AtomicElementViewController *viewController =
+            (AtomicElementViewController *)segue.destinationViewController;
+        
+        // hide the bottom tabbar when we push this view controller
+        viewController.hidesBottomBarWhenPushed = YES;
+        
+        // pass the element to this detail view controller
+        viewController.element = element;
+    }
 }
-
-
 
 @end

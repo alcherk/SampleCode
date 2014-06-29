@@ -1,4 +1,3 @@
-
 /*
      File: RootViewController.m
  Abstract:  Abstract: The table view controller responsible for displaying the list of books, supporting additional functionality:
@@ -9,7 +8,7 @@
  
  The root view controller creates and configures an instance of NSFetchedResultsController to manage the collection of books.  The view controller's managed object context is supplied by the application's delegate. When the user adds a new book, the root view controller creates a new managed object context to pass to the add view controller; this ensures that any changes made in the add controller do not affect the main managed object context, and they can be committed or discarded as a whole.
  
-  Version: 2
+  Version: 1.5
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -49,12 +48,11 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2012 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
 #import "RootViewController.h"
-
 #import "DetailViewController.h"
 #import "Book.h"
 
@@ -67,16 +65,15 @@
 @end
 
 
+#pragma mark -
+
 @implementation RootViewController
 
-@synthesize fetchedResultsController=_fetchedResultsController, managedObjectContext=_managedObjectContext, rightBarButtonItem=_rightBarButtonItem;
 
+#pragma mark - View lifecycle
 
-#pragma mark -
-#pragma mark View lifecycle
-
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
+    
     [super viewDidLoad];
     
     // Set up the edit and add buttons.
@@ -95,31 +92,13 @@
 }
 
 
-- (void)viewWillAppear
-{
-    [self.tableView reloadData];
-}
+#pragma mark - Table view data source methods
 
-
-- (void)viewDidUnload
-{
-    // Release any properties that are loaded in viewDidLoad or can be recreated lazily.
-    self.fetchedResultsController = nil;
-}
-
-
-#pragma mark -
-#pragma mark Table view data source methods
-
-/*
- The data source methods are handled primarily by the fetch results controller
- */
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
+// The data source methods are handled primarily by the fetch results controller
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    
     return [[self.fetchedResultsController sections] count];
 }
-
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -128,19 +107,16 @@
     return [sectionInfo numberOfObjects];
 }
 
-
 // Customize the appearance of table view cells.
-
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
-{    
+- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    
     // Configure the cell to show the book's title
     Book *book = [self.fetchedResultsController objectAtIndexPath:indexPath];
     cell.textLabel.text = book.title;
 }
 
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{    
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
@@ -149,16 +125,14 @@
     return cell;
 }
 
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    
     // Display the authors' names as section headings.
     return [[[self.fetchedResultsController sections] objectAtIndex:section] name];
 }
 
-
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{    
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         
         // Delete the managed object.
@@ -179,19 +153,16 @@
 }
 
 
-#pragma mark -
-#pragma mark Table view editing
+#pragma mark - Table view editing
 
-
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
+    
     // The table view should not be re-orderable.
     return NO;
 }
 
-
-- (void)setEditing:(BOOL)editing animated:(BOOL)animated
-{    
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated {
+    
     [super setEditing:editing animated:animated];
     
     if (editing) {
@@ -205,14 +176,13 @@
 }
 
 
-#pragma mark -
-#pragma mark Fetched results controller
+#pragma mark - Fetched results controller
 
 /*
  Returns the fetched results controller. Creates and configures the controller if necessary.
  */
-- (NSFetchedResultsController *)fetchedResultsController
-{
+- (NSFetchedResultsController *)fetchedResultsController {
+    
     if (_fetchedResultsController != nil) {
         return _fetchedResultsController;
     }
@@ -225,42 +195,37 @@
     // Create the sort descriptors array.
     NSSortDescriptor *authorDescriptor = [[NSSortDescriptor alloc] initWithKey:@"author" ascending:YES];
     NSSortDescriptor *titleDescriptor = [[NSSortDescriptor alloc] initWithKey:@"title" ascending:YES];
-    NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:authorDescriptor, titleDescriptor, nil];
+    NSArray *sortDescriptors = @[authorDescriptor, titleDescriptor];
     [fetchRequest setSortDescriptors:sortDescriptors];
     
     // Create and initialize the fetch results controller.
     _fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:@"author" cacheName:@"Root"];
     _fetchedResultsController.delegate = self;
     
-    // Memory management.
-    
     return _fetchedResultsController;
 }    
-
 
 /*
  NSFetchedResultsController delegate methods to respond to additions, removals and so on.
  */
-
-- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
-{
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
+    
     // The fetch controller is about to start sending change notifications, so prepare the table view for updates.
     [self.tableView beginUpdates];
 }
 
-
-- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath
-{    
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
+    
     UITableView *tableView = self.tableView;
 
     switch(type) {
             
         case NSFetchedResultsChangeInsert:
-            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
             break;
             
         case NSFetchedResultsChangeDelete:
-            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
             break;
             
         case NSFetchedResultsChangeUpdate:
@@ -268,30 +233,28 @@
             break;
             
         case NSFetchedResultsChangeMove:
-            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+            [tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
             break;
     }
 }
-
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type
 {    
     switch(type) {
             
         case NSFetchedResultsChangeInsert:
-            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationAutomatic];
             break;
             
         case NSFetchedResultsChangeDelete:
-            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationAutomatic];
             break;
     }
 }
 
-
-- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
-{
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    
     // The fetch controller has sent all current change notifications, so tell the table view to process all updates.
     [self.tableView endUpdates];
 }
@@ -299,13 +262,13 @@
 
 #pragma mark - Segue management
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{    
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
     if ([[segue identifier] isEqualToString:@"AddBook"]) {
         
         /*
          The destination view controller for this segue is an AddViewController to manage addition of the book.
-         This block a new managed object context as a child of the root view controller's context. It then creates a new book using the child context. This means that changes made to the book remain discrete from the application's managed object context until the book's context is saved.
+         This block creates a new managed object context as a child of the root view controller's context. It then creates a new book using the child context. This means that changes made to the book remain discrete from the application's managed object context until the book's context is saved.
           The root view controller sets itself as the delegate of the add controller so that it can be informed when the user has completed the add operation -- either saving or canceling (see addViewController:didFinishWithSave:).
          IMPORTANT: It's not necessary to use a second context for this. You could just use the existing context, which would simplify some of the code -- you wouldn't need to perform two saves, for example. This implementation, though, illustrates a pattern that may sometimes be useful (where you want to maintain a separate set of edits).
          */
@@ -323,8 +286,7 @@
         addViewController.managedObjectContext = addingContext;
     }
     
-    
-    if ([[segue identifier] isEqualToString:@"ShowSelectedBook"]) {
+    else if ([[segue identifier] isEqualToString:@"ShowSelectedBook"]) {
         
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
         Book *selectedBook = (Book *)[[self fetchedResultsController] objectAtIndexPath:indexPath];
@@ -341,8 +303,8 @@
 /*
  Add controller's delegate method; informs the delegate that the add operation has completed, and indicates whether the user saved the new book.
  */
-- (void)addViewController:(AddViewController *)controller didFinishWithSave:(BOOL)save
-{
+- (void)addViewController:(AddViewController *)controller didFinishWithSave:(BOOL)save {
+    
     if (save) {
         /*
          The new book is associated with the add controller's managed object context.
@@ -359,6 +321,7 @@
             NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
             abort();
         }
+
         if (![[self.fetchedResultsController managedObjectContext] save:&error]) {
             /*
              Replace this implementation with code to handle the error appropriately.
@@ -371,9 +334,8 @@
     }
     
     // Dismiss the modal view to return to the main list
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
-
 
 @end
 

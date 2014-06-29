@@ -4,20 +4,23 @@
 DESCRIPTION:
 The ViewTransitions sample application demonstrates how to perform transitions between two views using UIView's animation API.
 
-To try out the sample, build it using Xcode and run it in the simulator or on the device. Click the 'Dissolve' or 'Flip' buttons to perform a transition from one image to another.
+To try out the sample, build it using Xcode and run it in the simulator or on the device. Click the 'Dissolve', 'Flip' or 'bounce' buttons to perform a transition from one image to another.
 
 ================================================================================
 BUILD REQUIREMENTS:
 
-Xcode 4.3, iOS 5.0 SDK
+Xcode 5.0, iOS 7.0 SDK
 
 ================================================================================
 RUNTIME REQUIREMENTS:
 
-iOS 5.x or later
+iOS 6.x or later, Automatic Reference Counting (ARC)
 
 ================================================================================
 CHANGES FROM PREVIOUS VERSIONS:
+
+Version 1.12
+- Upgraded for iOS 7.0, now shows how to use animateWithDuration API using a timing curve described by the motion of a spring.
 
 Version 1.11
 - Upgraded to use UIView's "transitionFromView" API, now uses Storyboards and ARC.
@@ -55,4 +58,4 @@ Version 1.1
 - Updated for Beta 2.
 
 ================================================================================
-Copyright (C) 2008-2012 Apple Inc. All rights reserved.
+Copyright (C) 2008-2013 Apple Inc. All rights reserved.

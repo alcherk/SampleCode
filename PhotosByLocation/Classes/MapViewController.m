@@ -1,7 +1,7 @@
 /*
      File: MapViewController.m 
  Abstract: n/a 
-  Version: 1.1 
+  Version: 1.2 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -69,11 +69,12 @@ static UIEdgeInsets pinPadding = { 64.f, 64.f, 64.f, 64.f };
 @synthesize map;
 
 - (void)viewDidLoad {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(favoriteAssetsChanged:) name:kFavoriteAssetsChanged object:nil];
     loadPinsData = YES;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
     self.title = assetsList.title;
 
     [map setDelegate:self];
@@ -119,15 +120,19 @@ static UIEdgeInsets pinPadding = { 64.f, 64.f, 64.f, 64.f };
         }
         
         assetsDataInaccessibleViewController.explanation = errorMessage;
-        [self presentModalViewController:assetsDataInaccessibleViewController animated:NO];
+        [self presentViewController:assetsDataInaccessibleViewController animated:NO completion:nil];
         [assetsDataInaccessibleViewController release];
     };
 
     [assetsList loadAssets:enumerationBlock failureBlock:failureBlock];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(favoriteAssetsChanged:) name:kFavoriteAssetsChanged object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kFavoriteAssetsChanged object:nil];
     [self.map setDelegate:nil];
+    [super viewWillDisappear:animated];
 }
 
 #pragma mark -
@@ -173,9 +178,7 @@ static UIEdgeInsets pinPadding = { 64.f, 64.f, 64.f, 64.f };
     
     [[self navigationController] pushViewController:assetViewController animated:YES];
     [assetViewController release];
-
 }
-
 
 #pragma mark -
 #pragma mark Map Animations
@@ -298,16 +301,6 @@ static UIEdgeInsets pinPadding = { 64.f, 64.f, 64.f, 64.f };
     
     // Release any cached data, images, etc that aren't in use.
 }
-
-- (void)viewDidUnload {
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kFavoriteAssetsChanged object:nil];
-    
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-}
-
 
 - (void)dealloc {
     self.assetsList = nil;

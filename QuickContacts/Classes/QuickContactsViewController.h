@@ -1,7 +1,9 @@
 /*
      File: QuickContactsViewController.h
- Abstract: Definitions for the QuickContactsViewController class.
-  Version: 1.1
+ Abstract: Demonstrates how to use ABPeoplePickerNavigationControllerDelegate, ABPersonViewControllerDelegate,
+ ABNewPersonViewControllerDelegate, and ABUnknownPersonViewControllerDelegate. Shows how to browse a list of 
+ Address Book contacts, display and edit a contact record, create a new contact record, and update a partial contact record.
+  Version: 1.2
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,25 +43,9 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
 */
-#import <UIKit/UIKit.h>
-#import <AddressBook/AddressBook.h>
-#import <AddressBookUI/AddressBookUI.h>
 
-@interface QuickContactsViewController : UITableViewController < ABPeoplePickerNavigationControllerDelegate,
-																 ABPersonViewControllerDelegate,
-															     ABNewPersonViewControllerDelegate,
-												                 ABUnknownPersonViewControllerDelegate>
-{
-	NSMutableArray *menuArray;
-}
-@property (nonatomic, retain) NSMutableArray *menuArray;
-
--(void)showPeoplePickerController;
--(void)showPersonViewController;
--(void)showNewPersonViewController;
--(void)showUnknownPersonViewController;
-
+@interface QuickContactsViewController : UITableViewController
 @end

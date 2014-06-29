@@ -1,7 +1,7 @@
 /*
      File: StreetScrollerAppDelegate.h
- Abstract: This is the App Delegate that sets up the initial view controller.
-  Version: 1.1
+ Abstract: Template delegate for the application.
+  Version: 1.2
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,18 +41,14 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2011 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
 
 #import <UIKit/UIKit.h>
 
-@class StreetScrollerViewController;
-
 @interface StreetScrollerAppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
-
-@property (strong, nonatomic) StreetScrollerViewController *viewController;
 
 @end

@@ -12,6 +12,7 @@
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		2B9952410EF1D1AD000C1F28 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 2B9952400EF1D1AD000C1F28 /* Settings.bundle */; };
+		524FFA5F18E242C500494FA6 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 524FFA5E18E242C500494FA6 /* Default-568h@2x.png */; };
 		53E4BB070DDB491E0033B3CF /* MyImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 53E4BB050DDB491E0033B3CF /* MyImageView.m */; };
 		53F69CEE0DDB4A390051C004 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 53F69CEC0DDB4A390051C004 /* MainWindow.xib */; };
 		8487EAAA0F8A5E2B00B9E9B0 /* SecondView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8487EAA80F8A5E2B00B9E9B0 /* SecondView.xib */; };
@@ -50,6 +51,7 @@
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ../main.m; sourceTree = "<group>"; };
 		2B9952400EF1D1AD000C1F28 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* MoviePlayer_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MoviePlayer_Prefix.pch; path = ../MoviePlayer_Prefix.pch; sourceTree = "<group>"; };
+		524FFA5E18E242C500494FA6 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		538CB4EF0DE329E400931BDA /* ReadMe.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ReadMe.txt; sourceTree = "<group>"; };
 		53E4BB050DDB491E0033B3CF /* MyImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MyImageView.m; path = Classes/MyImageView.m; sourceTree = "<group>"; };
 		53E4BB060DDB491E0033B3CF /* MyImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyImageView.h; path = Classes/MyImageView.h; sourceTree = "<group>"; };
@@ -150,12 +152,13 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				524FFA5E18E242C500494FA6 /* Default-568h@2x.png */,
 				AF5D8388136D28E100A24F8A /* images */,
 				AF796CCF136CF60D0013E770 /* MainWindow-iPad.xib */,
 				AF796CD1136CF60D0013E770 /* SecondView-iPad.xib */,
 				2B9952400EF1D1AD000C1F28 /* Settings.bundle */,
-				8487EAA80F8A5E2B00B9E9B0 /* SecondView.xib */,
 				53F69CEC0DDB4A390051C004 /* MainWindow.xib */,
+				8487EAA80F8A5E2B00B9E9B0 /* SecondView.xib */,
 				D60DAB4F0DDA30630003B166 /* Movie.m4v */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 			);
@@ -275,7 +278,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0410;
+				LastUpgradeCheck = 0510;
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "MoviePlayer" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -315,6 +318,7 @@
 				AF5D8395136D28E100A24F8A /* Icon.png in Resources */,
 				AF5D8396136D28E100A24F8A /* Icon@2x.png in Resources */,
 				AF5D8397136D28E100A24F8A /* iTunesArtwork in Resources */,
+				524FFA5F18E242C500494FA6 /* Default-568h@2x.png in Resources */,
 				AF5D8398136D28E100A24F8A /* Placeholder.png in Resources */,
 				AF475CE8136DD99100A47DB7 /* ReadMe.txt in Resources */,
 				AFCDA4A81371C5C20097BFDE /* local.png in Resources */,
@@ -384,16 +388,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = MoviePlayer_Prefix.pch;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = "";
 				INFOPLIST_FILE = Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				PRODUCT_NAME = MoviePlayer;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
@@ -405,14 +409,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = MoviePlayer_Prefix.pch;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = "";
 				INFOPLIST_FILE = Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				PRODUCT_NAME = MoviePlayer;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
@@ -423,7 +427,6 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
@@ -431,7 +434,7 @@
 				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
@@ -444,13 +447,12 @@
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;

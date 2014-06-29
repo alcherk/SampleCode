@@ -1,7 +1,7 @@
 /* 
      File: DITableViewController.m
  Abstract: The table view that display docs of different types.
-  Version: 1.4
+  Version: 1.6
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,37 +41,42 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2012 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
 #import "DITableViewController.h"
 
-@interface DITableViewController (private)
-- (NSString *)applicationDocumentsDirectory;
-@end
-
 static NSString* documents[] =
-    {   @"Text Document.txt",
-        @"Image Document.jpg",
-        @"PDF Document.pdf",
-        @"HTML Document.html"
-    };
-#define NUM_DOCS 4
+{   @"Text Document.txt",
+    @"Image Document.jpg",
+    @"PDF Document.pdf",
+    @"HTML Document.html"
+};
 
+#define NUM_DOCS 4
 #define kRowHeight 58.0f
 
+#pragma mark -
+
+@interface DITableViewController () <QLPreviewControllerDataSource,
+QLPreviewControllerDelegate,
+DirectoryWatcherDelegate,
+UIDocumentInteractionControllerDelegate>
+
+@property (nonatomic, strong) DirectoryWatcher *docWatcher;
+@property (nonatomic, strong) NSMutableArray *documentURLs;
+@property (nonatomic, strong) UIDocumentInteractionController *docInteractionController;
+
+@end
+
+#pragma mark -
 
 @implementation DITableViewController
 
-@synthesize docWatcher, documentURLs, docInteractionController;
-
-
-#pragma mark -
-#pragma mark View Controller
-
 - (void)setupDocumentControllerWithURL:(NSURL *)url
 {
+    //checks if docInteractionController has been initialized with the URL
     if (self.docInteractionController == nil)
     {
         self.docInteractionController = [UIDocumentInteractionController interactionControllerWithURL:url];
@@ -102,22 +107,35 @@ static NSString* documents[] =
     self.docWatcher = nil;
 }
 
-- (void)dealloc
+// if we installed a custom UIGestureRecognizer (i.e. long-hold), then this would be called
+//
+- (void)handleLongPress:(UILongPressGestureRecognizer *)longPressGesture
 {
-    [documentURLs release];
-    [docWatcher release];
-    
-    [super dealloc];
+    if (longPressGesture.state == UIGestureRecognizerStateBegan)
+    {
+        NSIndexPath *cellIndexPath = [self.tableView indexPathForRowAtPoint:[longPressGesture locationInView:self.tableView]];
+        
+		NSURL *fileURL;
+		if (cellIndexPath.section == 0)
+        {
+            // for section 0, we preview the docs built into our app
+            fileURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:documents[cellIndexPath.row] ofType:nil]];
+		}
+        else
+        {
+            // for secton 1, we preview the docs found in the Documents folder
+            fileURL = [self.documentURLs objectAtIndex:cellIndexPath.row];
+		}
+        self.docInteractionController.URL = fileURL;
+		
+		[self.docInteractionController presentOptionsMenuFromRect:longPressGesture.view.frame
+                                                           inView:longPressGesture.view
+                                                         animated:YES];
+    }
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
-{
-    return YES;
-}
 
-
-#pragma mark -
-#pragma mark UITableViewDataSource
+#pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -126,6 +144,7 @@ static NSString* documents[] =
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    // Initializing each section with a set of rows
     if (section == 0)
     {
         return NUM_DOCS;
@@ -134,15 +153,16 @@ static NSString* documents[] =
     {
         return self.documentURLs.count;
     }
-
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
     NSString *title = nil;
-    
+    // setting headers for each section
     if (section == 0)
+    {
         title = @"Example Documents";
+    }
     else
     {
         if (self.documentURLs.count > 0)
@@ -152,47 +172,6 @@ static NSString* documents[] =
     return title;
 }
 
-- (NSString *)formattedFileSize:(unsigned long long)size
-{
-	NSString *formattedStr = nil;
-    if (size == 0) 
-		formattedStr = @"Empty";
-	else 
-		if (size > 0 && size < 1024) 
-			formattedStr = [NSString stringWithFormat:@"%qu bytes", size];
-        else 
-            if (size >= 1024 && size < pow(1024, 2)) 
-                formattedStr = [NSString stringWithFormat:@"%.1f KB", (size / 1024.)];
-            else 
-                if (size >= pow(1024, 2) && size < pow(1024, 3))
-                    formattedStr = [NSString stringWithFormat:@"%.2f MB", (size / pow(1024, 2))];
-                else 
-                    if (size >= pow(1024, 3)) 
-                        formattedStr = [NSString stringWithFormat:@"%.3f GB", (size / pow(1024, 3))];
-	
-	return formattedStr;
-}
-
-// if we installed a custom UIGestureRecognizer (i.e. long-hold), then this would be called
-- (void)handleLongPress:(UILongPressGestureRecognizer *)longPressGesture
-{
-    if (longPressGesture.state == UIGestureRecognizerStateBegan)
-    {
-        NSIndexPath *cellIndexPath = [self.tableView indexPathForRowAtPoint:[longPressGesture locationInView:self.tableView]];
-		 
-		NSURL *fileURL;
-		if (cellIndexPath.section == 0)
-			fileURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:documents[cellIndexPath.row] ofType:nil]];
-		else
-			fileURL = [self.documentURLs objectAtIndex:cellIndexPath.row];
-		self.docInteractionController.URL = fileURL;
-		
-		[self.docInteractionController presentOptionsMenuFromRect:longPressGesture.view.frame
-                                                           inView:longPressGesture.view
-                                                         animated:YES];
-    }
-}
-
 - (UITableViewCell *)tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *cellIdentifier = @"cellID";
@@ -200,7 +179,7 @@ static NSString* documents[] =
     
     if (!cell)
     {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier] autorelease];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
     
@@ -219,20 +198,18 @@ static NSString* documents[] =
 	
     // layout the cell
     cell.textLabel.text = [[fileURL path] lastPathComponent];
-    NSInteger iconCount = [docInteractionController.icons count];
+    NSInteger iconCount = [self.docInteractionController.icons count];
     if (iconCount > 0)
     {
-        cell.imageView.image = [docInteractionController.icons objectAtIndex:iconCount - 1];
+        cell.imageView.image = [self.docInteractionController.icons objectAtIndex:iconCount - 1];
     }
     
-    NSError *error;
     NSString *fileURLString = [self.docInteractionController.URL path];
-    NSDictionary *fileAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:fileURLString error:&error];
+    NSDictionary *fileAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:fileURLString error:nil];
     NSInteger fileSize = [[fileAttributes objectForKey:NSFileSize] intValue];
-    
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ - %@",
-                                 [self formattedFileSize:fileSize], docInteractionController.UTI];
-    
+    NSString *fileSizeStr = [NSByteCountFormatter stringFromByteCount:fileSize
+                                                           countStyle:NSByteCountFormatterCountStyleFile];
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ - %@", fileSizeStr, self.docInteractionController.UTI];
     
     // attach to our view any gesture recognizers that the UIDocumentInteractionController provides
     //cell.imageView.userInteractionEnabled = YES;
@@ -240,12 +217,11 @@ static NSString* documents[] =
     //
     // or
     // add a custom gesture recognizer in lieu of using the canned ones
-    
+    //
     UILongPressGestureRecognizer *longPressGesture =
     [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
     [cell.imageView addGestureRecognizer:longPressGesture];
     cell.imageView.userInteractionEnabled = YES;    // this is by default NO, so we need to turn it on
-    [longPressGesture release];
     
     return cell;
 }
@@ -256,8 +232,7 @@ static NSString* documents[] =
 }
 
 
-#pragma mark -
-#pragma mark UITableView delegate
+#pragma mark - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -272,18 +247,18 @@ static NSString* documents[] =
     
     // for case 2 use this, allowing UIDocumentInteractionController to handle the preview:
     /*
-    NSURL *fileURL;
-    if (indexPath.section == 0)
-    {
-        fileURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:documents[indexPath.row] ofType:nil]];
-    }
-    else
-    {
-        fileURL = [self.documentURLs objectAtIndex:indexPath.row];
-    }
-    [self setupDocumentControllerWithURL:fileURL];
-    [self.docInteractionController presentPreviewAnimated:YES];
-    */
+     NSURL *fileURL;
+     if (indexPath.section == 0)
+     {
+     fileURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:documents[indexPath.row] ofType:nil]];
+     }
+     else
+     {
+     fileURL = [self.documentURLs objectAtIndex:indexPath.row];
+     }
+     [self setupDocumentControllerWithURL:fileURL];
+     [self.docInteractionController presentPreviewAnimated:YES];
+     */
     
     // for case 3 we use the QuickLook APIs directly to preview the document -
     QLPreviewController *previewController = [[QLPreviewController alloc] init];
@@ -293,12 +268,10 @@ static NSString* documents[] =
     // start previewing the document at the current section index
     previewController.currentPreviewItemIndex = indexPath.row;
     [[self navigationController] pushViewController:previewController animated:YES];
-    [previewController release];
 }
 
 
-#pragma mark -
-#pragma mark UIDocumentInteractionControllerDelegate
+#pragma mark - UIDocumentInteractionControllerDelegate
 
 - (UIViewController *)documentInteractionControllerViewControllerForPreview:(UIDocumentInteractionController *)interactionController
 {
@@ -306,8 +279,7 @@ static NSString* documents[] =
 }
 
 
-#pragma mark -
-#pragma mark QLPreviewControllerDataSource
+#pragma mark - QLPreviewControllerDataSource
 
 // Returns the number of items that the preview controller should preview
 - (NSInteger)numberOfPreviewItemsInPreviewController:(QLPreviewController *)previewController
@@ -347,8 +319,7 @@ static NSString* documents[] =
 }
 
 
-#pragma mark -
-#pragma mark File system support
+#pragma mark - File system support
 
 - (NSString *)applicationDocumentsDirectory
 {
@@ -361,7 +332,8 @@ static NSString* documents[] =
 	
 	NSString *documentsDirectoryPath = [self applicationDocumentsDirectory];
 	
-	NSArray *documentsDirectoryContents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:documentsDirectoryPath error:NULL];
+	NSArray *documentsDirectoryContents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:documentsDirectoryPath
+                                                                                              error:NULL];
     
 	for (NSString* curFileName in [documentsDirectoryContents objectEnumerator])
 	{
@@ -372,7 +344,7 @@ static NSString* documents[] =
         [[NSFileManager defaultManager] fileExistsAtPath:filePath isDirectory:&isDirectory];
 		
         // proceed to add the document URL to our list (ignore the "Inbox" folder)
-        if (!(isDirectory && [curFileName isEqualToString: @"Inbox"]))
+        if (!(isDirectory && [curFileName isEqualToString:@"Inbox"]))
         {
             [self.documentURLs addObject:fileURL];
         }

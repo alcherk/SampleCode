@@ -1,7 +1,7 @@
 /*
      File: AtomicElementTileView.h
  Abstract: Draws the small tile view displayed in the tableview rows.
-  Version: 1.11
+  Version: 1.12
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
 
@@ -49,12 +49,8 @@
 
 @class AtomicElement;
 
-@interface AtomicElementTileView : UIView {
-	AtomicElement *element;
-}
- 
-@property (nonatomic, retain) AtomicElement *element;
+@interface AtomicElementTileView : UIView
 
-+ (CGSize)preferredViewSize;
+@property (nonatomic, strong) AtomicElement *element;
 
 @end

@@ -1,8 +1,7 @@
-
 /*
      File: CoreDataBooksAppDelegate.m
  Abstract: Application delegate to set up the Core Data stack and configure the first view and navigation controllers.
-  Version: 2
+  Version: 1.5
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -42,13 +41,12 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2012 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
 #import "CoreDataBooksAppDelegate.h"
 #import "RootViewController.h"
-
 
 @interface CoreDataBooksAppDelegate ()
 
@@ -56,21 +54,17 @@
 @property (nonatomic, strong, readonly) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, strong, readonly) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 
-- (NSURL *)applicationDocumentsDirectory;
-- (void)saveContext;
-
 @end
 
 
+#pragma mark -
 
 @implementation CoreDataBooksAppDelegate
 
-@synthesize window=_window;
 @synthesize managedObjectModel=_managedObjectModel, managedObjectContext=_managedObjectContext, persistentStoreCoordinator=_persistentStoreCoordinator;
 
 
-#pragma mark -
-#pragma mark Application lifecycle
+#pragma mark - Application lifecycle
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application
 {
@@ -79,24 +73,20 @@
     rootViewController.managedObjectContext = self.managedObjectContext;
 }
 
-
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     [self saveContext];
 }
-
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
     [self saveContext];
 }
 
-
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
     [self saveContext];
 }
-
 
 - (void)saveContext
 {
@@ -115,8 +105,7 @@
 }
 
 
-#pragma mark -
-#pragma mark Core Data stack
+#pragma mark - Core Data stack
 
 /*
  Returns the managed object context for the application.
@@ -136,7 +125,6 @@
     return _managedObjectContext;
 }
 
-
 // Returns the managed object model for the application.
 // If the model doesn't already exist, it is created from the application's model.
 - (NSManagedObjectModel *)managedObjectModel
@@ -148,7 +136,6 @@
     _managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
     return _managedObjectModel;
 }
-
 
 /*
  Returns the persistent store coordinator for the application.
@@ -175,7 +162,7 @@
         }
     }
 
-    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption, [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, nil];
+    NSDictionary *options = @{NSMigratePersistentStoresAutomaticallyOption: @YES, NSInferMappingModelAutomaticallyOption: @YES};
     _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: [self managedObjectModel]];
 
     NSError *error;
@@ -211,14 +198,12 @@
 }
 
 
-#pragma mark -
-#pragma mark Application's documents directory
+#pragma mark - Application's documents directory
 
 // Returns the URL to the application's Documents directory.
 - (NSURL *)applicationDocumentsDirectory
 {
     return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
 }
-
 
 @end

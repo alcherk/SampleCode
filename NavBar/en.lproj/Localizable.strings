@@ -1,22 +1,18 @@
-"PageOneTitle" = "View 1";
-"PageOneExplain" = "Custom Right View";
 
-"PageTwoTitle" = "View 2";
-"PageTwoExplain" = "Custom Right View with Image";
+/* Main View Controller */
+"Choose a UIBarStyle:" = "Choose a UIBarStyle:";
+"Cancel" = "Cancel";
+"Default" = "Default";
+"Black Opaque" = "Black Opaque";
+"Black Translucent" = "Black Translucent";
 
-"PageThreeTitle" = "View 3";
-"PageThreeExplain" = "Custom Right View with Segment";
+/* CustomRightViewController */
+"AddTitle" = "AddTitle";
 
-"PageFourTitle" = "View 4";
-"PageFourExplain" = "Custom Title Bar";
+/* CustomTitleViewController */
+"Image" = "Image";
+"Text" = "Text";
+"Video" = "Video";
 
-"PageFiveTitle" = "View 5";
-"PageFiveExplain" = "Custom Title Bar with Prompt";
-
-"AddTitle" = "Add";
-"StyleTitle" = "Style";
-
-"DefaultTitle" = "Default";
-"BlackOpaqueTitle" = "Black-Op";
-"BlackTranslucentTitle" = "Black-Trans";
-"RedTitleTitle" = "Red";
+/* NavigationPromptViewController */
+"Navigation prompts appear at the top." = "Navigation prompts appear at the top.";

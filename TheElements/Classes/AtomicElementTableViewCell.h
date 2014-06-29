@@ -1,7 +1,7 @@
 /*
      File: AtomicElementTableViewCell.h
  Abstract: Draws the tableview cell and lays out the subviews.
-  Version: 1.11
+  Version: 1.12
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,24 +41,16 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
 
 #import <UIKit/UIKit.h>
 
 @class AtomicElement;
-@class AtomicElementTileView;
 
+@interface AtomicElementTableViewCell : UITableViewCell
 
-@interface AtomicElementTableViewCell : UITableViewCell {
-	AtomicElement *element;
-	AtomicElementTileView *elementTileView;
-	UILabel *labelView;
-}
- 
-@property (nonatomic,retain) AtomicElement *element;
-@property (nonatomic,retain) AtomicElementTileView *elementTileView;
-@property (nonatomic,retain) UILabel *labelView;
+@property (nonatomic,strong) AtomicElement *element;
 
 @end

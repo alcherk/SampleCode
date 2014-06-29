@@ -25,19 +25,21 @@ Audio Converter Services Reference
 ===========================================================================
 SPECIAL CONSIDERATIONS:
 
-AAC encoding using the Audio Converter requires iPhone OS 4.1 and a hardware capable device such
-as the iPhone 3GS. See IsAACHardwareEncoderAvailable function in MyViewController.m
+AAC encoding using the Audio Converter requires iOS 4.1 and a hardware capable device such
+as the iPhone 3GS or newer.
+
+IPhone 5s does not have a hardware encoder and only one encoder will show up.
 
 ===========================================================================
 BUILD REQUIREMENTS:
 
-Mac OS X v10.5.8, Xcode 3.1.4, iPhone OS 4.1
+Mac OS X v10.9.x Xcode 5.0.2+, iOS 7.0.4
 
 ===========================================================================
 RUNTIME REQUIREMENTS:
 
-Simulator: Mac OS X v10.6.5
-iPhone: iPhone OS 4.1
+Simulator: Mac OS X v10.9.x
+iPhone: iOS 7.0.4
 
 ===========================================================================
 PACKAGING LIST:
@@ -68,6 +70,8 @@ supported file type or encoding format and present these choices however they wi
 CHANGES FROM PREVIOUS VERSIONS:
 
 Version 1.0, tested with iPhone OS 4.1 First public release.
+Version 1.0.2, tested with iOS 6.1 Minor Update for 6.1 SDK.
+Version 1.0.3, updated to support iPhone 5s and software AAC encode with iOS 7.
 
 ================================================================================
-Copyright (C) 2010 Apple Inc. All rights reserved.
+Copyright (C) 2010-2014 Apple Inc. All rights reserved.

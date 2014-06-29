@@ -1,7 +1,7 @@
 /*
      File: TapView.m
  Abstract: UIView subclass that can highlight itself when locally or remotely tapped.
-  Version: 1.8
+  Version: 2.0
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,68 +41,141 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
 
-#import "AppController.h"
+#import "TapView.h"
 
-#define kActivationInset 10
+static const CGFloat kActivationInset = 10.0f;
+
+@interface TapView ()
+
+@property (nonatomic, assign, readwrite) BOOL   localTouch;
+
+@end
 
 @implementation TapView
 
-- (void) touchDown:(BOOL)remote
+- (id)initWithCoder:(NSCoder *)aDecoder
 {
-	// set "tap down" visual state if necessary
-	if(!localTouch && !remoteTouch)
-		self.frame=CGRectInset(self.frame, kActivationInset, kActivationInset);
-	
-	if (remote)
-		remoteTouch = YES;
-	else
-		localTouch = YES;
+    self = [super initWithCoder:aDecoder];
+    if (self != nil) {
+        [self commonInit];
+    }
+    return self;
 }
 
-- (void) touchUp:(BOOL)remote
+- (id)initWithFrame:(CGRect)frame
 {
-	BOOL wasDown = localTouch || remoteTouch;
-	
-	if (remote)
-		remoteTouch = NO;
-	else
-		localTouch = NO;
-	
-	BOOL isDown = localTouch || remoteTouch;
-
-	// run "tap up" visual animation if necessary
-	if(wasDown != isDown) {
-		[UIView beginAnimations:nil context:NULL];
-		[UIView setAnimationDuration:0.1];
-		self.frame = CGRectInset(self.frame, -kActivationInset, -kActivationInset);
-		[UIView commitAnimations];
-	}
+    self = [super initWithFrame:frame];
+    if (self != nil) {
+        [self commonInit];
+    }
+    return self;
 }
 
-- (void) localTouchUp
+- (void)commonInit
 {
-	[self touchUp:NO];
-	[(AppController*)[[UIApplication sharedApplication] delegate] deactivateView:self];
+    assert( ! self.isMultipleTouchEnabled );
+    // Observe ourself to learn about someone changing the remoteTouch property.
+    [self addObserver:self forKeyPath:@"remoteTouch" options:0 context:&self->_remoteTouch];
 }
 
-- (void) touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event
+- (void)dealloc
 {
-	[self touchDown:NO];
-	[(AppController*)[[UIApplication sharedApplication] delegate] activateView:self];
+    [self removeObserver:self forKeyPath:@"remoteTouch" context:&self->_remoteTouch];
 }
 
-- (void) touchesEnded:(NSSet*)touches withEvent:(UIEvent*)event
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-	[self localTouchUp];
+    if (context == &self->_remoteTouch) {
+        // If the remoteTouch property changes, redraw.
+        [self setNeedsDisplay];
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+}
+
+- (void)drawRect:(CGRect)rect
+{
+    #pragma unused(rect)
+    CGRect  bounds;
+    
+    bounds = self.bounds;
+    
+    // Fill with our background color.
+    
+    [self.backgroundColor setFill];
+    UIRectFill(bounds);
+
+    // If there's a touch, draw our highlight.
+    
+    if (self.localTouch || self.remoteTouch) {
+        UIBezierPath *  p;
+        
+        [[UIColor darkGrayColor] setStroke];
+
+        p = [UIBezierPath bezierPathWithRect:CGRectInset(bounds, kActivationInset / 2.0f, kActivationInset / 2.0f)];
+        p.lineWidth = kActivationInset;
+        [p stroke];
+    }
+}
+
+- (void)resetTouches
+    // See comment in header.
+{
+    [self localTouchUpNotify:NO];
+    if (self.remoteTouch) {
+        self.remoteTouch = NO;
+    }
+}
+
+#pragma mark - Touch tracking
+
+- (void)localTouchDown
+{
+    if ( ! self.localTouch ) {
+        self.localTouch = YES;
+        [self setNeedsDisplay];
+        if ([self.delegate respondsToSelector:@selector(tapViewLocalTouchDown:)]) {
+            [self.delegate tapViewLocalTouchDown:self];
+        }
+    }
+}
+
+- (void)localTouchUpNotify:(BOOL)notify
+{
+    if ( self.localTouch ) {
+        self.localTouch = NO;
+        [self setNeedsDisplay];
+        if (notify) {
+            if ([self.delegate respondsToSelector:@selector(tapViewLocalTouchUp:)]) {
+                [self.delegate tapViewLocalTouchUp:self];
+            }
+        }
+    }
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    #pragma unused(touches)
+    #pragma unused(event)
+    [self localTouchDown];
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    #pragma unused(touches)
+    #pragma unused(event)
+    [self localTouchUpNotify:YES];
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
 {
-	[self localTouchUp];
+    #pragma unused(touches)
+    #pragma unused(event)
+    [self localTouchUpNotify:YES];
 }
 
 @end

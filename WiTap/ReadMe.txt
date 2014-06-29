@@ -1,61 +1,81 @@
 WiTap
 
-================================================================================
+===========================================================================
 DESCRIPTION:
 
 The WiTap sample application demonstrates how to achieve network communication between applications. Using Bonjour, the application both advertises itself on the local network and displays a list of other instances of this application on the network.
 
 Simply build the sample using Xcode and run it in the simulator or on the device. Wait for another player to connect or select a game to connect to. Once connected, tap one or more colored pads on a device to see them highlighted simultaneously on the remote device.
 
-This sample also demonstrates peer to peer connectivity over Bluetooth, available in iOS 3.0 and later on supported hardware: Bonjour will automatically advertise and discover instances of this application over Bluetooth, and when an instance is resolved, Bonjour will automatically use Bluetooth to connect the two applications.
+The version of WiTap no longer works over Bluetooth; see QA1753 "Bonjour over Bluetooth on iOS 5.0" for a discussion of why that's the case and what you can do about it.
 
-Checking for the presence of networking is beyond the scope of this sample.
+<https://developer.apple.com/library/ios/#qa/qa1753/_index.html>
 
 ===========================================================================
 BUILD REQUIREMENTS:
 
-Mac OS X 10.6.4, iOS 4.1 SDK
+Mac OS X 10.8.2, Xcode 4.6.1, iOS 6.1 SDK
 
 ===========================================================================
 RUNTIME REQUIREMENTS:
 
-iOS 3.1.3 or later
+iOS 6.0 or later
 
 ===========================================================================
-PACKAGING LIST:
+PACKING LIST:
+
+ReadMe.txt
+This document.
+
+WiTap.xcodeproj
+An Xcode project for the sample.
+
+Info.plist
+Icons
+Default Images
+Various boilerplate resources.
 
 AppController.h
 AppController.m
 UIApplication's delegate class, the central controller of the application.
 
+TapViewController.h
+TapViewController.m
+The main view controller for the app.
+
 TapView.h
 TapView.m
 UIView subclass that can highlight itself when locally or remotely tapped.
 
-Picker.h
-Picker.m
-A view that displays both the currently advertised game name and a list of other games
-available on the local network (discovered & displayed by BrowserViewController).
+PickerViewController.h
+PickerViewController.m
+A view controller that displays both the currently advertised game name and a list of other games available on the local network.
 
-Networking/TCPServer.h
-Networking/TCPServer.m
-A TCP server that listens on an arbitrary port.
+PickerExtras.xib
+PickerHeaderBackground.png
+Some user interface bits and bobs for the PickerViewController.
 
-Networking/BrowserViewController.h
-Networking/BrowserViewController.m
-View controller for the service instance list.
-This object manages a NSNetServiceBrowser configured to look for Bonjour services.
-It has an array of NSNetService objects that are displayed in a table view.
-When the service browser reports that it has discovered a service, the corresponding NSNetService is added to the array.
-When a service goes away, the corresponding NSNetService is removed from the array.
-Selecting an item in the table view asynchronously resolves the corresponding net service.
-When that resolution completes, the delegate is called with the corresponding net service.
+Networking/QServer.m
+Networking/QServer.m
+A general-purpose TCP server class.
 
 main.m
 The main file for the WiTap application.
 
 ===========================================================================
 CHANGES FROM PREVIOUS VERSIONS:
+
+Version 2.0
+- A major rewrite.
+- Updated to the latest coding techniques and standards.
+- Adopted QServer to replace the ancient TCPServer.
+- Changed the on-the-wire protocol to allow easy testing via telnet.
+- Implement an 'end game' button to allow for easier testing.
+- Support rotation in all view controllers.
+- Fully adopted view controllers (the previous code came from a time when dinosaurs ruled the Earth and view controllers weren't de rigueur, and thus parts of the app used view controllers and parts didn't).
+- Basic multitasking support.
+- Keep the TCP server running to avoid port creep.
+- Fixed down numerous sharp edge cases.
 
 Version 1.8
 - Upgraded project to build with the iOS 4.1 SDK
@@ -84,4 +104,4 @@ Version 1.3
 Version 1.2
 - Added icon.
 
-Copyright (C) 2008-2010 Apple Inc. All rights reserved.
+Copyright (C) 2008-2013 Apple Inc. All rights reserved.

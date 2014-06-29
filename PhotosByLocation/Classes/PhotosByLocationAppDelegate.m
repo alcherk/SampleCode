@@ -1,7 +1,7 @@
 /*
      File: PhotosByLocationAppDelegate.m 
  Abstract: n/a 
-  Version: 1.1 
+  Version: 1.2 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -61,9 +61,8 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
     
     // Override point for customization after application launch.
-    
-    // Add the navigation controller's view to the window and display.
-    [window addSubview:navigationController.view];
+
+    self.window.rootViewController = navigationController;
     [window makeKeyAndVisible];
 
     return YES;

@@ -1,7 +1,8 @@
 /*
      File: LaunchMeAppDelegate.m
- Abstract: 
-  Version: 1.6
+ Abstract: The application's delegate class.  Handles incoming 
+ URL requests.
+  Version: 1.7
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,98 +42,133 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
 
 #import "LaunchMeAppDelegate.h"
+#import "RootViewController.h"
 
 @implementation LaunchMeAppDelegate
 
-@synthesize window;
-@synthesize usageAlertView;
-@synthesize showUsageAlert;
-
-- (void)applicationDidFinishLaunching:(UIApplication *)application {	
-	// Override point for customization after app launch
-    
-    // Schedule -showUsageAlertDialog on the next cycle of the event loop to give the 
-    // application:handleOpenURL: delegate method an opportunity to handle an incoming URL.
-    // If that delegate method is called, it sets the showUsageAlert to NO, which prevents
-    // the usage dialog from being shown.
-    showUsageAlert = YES;
-    [self performSelector:@selector(showUsageAlertDialog) withObject:nil afterDelay:0.0];
-}
-
-- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
-{   
-    showUsageAlert = NO;
-        
+// -------------------------------------------------------------------------------
+//	application:openURL:sourceApplication:annotation:
+// -------------------------------------------------------------------------------
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+{    
     // You should be extremely careful when handling URL requests.
-    // You must take steps to validate the URL before handling it.
+    // Take steps to validate the URL before handling it.
     
-    if (!url) {
-        // The URL is nil. There's nothing more to do.
+    // Check if the incoming URL is nil.
+    if (!url)
         return NO;
-    }
     
-    NSString *URLString = [url absoluteString];
-    
-    NSString *message = [NSString stringWithFormat:@"The application received a request to open this URL: %@. Be careful when servicing handleOpenURL requests!", URLString];
-    
-    UIAlertView *openURLAlert = [[UIAlertView alloc] initWithTitle:@"handleOpenURL:" message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-    [openURLAlert show];
-    [openURLAlert release];
-    
-    if (!URLString) {
-        // The URL's absoluteString is nil. There's nothing more to do.
+    // Invoke our helper method to parse the incoming URL and extact the color
+    // to display.
+    UIColor *launchColor = [self extractColorFromLaunchURL:url];
+    // Stop if the url could not be parsed.
+    if (!launchColor)
         return NO;
-    }
     
-    // Your application is defining the new URL type, so you should know the maximum character
-    // count of the URL. Anything longer than what you expect is likely to be dangerous.
-    NSInteger maximumExpectedLength = 50;
+    // Assign the created color object a the selected color for display in
+    // RootViewController.
+    [(RootViewController*)self.window.rootViewController setSelectedColor:launchColor];
     
-    if ([URLString length] > maximumExpectedLength) {
-        // The URL is longer than we expect. Stop servicing it.
-        return NO;
-    }
-
+    // Update the UI of RootViewController to notify the user that the app was launched
+    // from an incoming URL request.
+    [[(RootViewController*)self.window.rootViewController urlFieldHeader] setText:@"The app was launched with the following URL"];
+    
     return YES;
 }
 
-- (void)showUsageAlertDialog
+// -------------------------------------------------------------------------------
+//	extractColorFromLaunchURL:
+//  Helper method that parses a URL and returns a UIColor object representing
+//  the first HTML color code it finds or nil if a valid color code is not found.
+//  This logic is specific to this sample.  Your URL handling code will differ.
+// -------------------------------------------------------------------------------
+- (UIColor*)extractColorFromLaunchURL:(NSURL*)url
 {
-    if (showUsageAlert) {
-        NSString *message = @"To demonstrate how this application handles a URL request for the new URL type that it registers, enter a URL in Safari that begins the with scheme of the URL type (launchme://) and press the Go button.";
-        self.usageAlertView = [[UIAlertView alloc] initWithTitle:@"Usage" message:message delegate:self cancelButtonTitle:@"Launch Safari" otherButtonTitles:nil];
-        [self.usageAlertView show];
+    // Hexadecimal color codes begin with a number sign (#) followed by six
+    // hexadecimal digits.  Thus, a color in this format is represented by
+    // three bytes (the number sign is ignored).  The value of each byte
+    // corresponds to the intensity of either the red, blue or green color
+    // components, in that order from left to right.
+    // Additionally, there is a shorthand notation with the number sign (#)
+    // followed by three hexadecimal digits.  This notation is expanded to
+    // the six digit notation by doubling each digit: #123 becomes #112233.
+    
+    
+    // Convert the incoming URL into a string.  The '#' character will be percent
+    // escaped.  That must be undone.
+    NSString *urlString = [[url absoluteString] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    // Stop if the conversion failed.
+    if (!urlString)
+        return nil;
+    
+    // Create a regular expression to locate hexadecimal color codes in the
+    // incoming URL.
+    // Incoming URLs can be malicious.  It is best to use vetted technology,
+    // such as NSRegularExpression, to handle the parsing instead of writing
+    // your own parser.
+    NSError *error = nil;
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"#[0-9a-f]{3}([0-9a-f]{3})?"
+                                                                           options:NSRegularExpressionCaseInsensitive
+                                                                             error:&error];
+    
+    // Check for any error returned.  This can be a result of incorrect regex
+    // syntax.
+    if (error)
+    {
+        NSLog(@"%@", error);
+        return nil;
     }
-}
-
-- (void)dismissUsageAlert
-{
-    [self.usageAlertView dismissWithClickedButtonIndex:-1 animated:YES];
-}
-
-- (void)modalViewCancel:(UIAlertView *)alertView
-{
-    [alertView release];
-}
-
-- (void)modalView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex != -1) {
-        // Open Safari only if the user clicked the 'Launch Safari' button, but not if this
-        // delegate method is called by UIKit to cancel it. In that case, buttonIndex is -1.
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.apple.com"]];
+    
+    // Extract all the matches from the incoming URL string.  There must be at least
+    // one for the URL to be valid (though matches beyond the first are ignored.)
+    NSArray *regexMatches = [regex matchesInString:urlString options:0 range:NSMakeRange(0, urlString.length)];
+    if (regexMatches.count < 1)
+        return nil;
+    
+    // Extract the first matched string
+    NSString *matchedString = [urlString substringWithRange:[regexMatches[0] range]];
+    
+    // At this point matchedString will look similar to either #FFF or #FFFFFF.
+    // The regular expression has guaranteed that matchedString will be no longer
+    // than seven characters.
+    
+    // Extract an ASCII c string from matchedString.  The '#' character should not be
+    // included.
+    const char *matchedCString = [[matchedString substringFromIndex:1] cStringUsingEncoding:NSASCIIStringEncoding];
+    
+    // Convert matchedCString into an integer.
+    unsigned long hexColorCode = strtoul(matchedCString, NULL, 16);
+    
+    CGFloat red, green, blue;
+    
+    if (matchedString.length-1 > 3)
+    // If the color code is in six digit notation...
+    {
+        // Extract each color component from the integer representation of the
+        // color code.  Each component has a value of [0-255] which must be
+        // converted into a normalized float for consumption by UIColor.
+        red = ((hexColorCode & 0x00FF0000) >> 16) / 255.0f;
+        green = ((hexColorCode & 0x0000FF00) >> 8) / 255.0f;
+        blue = (hexColorCode & 0x000000FF) / 255.0f;
     }
-    [alertView release];
-}
-
-- (void)dealloc {
-	[window release];
-	[super dealloc];
+    else
+    // The color code is in shorthand notation...
+    {
+        // Extract each color component from the integer representation of the
+        // color code.  Each component has a value of [0-255] which must be
+        // converted into a normalized float for consumption by UIColor.
+        red = (((hexColorCode & 0x00000F00) >> 8) | ((hexColorCode & 0x00000F00) >> 4)) / 255.0f;
+        green = (((hexColorCode & 0x000000F0) >> 4) | (hexColorCode & 0x000000F0)) / 255.0f;
+        blue = ((hexColorCode & 0x0000000F) | ((hexColorCode & 0x0000000F) << 4)) / 255.0f;
+    }
+    
+    // Create and return a UIColor object with the extracted components.
+    return [UIColor colorWithRed:red green:green blue:blue alpha:1.0f];
 }
 
 @end

@@ -1,7 +1,7 @@
 /*
      File: RecipesController.m 
  Abstract: A controller object for managing a set of Recipe objects 
-  Version: 1.1 
+  Version: 1.2 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2011 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2014 Apple Inc. All Rights Reserved. 
   
  */ 
 
@@ -55,8 +55,9 @@ static NSString *DataFilename = @"Recipes.archive";
 @end
 
 @implementation RecipesController
-
-@synthesize recipes;
+{
+    NSMutableIndexSet *selectedIndexes;
+}
 
 /*
  Since this sample is intended to focus more on printing versus Core Data demonstration, see the
@@ -74,7 +75,7 @@ static NSString *DataFilename = @"Recipes.archive";
 
 			NSFileManager *fm = [NSFileManager defaultManager];
 			if (/*0 && */[fm fileExistsAtPath:appFile]) {
-				recipes = [[NSKeyedUnarchiver unarchiveObjectWithFile:appFile] retain];
+				_recipes = [NSKeyedUnarchiver unarchiveObjectWithFile:appFile];
 			} else {		
 				[self createDemoData];
 			}
@@ -87,15 +88,15 @@ static NSString *DataFilename = @"Recipes.archive";
 }
 
 - (void)sortAlphabeticallyAscending:(BOOL)ascending {    
-    NSSortDescriptor *sortInfo = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:ascending] autorelease];
-    [recipes sortUsingDescriptors:[NSArray arrayWithObject:sortInfo]];
+    NSSortDescriptor *sortInfo = [[NSSortDescriptor alloc] initWithKey:@"name" ascending:ascending];
+    [self.recipes sortUsingDescriptors:[NSArray arrayWithObject:sortInfo]];
 }
 
 /*
  Create the recipe objects and initialize them from the Recipes.plist file on the app bundle
  */
 - (void)createDemoData {
-	recipes = [[NSMutableArray alloc] init];
+	_recipes = [[NSMutableArray alloc] init];
 	NSArray *recipeDictionaries = [[NSArray alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Recipes" ofType:@"plist"]];
 	
 	NSArray *propertyNames = [[NSArray alloc] initWithObjects:@"name", @"description", @"prepTime", @"instructions", @"ingredients", nil];
@@ -113,24 +114,17 @@ static NSString *DataFilename = @"Recipes.archive";
 		imageName = [[imageName stringByDeletingPathExtension] stringByAppendingString:@"_thumbnail.png"];
 		newRecipe.thumbnailImage = [UIImage imageNamed:imageName];
 
-		[recipes addObject:newRecipe];
-		[newRecipe release];
+		[_recipes addObject:newRecipe];
 	}
-    [recipeDictionaries release];
-    [propertyNames release];
 }
 
 - (unsigned)countOfRecipes {
-    return [recipes count];
+    return [_recipes count];
 }
 
 - (id)objectInRecipesAtIndex:(unsigned)theIndex {
-    return [recipes objectAtIndex:theIndex];
+    return [_recipes objectAtIndex:theIndex];
 }
 
-- (void)dealloc {
-	[recipes release];
-	[super dealloc];
-}
 
 @end

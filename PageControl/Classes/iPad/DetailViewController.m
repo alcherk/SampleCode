@@ -1,7 +1,7 @@
 /*
      File: DetailViewController.m 
  Abstract: A view controller used for displaying a grid of Tile views for the iPad. 
-  Version: 1.4 
+  Version: 1.5 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,44 +41,53 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2010 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
  */
 
 #import "DetailViewController.h"
 #import "DetailPopoverViewController.h"
+#import "PadContentController.h"
+#import "Tile.h"
 
+#define TILE_ROWS    2
+#define TILE_COLUMNS 3
+#define TILE_COUNT   (TILE_ROWS * TILE_COLUMNS)
 
 #define TILE_WIDTH  225
 #define TILE_HEIGHT 320
 #define TILE_MARGIN 23
 
+
 @interface DetailViewController ()
-- (void)createTiles;
+{
+    CGRect savedPopoverRect;
+    
+    CGRect tileFrame[TILE_COUNT];
+    Tile *tileForFrame[TILE_COUNT];
+}
+
+@property (nonatomic, strong) IBOutlet UINavigationBar *navBar;
+
+@property (nonatomic, strong) UIPopoverController *thePopoverController;
+@property (nonatomic, strong) DetailPopoverViewController *popoverViewController;
+
 @end
+
 
 @implementation DetailViewController
 
-@synthesize navBar, popoverController, popoverViewController, contentList;
-
-
-#pragma mark -
-#pragma mark View lifecycle
+#pragma mark - View lifecycle
 
 // implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad
 {
-    self.view.backgroundColor = [UIColor colorWithRed:197.0/255.0
-                                                green:204.0/255.0
-                                                 blue:211.0/255.0
-                                                alpha:1.0];
-    
     [super viewDidLoad];
     
-    self.popoverViewController = [[[DetailPopoverViewController alloc]
-                                   initWithNibName:@"DetailPopoverViewController" bundle:nil] autorelease];
+    self.popoverViewController = [[DetailPopoverViewController alloc]
+                                  initWithNibName:@"DetailPopoverViewController" bundle:nil];
     
-	self.popoverController.popoverContentSize = [self.popoverViewController.view
+	self.thePopoverController.popoverContentSize = [self.popoverViewController.view
 													sizeThatFits:CGSizeMake(512.0, 618.0)];
 	
 	[self createTiles];
@@ -93,32 +102,20 @@
 	[super viewDidUnload];
 }
 
-- (void)dealloc
-{
-    [navBar release];
-    [contentList release];
-    
-    [popoverController release];
-    [popoverViewController release];
-    
-    [super dealloc];
-}
 
-
-#pragma mark -
-#pragma mark Tile support
+#pragma mark - Tile support
 
 // creates the grid of page views each containing the individual number content
 - (void)createTiles
 {
-	for (int row = 0; row < TILE_ROWS; ++row)
+	for (NSInteger row = 0; row < TILE_ROWS; ++row)
     {
-        for (int col = 0; col < TILE_COLUMNS; ++col)
+        for (NSInteger col = 0; col < TILE_COLUMNS; ++col)
         {
-            int index = (row * TILE_COLUMNS) + col;
+            NSInteger index = (row * TILE_COLUMNS) + col;
             
             CGRect frame = CGRectMake(TILE_MARGIN + col * (TILE_MARGIN + TILE_WIDTH),
-                                      TILE_MARGIN + row * (TILE_MARGIN + TILE_HEIGHT) + navBar.frame.size.height,
+                                      TILE_MARGIN + row * (TILE_MARGIN + TILE_HEIGHT) + self.navBar.frame.size.height,
                                       TILE_WIDTH, TILE_HEIGHT);
             tileFrame[index] = frame;
             
@@ -131,11 +128,9 @@
 			UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction:)];
 			tapGesture.numberOfTapsRequired = 1;
 			tapGesture.numberOfTouchesRequired = 1;
-			[tile addGestureRecognizer:tapGesture]; 
-			[tapGesture release];
+			[tile addGestureRecognizer:tapGesture];
 			
             [self.view addSubview:tile];
-            [tile release];
         }
     }
 }
@@ -150,65 +145,68 @@
 	self.popoverViewController.numberLabel.text = [numberItem valueForKey:NameKey];
 	self.popoverViewController.numberDetail.text = [numberItem valueForKey:TranslationsKey];
 	
-	if (self.popoverController)
+	if (self.thePopoverController)
 	{
 		// dismiss the popover before releasing it
-		[self.popoverController dismissPopoverAnimated:YES];
+		[self.thePopoverController dismissPopoverAnimated:YES];
 	}
-			
+    
 	// create and present popover
 	UIPopoverController *aPopoverController = [[UIPopoverController alloc] initWithContentViewController:self.popoverViewController];
-	self.popoverController = aPopoverController;
-	self.popoverController.delegate = self;
-	self.popoverController.popoverContentSize = self.popoverViewController.view.bounds.size;
+	self.thePopoverController = aPopoverController;
+	self.thePopoverController.delegate = self;
+	self.thePopoverController.popoverContentSize = self.popoverViewController.view.bounds.size;
 	
 	// setup the frame in which the popover can be presented slightly smaller its view frame
 	CGRect rect = gestureRecognizer.view.frame;
 	CGRect finalRect = CGRectInset(rect, 80.0, 80.0);
 	
 	savedPopoverRect = finalRect;
-	[self.popoverController presentPopoverFromRect:finalRect
-											inView:self.view
-						  permittedArrowDirections:UIPopoverArrowDirectionAny
-										  animated:YES];
-	[aPopoverController release];
+	[self.thePopoverController presentPopoverFromRect:finalRect
+                                               inView:self.view
+                             permittedArrowDirections:UIPopoverArrowDirectionAny
+                                             animated:YES];
 }
 
 
-#pragma mark -
-#pragma mark Rotation support
+#pragma mark - Rotation support
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{
+    if (self.thePopoverController.popoverVisible)
+		[self.thePopoverController dismissPopoverAnimated:YES];	// as we rotate, dismiss the current popover
+}
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
-	if (self.popoverController)
+	if (self.thePopoverController)
 	{
 		// we finished rotating, if a popover is allocated, show it again in the new orientation
-		[self.popoverController presentPopoverFromRect:savedPopoverRect
-												inView:self.view
-							  permittedArrowDirections:UIPopoverArrowDirectionAny
-											  animated:YES];
+		[self.thePopoverController presentPopoverFromRect:savedPopoverRect
+                                                   inView:self.view
+                                 permittedArrowDirections:UIPopoverArrowDirectionAny
+                                                 animated:YES];
 	}
 }
 
-// Ensure that the view controller supports rotation and that the split view can therefore show in
-// both portrait and landscape.
+// rotation support for iOS 5.x and earlier, note for iOS 6.0 and later this will not be called
 //
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-    if (self.popoverController.popoverVisible)
-		[self.popoverController dismissPopoverAnimated:YES];	// as we rotate, dismiss the current popover
-    
-	return YES;
+    // Ensure that the view controller supports rotation and that the split view can therefore show in
+    // both portrait and landscape.
+    //
+    return YES;
 }
+#endif
 
-
-#pragma mark -
-#pragma mark UIPopoverControllerDelegate
+#pragma mark - UIPopoverControllerDelegate
 
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
 {
 	// the user dismissed the popover, so release it here
-	self.popoverController = nil;
+	self.thePopoverController = nil;
 }
 
 @end

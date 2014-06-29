@@ -1,8 +1,8 @@
 /*
      File: GeocoderDemoAppDelegate.m 
- Abstract: This this sample's application delegate.
+ Abstract: The sample's application delegate.
   
-  Version: 1.2 
+  Version: 1.3 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -42,7 +42,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2012 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
  */
 
@@ -52,16 +52,7 @@
 #import "ReverseViewController.h"
 #import "DistanceViewController.h"
 
-@interface GeocoderDemoAppDelegate ()
-
-@property (nonatomic, strong) UITabBarController *tabBarController;
-
-@end
-
 @implementation GeocoderDemoAppDelegate
-
-@synthesize window = _window;
-@synthesize tabBarController = _tabBarController;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -69,23 +60,30 @@
  
     UIViewController *viewController1, *viewController2, *viewController3;
     
-    viewController1 = [[[ForwardViewController alloc]
-                        initWithNibName:@"ForwardViewController" bundle:nil] autorelease];
-    UINavigationController *navController1 = [[[UINavigationController alloc]
-                                               initWithRootViewController:viewController1] autorelease];
+    viewController1 = [[ForwardViewController alloc]
+                        initWithNibName:@"ForwardViewController" bundle:nil];
+    viewController1.title = @"Forward";
+    viewController1.tabBarItem.image = [UIImage imageNamed:@"forward"];
+    UINavigationController *navController1 = [[UINavigationController alloc]
+                                               initWithRootViewController:viewController1];
     
-    viewController2 = [[[ReverseViewController alloc]
-                        initWithNibName:@"ReverseViewController" bundle:nil] autorelease];
-    UINavigationController *navController2 = [[[UINavigationController alloc]
-                                               initWithRootViewController:viewController2] autorelease];
+    viewController2 = [[ReverseViewController alloc]
+                        initWithNibName:@"ReverseViewController" bundle:nil];
+    viewController2.title = @"Reverse";
+    viewController2.tabBarItem.image = [UIImage imageNamed:@"reverse"];
+    UINavigationController *navController2 = [[UINavigationController alloc]
+                                               initWithRootViewController:viewController2];
     
-    viewController3 = [[[DistanceViewController alloc] initWithNibName:@"DistanceViewController" bundle:nil] autorelease];
-    UINavigationController *navController3 = [[[UINavigationController alloc]
-                                               initWithRootViewController:viewController3] autorelease];
+    viewController3 = [[DistanceViewController alloc]
+                       initWithNibName:@"DistanceViewController" bundle:nil];
+    viewController3.title = @"Distance";
+    viewController3.tabBarItem.image = [UIImage imageNamed:@"distance"];
+    UINavigationController *navController3 = [[UINavigationController alloc]
+                                               initWithRootViewController:viewController3];
     
-    _tabBarController = [[UITabBarController alloc] init];
-    self.tabBarController.viewControllers = [NSArray arrayWithObjects:navController1, navController2, navController3, nil];
-    self.window.rootViewController = self.tabBarController;
+    UITabBarController *tabBarController = [[UITabBarController alloc] init];
+    tabBarController.viewControllers = @[navController1, navController2, navController3];
+    self.window.rootViewController = tabBarController;
     [self.window makeKeyAndVisible];
     
     return YES;
@@ -129,19 +127,5 @@
      See also applicationDidEnterBackground:.
      */
 }
-
-/*
-// Optional UITabBarControllerDelegate method.
-- (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController
-{
-}
-*/
-
-/*
-// Optional UITabBarControllerDelegate method.
-- (void)tabBarController:(UITabBarController *)tabBarController didEndCustomizingViewControllers:(NSArray *)viewControllers changed:(BOOL)changed
-{
-}
-*/
 
 @end

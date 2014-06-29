@@ -1,9 +1,8 @@
 /*
      File: GroupViewController.m
- Abstract: Adds, displays, and removes group records. Uses
- AddGroupDelegate to retrieve the typed group name.
- 
-  Version: 1.0
+ Abstract: Prompts a user for access to their address book data, then updates its UI according to their response.
+ Adds, displays, and removes group records from Contacts.
+  Version: 1.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -43,15 +42,105 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2011 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
 */
 
+#import "AddGroupViewController.h"
 #import "GroupViewController.h"
 #import "MySource.h"
 
+@interface GroupViewController ()
+@property (nonatomic, assign) ABAddressBookRef addressBook;
+@property (nonatomic, strong) NSMutableArray *sourcesAndGroups;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *addButton;
+
+@end
+
 @implementation GroupViewController
-@synthesize sourcesAndGroups;
+
+#pragma mark -
+#pragma mark View lifecycle
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    // Create an address book object
+	_addressBook = ABAddressBookCreateWithOptions(NULL, NULL);
+    
+    //Display all groups available in the Address Book
+	self.sourcesAndGroups = [[NSMutableArray alloc] initWithCapacity:0];
+    
+    // Check whether we are authorized to access the user's address book data
+    [self checkAddressBookAccess];
+}
+
+
+#pragma mark -
+#pragma mark Address Book Access
+
+// Check the authorization status of our application for Address Book
+-(void)checkAddressBookAccess
+{
+    switch (ABAddressBookGetAuthorizationStatus())
+    {
+        // Update our UI if the user has granted access to their Contacts 
+        case  kABAuthorizationStatusAuthorized:
+              [self accessGrantedForAddressBook];
+              break;
+        // Prompt the user for access to Contacts if there is no definitive answer
+        case  kABAuthorizationStatusNotDetermined :
+              [self requestAddressBookAccess];
+              break;
+        // Display a message if the user has denied or restricted access to Contacts
+        case  kABAuthorizationStatusDenied:
+        case  kABAuthorizationStatusRestricted:
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Privacy Warning"
+                                                            message:@"Permission was not granted for Contacts."
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles: nil];
+            [alert show];
+        }
+            break;
+        default:
+            break;
+    }
+}
+
+
+// Prompt the user for access to their Address Book data
+-(void)requestAddressBookAccess
+{
+    GroupViewController * __weak weakSelf = self;
+    
+    ABAddressBookRequestAccessWithCompletion(self.addressBook, ^(bool granted, CFErrorRef error)
+    {
+        if (granted)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+              [weakSelf accessGrantedForAddressBook];
+                                                         
+            });
+        }
+    });
+}
+
+
+// This method is called when the user has granted access to their address book data.
+-(void)accessGrantedForAddressBook
+{
+    // Enable the Add button
+    self.addButton.enabled = YES;
+    // Add the Edit button
+    self.navigationItem.leftBarButtonItem = self.editButtonItem;
+        
+    // Fetch all groups available in address book
+    self.sourcesAndGroups = [self fetchGroupsInAddressBook:self.addressBook];
+    [self.tableView reloadData];
+}
 
 
 #pragma mark -
@@ -93,164 +182,110 @@
 // Return the name of a given group
 - (NSString *)nameForGroup:(ABRecordRef)group
 {
-	CFStringRef name = ABRecordCopyCompositeName(group);
-	return [(NSString *)name autorelease];
+    return (NSString *)CFBridgingRelease(ABRecordCopyCompositeName(group));
 }
 
 
 // Return the name of a given source
 - (NSString *)nameForSource:(ABRecordRef)source
 {
-	// Fetch the source type
+	// Fetch the source type 
 	CFNumberRef sourceType = ABRecordCopyValue(source, kABSourceTypeProperty);
 	
-	// Fetch the name associated with the source type
-	NSString *sourceName = [self nameForSourceWithIdentifier:[(NSNumber*)sourceType intValue]];
-	CFRelease(sourceType);
-	return sourceName;
+	// Fetch and return the name associated with the source type
+	return [self nameForSourceWithIdentifier:[(NSNumber*)CFBridgingRelease(sourceType) intValue]];
 }
 
 
 #pragma mark -
-#pragma mark Display New Group view controller
+#pragma mark Manage Address Book contacts
 
-// Display the New Group view controller
-- (void)showAddGroupViewController
+// Create and add a new group to the address book database
+-(void)addGroup:(NSString *)name fromAddressBook:(ABAddressBookRef)myAddressBook
 {
-	AddGroupViewController *anotherViewController = [[AddGroupViewController alloc] init];
-	anotherViewController.delegate = self;
-	[self presentModalViewController:anotherViewController animated:YES];
-	[anotherViewController release];
+    BOOL sourceFound = NO;
+    if ([name length] != 0)
+    {
+        ABRecordRef newGroup = ABGroupCreate();
+        CFStringRef newName = CFBridgingRetain(name);
+        ABRecordSetValue(newGroup,kABGroupNameProperty,newName,NULL);
+        
+        // Add the new group 
+		ABAddressBookAddRecord(myAddressBook,newGroup, NULL);
+		ABAddressBookSave(myAddressBook, NULL);
+        CFRelease(newName);
+        
+        // Get the ABSource object that contains this new group
+		ABRecordRef groupSource = ABGroupCopySource(newGroup);
+		// Fetch the source name
+		NSString *sourceName = [self nameForSource:groupSource];
+        CFRelease(groupSource);
+        
+        // Look for the above source among the sources in sourcesAndGroups
+        for (MySource *source in self.sourcesAndGroups)
+        {
+            if ([source.name isEqualToString:sourceName])
+            {
+                // Associate the new group with the found source
+                [source.groups addObject:CFBridgingRelease(newGroup)];
+                // Set sourceFound to YES if sourcesAndGroups already contains this source
+                sourceFound = YES;
+            }
+        }
+        // Add this source to sourcesAndGroups
+		if (!sourceFound)
+		{
+			NSMutableArray *mutableArray = [[NSMutableArray alloc] initWithObjects:CFBridgingRelease(newGroup), nil];
+			MySource *newSource = [[MySource alloc] initWithAllGroups:mutableArray name:sourceName];
+		    [self.sourcesAndGroups addObject:newSource];
+		}
+    }
 }
 
 
 // Remove a group from the given address book
 - (void)deleteGroup:(ABRecordRef)group fromAddressBook:(ABAddressBookRef)myAddressBook
 {
-	CFErrorRef error = NULL;
-	ABAddressBookRemoveRecord(myAddressBook, group, &error);
-	ABAddressBookSave(myAddressBook,&error);
+	ABAddressBookRemoveRecord(myAddressBook, group, NULL);
+	ABAddressBookSave(myAddressBook, NULL);
 }
 
 
 // Return a list of groups organized by sources
 - (NSMutableArray *)fetchGroupsInAddressBook:(ABAddressBookRef)myAddressBook
 {
-	NSMutableArray *list = [NSMutableArray array];
-	
-	// Get all the sources from the address book
-	CFArrayRef allSources = ABAddressBookCopyArrayOfAllSources(myAddressBook);
-	
-	for (CFIndex i = 0; i < CFArrayGetCount(allSources); i++)
+    NSMutableArray *list = [[NSMutableArray alloc] initWithCapacity:0];
+    // Get all the sources from the address book
+	NSArray *allSources = (NSArray *)CFBridgingRelease(ABAddressBookCopyArrayOfAllSources(myAddressBook));
+    if ([allSources count] >0)
     {
-		ABRecordRef aSource = CFArrayGetValueAtIndex(allSources,i);
-		
-		// Fetch all groups included in the current source
-		CFArrayRef result = ABAddressBookCopyArrayOfAllGroupsInSource (myAddressBook, aSource);
-		
-		// The app displays a source if and only if it contains groups
-		if (CFArrayGetCount(result) > 0)
-		{
-			NSMutableArray *groups = [[NSMutableArray alloc] initWithArray:(NSArray *)result];
-			
-			// Fetch the source name
-			NSString *sourceName = [self nameForSource:aSource];
-			//Create a MySource object that contains the source name and all its groups
-			MySource *source = [[MySource alloc] initWithAllGroups:groups name:sourceName];
-			
-			// Save the source object into the array
-			[list addObject:source];
-			[source release];
-			[groups release];
-		}
-		
-		CFRelease(result);
+        for (id aSource in allSources)
+        {
+            ABRecordRef source = (ABRecordRef)CFBridgingRetain(aSource);
+            // Fetch all groups included in the current source
+            CFArrayRef result = ABAddressBookCopyArrayOfAllGroupsInSource (myAddressBook, source);
+            // The app displays a source if and only if it contains groups
+            if ((result) && (CFArrayGetCount(result) > 0))
+            {
+                NSMutableArray *groups = [(__bridge NSArray *)result mutableCopy];
+                // Fetch the source name
+                NSString *sourceName = [self nameForSource:source];
+                //Create a MySource object that contains the source name and all its groups
+                MySource *source = [[MySource alloc] initWithAllGroups:groups name:sourceName];
+                
+                // Save the source object into the array
+                [list addObject:source];
+            }
+            if (result)
+            {
+                CFRelease(result);
+            }
+            CFRelease(source);
+        }
     }
-	
-	CFRelease(allSources);
-    return list;	
+    
+    return list;
 }
-
-
-#pragma mark -
-#pragma mark AddGroup delegate method
-
--  (void)addViewController:(AddGroupViewController *)addGroupViewController 
-			   didAddGroup:(NSString *)name
-{
-	BOOL sourceFound = NO;
-	if ([name length] != 0)
-	{
-		
-		CFErrorRef error = NULL;
-		ABRecordRef newGroup = ABGroupCreate();
-		ABRecordSetValue(newGroup,kABGroupNameProperty,name,&error);
-		// Add the new group to the Address Book
-		ABAddressBookAddRecord(addressBook, newGroup, &error);
-		ABAddressBookSave(addressBook, &error);
-		
-		// Get the ABSource object that contains this new group
-		ABRecordRef groupSource = ABGroupCopySource (newGroup);
-		// Fetch the source name 
-		NSString *sourceName = [self nameForSource:groupSource];
-		CFRelease(groupSource);
-	
-		// Look for the above source among the sources in sourcesAndGroups
-		for (MySource *source in sourcesAndGroups)
-		{
-			if ([source.name compare:sourceName] == 0)
-			{
-				// Associate the new group with the found source
-				[source.groups addObject:(id)newGroup];
-			    // Set sourceFound to YES if sourcesAndGroups already contains this source
-				sourceFound = YES;
-			}
-		}
-		
-		// Add this source to sourcesAndGroups 
-		if (!sourceFound)
-		{
-			NSMutableArray *mutableArray = [[NSMutableArray alloc] initWithObjects:(id)newGroup, nil];
-			MySource *newSource = [[MySource alloc] initWithAllGroups:mutableArray name:sourceName];
-		    [self.sourcesAndGroups addObject:newSource];
-			
-			[newSource release];
-			[mutableArray release];
-		}
-		
-        [self.tableView reloadData];
-		
-		CFRelease(newGroup);
-	}
-	[self.navigationController dismissModalViewControllerAnimated:YES];
-}
-
-
-#pragma mark -
-#pragma mark View lifecycle
-
-- (void)viewDidLoad 
-{
-    [super viewDidLoad];
-    self.tableView.allowsSelection = NO;
-	
-	addressBook = ABAddressBookCreate();
-	CFRetain(addressBook);
-	
-	//Display all groups available in the Address Book
-	self.sourcesAndGroups = [self fetchGroupsInAddressBook:addressBook];
-
-	//Add an Edit button
-	self.navigationItem.leftBarButtonItem = self.editButtonItem;
-	
-	// Create an Add button 
-	UIBarButtonItem *addButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd 
-																				   target:self 
-																				   action:@selector(showAddGroupViewController)];
-	self.navigationItem.rightBarButtonItem = addButtonItem;
-	[addButtonItem release];	
-}
-
 
 #pragma mark -
 #pragma mark Table view data source
@@ -258,76 +293,69 @@
 // Customize the number of sections in the table view
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return [sourcesAndGroups count];
+    return [self.sourcesAndGroups count];
 }
 
 
 // Customize section header titles
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    return [[sourcesAndGroups objectAtIndex:section] name];
+    return [[self.sourcesAndGroups objectAtIndex:section] name];
 }
 
 
 // Customize the number of rows in the table view
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	return [[[sourcesAndGroups objectAtIndex:section] groups] count];	
+	return [[[self.sourcesAndGroups objectAtIndex:section] groups] count];
 }
 
 
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
-
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) 
-	{
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-		cell.accessoryType = UITableViewCellAccessoryNone;
-	}
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"groupCell" forIndexPath:indexPath];
 	
-	MySource *source = [sourcesAndGroups objectAtIndex:indexPath.section];
-	ABRecordRef group = [source.groups objectAtIndex:indexPath.row];
-	
+	MySource *source = [self.sourcesAndGroups objectAtIndex:indexPath.section];
+	ABRecordRef group = (ABRecordRef)CFBridgingRetain([source.groups objectAtIndex:indexPath.row]);
 	cell.textLabel.text = [self nameForGroup:group];
-		
+    CFRelease(group);
+    
     return cell;
- }
+}
 
 
 #pragma mark -
 #pragma mark Editing rows
 
-- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath 
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	return UITableViewCellEditingStyleDelete;
 }
 
 
-- (void)setEditing:(BOOL)editing animated:(BOOL)animated 
-{    
-    [super setEditing:editing animated:animated];	
-	//Disables the Add button while editing
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated
+{
+    [super setEditing:editing animated:animated];
+	//Disable the Add button while editing
 	self.navigationItem.rightBarButtonItem.enabled = !editing;
 }
 
 
 // Handle the deletion of a group
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath 
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete)
 	{
 		MySource *source = [self.sourcesAndGroups objectAtIndex:indexPath.section];
 		// group to be deleted
-		ABRecordRef group = [source.groups objectAtIndex:indexPath.row];
+		ABRecordRef group = (__bridge ABRecordRef)([source.groups objectAtIndex:indexPath.row]);
 		
 		// Remove the above group from its associated source
 		[source.groups removeObjectAtIndex:indexPath.row];
 		
 		// Remove the group from the address book
-		[self deleteGroup:group fromAddressBook:addressBook];
+		[self deleteGroup:group fromAddressBook:self.addressBook];
 		
 		// Update the table view
 		[tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
@@ -338,7 +366,8 @@
 			// Remove the source from sourcesAndGroups
 			[self.sourcesAndGroups removeObject:source];
 			
-			[tableView deleteSections: [NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationFade];
+			[tableView deleteSections: [NSIndexSet indexSetWithIndex:indexPath.section]
+                     withRowAnimation:UITableViewRowAnimationFade];
 		}
 	}
 }
@@ -347,26 +376,48 @@
 #pragma mark -
 #pragma mark Memory management
 
-- (void)didReceiveMemoryWarning 
+- (void)didReceiveMemoryWarning
 {
     // Release the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
 }
 
 
-- (void)viewDidUnload 
+#pragma mark -
+#pragma mark Get user input
+
+// This method is called when the user taps Done in the "Add Group" view.
+- (IBAction)done:(UIStoryboardSegue *)segue
 {
-	[super viewDidUnload];
-	CFRelease(addressBook);
-	self.sourcesAndGroups = nil;
+    if ([[segue identifier] isEqualToString:@"returnInput"])
+    {
+        AddGroupViewController *addGroupViewController = [segue sourceViewController];
+        if (addGroupViewController.group)
+        {
+            [self addGroup:addGroupViewController.group fromAddressBook:self.addressBook];
+            [[self tableView] reloadData];
+        }
+        [self dismissViewControllerAnimated:YES completion:NULL];
+    }
 }
 
 
-- (void)dealloc 
+// This method is called when the user taps Cancel in the "Add Group" view.
+- (IBAction)cancel:(UIStoryboardSegue *)segue
 {
-	CFRelease(addressBook); 
-	[sourcesAndGroups release];
-    [super dealloc];
+    if ([[segue identifier] isEqualToString:@"cancelInput"])
+    {
+        [self dismissViewControllerAnimated:YES completion:NULL];
+    }
+}
+
+
+- (void)dealloc
+{
+    if(_addressBook)
+    {
+        CFRelease(_addressBook);
+    }
 }
 
 @end

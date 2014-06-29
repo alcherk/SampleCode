@@ -1,7 +1,9 @@
 /*
      File: matrixUtil.c
- Abstract: Functions for performing matrix math.
-  Version: 1.0
+ Abstract: 
+ Functions for performing matrix math.
+ 
+  Version: 1.7
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,7 +43,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010~2011 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
  */
 
@@ -200,7 +202,7 @@ void mtxTranspose(float* mtx, const float* src)
 void mtxInvert(float* mtx, const float* src)
 {
 	float tmp[16];
-	float val, val2, val_inv, zero, one;
+	float val, val2, val_inv;
 	int i, j, i4, i8, i12, ind;
 	
 	mtxTranspose(tmp, src);
@@ -267,13 +269,13 @@ void mtxInvert(float* mtx, const float* src)
 			tmp[ind]  = val2;
 		}
 		
-		if(val == zero)
+		if(val == 0)
 		{
 			mtxLoadIdentity(mtx);
 			return;
 		}
 		
-		val_inv = one / val;
+		val_inv = 1.0f / val;
 		
 		tmp[i]   *= val_inv;
 		mtx[i]   *= val_inv;

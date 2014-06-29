@@ -1,7 +1,7 @@
 /*
      File: PadContentController.m 
  Abstract: Content controller used to manage the iPad user interface for this app. 
-  Version: 1.4 
+  Version: 1.5 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2010 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
  */
 
@@ -53,10 +53,7 @@ NSString *NameKey = @"nameKey";
 NSString *ImageKey = @"imageKey";
 NSString *TranslationsKey = @"translationsKey";
 
-
 @implementation PadContentController
-
-@synthesize detailViewController;
 
 - (void)awakeFromNib
 {
@@ -65,18 +62,9 @@ NSString *TranslationsKey = @"translationsKey";
     self.contentList = [NSArray arrayWithContentsOfFile:path];
     
     self.detailViewController.contentList = self.contentList;
-}
-
-- (void)dealloc
-{
-    [detailViewController release];
     
-    [super dealloc];
-}
-
-- (UIView *)view
-{
-    return self.detailViewController.view;
+    AppDelegate *appDelegate = [[UIApplication sharedApplication] delegate];
+    appDelegate.window.rootViewController = (UIViewController *)self.detailViewController;
 }
 
 @end

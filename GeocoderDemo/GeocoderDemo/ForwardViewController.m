@@ -2,7 +2,7 @@
      File: ForwardViewController.m 
  Abstract: View controller in charge of forward geocoding.
   
-  Version: 1.2 
+  Version: 1.3 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -42,7 +42,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2012 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
  */
 
@@ -64,11 +64,8 @@
 
 @property (readonly) CLLocationCoordinate2D selectedCoordinate;
 
-@property (readonly) UIActivityIndicatorView *spinner; // weak
-@property (readonly) UIActivityIndicatorView *currentLocationActivityIndicatorView; // weak
-
-- (IBAction)hintSwitchChanged:(id)sender;
-- (IBAction)radiusChanged:(id)sender;
+@property (weak, readonly) UIActivityIndicatorView *spinner;
+@property (weak, readonly) UIActivityIndicatorView *currentLocationActivityIndicatorView;
 
 @end
 
@@ -76,40 +73,6 @@
 #pragma mark -
 
 @implementation ForwardViewController
-
-@synthesize searchStringCell = _searchStringCell;
-@synthesize searchStringTextField = _searchStringTextField;
-
-@synthesize searchHintSwitch = _searchHintSwitch;
-
-@synthesize searchRadiusCell = _searchRadiusCell;
-@synthesize searchRadiusLabel = _searchRadiusLabel;
-@synthesize searchRadiusSlider = _searchRadiusSlider;
-
-@synthesize selectedCoordinate = _selectedCoordinate;
-
-@synthesize spinner = _spinner;
-@synthesize currentLocationActivityIndicatorView = _currentLocationActivityIndicatorView;
-
-@synthesize locationManager = _locationManager;
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self)
-    {
-        self.title = @"Forward";
-        self.tabBarItem.image = [UIImage imageNamed:@"forward"];
-    }
-    return self;
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-}
-
-#pragma mark - View lifecycle
 
 - (void)viewDidLoad
 {
@@ -136,12 +99,14 @@
                                             @"1398 Haight Street", kABPersonAddressStreetKey,
                                             @"94117", kABPersonAddressZIPKey,
                                         nil];
-    CLGeocoder *geocoder = [[[CLGeocoder alloc] init] autorelease];
+    CLGeocoder *geocoder = [[CLGeocoder alloc] init];
     [geocoder geocodeAddressDictionary:locationDictionary completionHandler:^(NSArray *placemarks, NSError *error)
     { }];
 #endif
 }
 
+// viewDidUnload is not called on iOS 6.0 and later
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0
 - (void)viewDidUnload
 {
     self.searchRadiusSlider = nil;
@@ -157,47 +122,15 @@
     
     [super viewDidUnload];
 }
-
-- (void)dealloc
-{
-    [_searchStringCell release];
-    [_searchStringTextField release];
-    
-    [_searchHintSwitch release];
-    [_searchRadiusCell release];
-    [_searchRadiusLabel release];
-    [_searchRadiusSlider release];
-    
-    _locationManager.delegate = nil;
-    [_locationManager release];
-    
-    [super dealloc];
-}
+#endif
 
 
-#pragma mark -
-#pragma mark View Controller Appearance
+#pragma mark - View Controller Rotation
 
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-	[super viewWillDisappear:animated];
-}
-
-- (void)viewDidDisappear:(BOOL)animated
-{
-	[super viewDidDisappear:animated];
-}
-
+// rotation support for iOS 5.x and earlier, note for iOS 6.0 and later all you need is
+// "UISupportedInterfaceOrientations" defined in your Info.plist
+//
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // return YES for supported orientations
@@ -210,10 +143,10 @@
         return YES;
     }
 }
+#endif
 
 
-#pragma mark -
-#pragma mark UI Handling
+#pragma mark - UI Handling
 
 - (void)showSpinner:(UIActivityIndicatorView *)whichSpinner withShowState:(BOOL)show
 {
@@ -234,7 +167,7 @@
     {
         // add the spinner to the table cell
         UIActivityIndicatorView *curLocSpinner =
-            [[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray] autorelease];
+            [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         [curLocSpinner startAnimating];    
         [curLocSpinner setFrame:CGRectMake(200.0, 0.0, 22.0, 22.0)];
         [curLocSpinner setAutoresizingMask:UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin];
@@ -254,19 +187,19 @@
 
 - (void)showSpinner:(BOOL)show
 {
-    if (!_spinner)
+    if (_spinner == nil)
     {
         // add the spinner to the table's footer view
-        UIView* containerView = [[[UIView alloc] initWithFrame:
-                                    CGRectMake(0.0, 0.0, self.tableView.frame.size.width, 22.0)] autorelease];
+        UIView *containerView = [[UIView alloc] initWithFrame:
+                                    CGRectMake(0.0, 0.0, CGRectGetWidth(self.tableView.frame), 22.0)];
         UIActivityIndicatorView *spinner =
-            [[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray] autorelease];
+            [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
            
         // size and center the spinner
         [spinner setFrame:CGRectZero];
         [spinner sizeToFit];
         CGRect frame = spinner.frame;
-        frame.origin.x = (self.tableView.frame.size.width - frame.size.width) / 2.0;
+        frame.origin.x = (CGRectGetWidth(self.tableView.frame) - CGRectGetWidth(frame)) / 2.0;
         spinner.frame = frame;
         [spinner startAnimating]; 
         
@@ -278,47 +211,35 @@
     [self showSpinner:self.spinner withShowState:show];
 }
 
-- (void)lockUI
+- (void)lockUI:(BOOL)lock
 {
     // prevent user interaction while we are processing the forward geocoding
-    self.tableView.allowsSelection = NO;
-    self.searchHintSwitch.enabled = NO;
-    self.searchRadiusSlider.enabled = NO;
+    self.tableView.allowsSelection = !lock;
+    self.searchHintSwitch.enabled = !lock;
+    self.searchRadiusSlider.enabled = !lock;
     
-    [self showSpinner:YES];
-}
-
-- (void)unlockUI
-{
-    // allow user interaction since we are done processing
-    self.tableView.allowsSelection = YES;
-    self.searchHintSwitch.enabled = YES;
-    self.searchRadiusSlider.enabled = YES;
-    
-    [self showSpinner:NO];
+    [self showSpinner:lock];
 }
 
 
-#pragma mark -
-#pragma mark Display Results
+#pragma mark - Display Results
 
 // display the results
 - (void)displayPlacemarks:(NSArray *)placemarks
 {
     dispatch_async(dispatch_get_main_queue(),^ {
-        [self unlockUI];
+        [self lockUI:NO];
         
         PlacemarksListViewController *plvc = [[PlacemarksListViewController alloc] initWithPlacemarks:placemarks preferCoord:YES];
         [self.navigationController pushViewController:plvc animated:YES];
-        [plvc release];
     });
 }
 
 // display a given NSError in an UIAlertView
-- (void)displayError:(NSError*)error
+- (void)displayError:(NSError *)error
 {
     dispatch_async(dispatch_get_main_queue(),^ {
-        [self unlockUI];
+        [self lockUI:NO];
        
         NSString *message;
         switch ([error code])
@@ -337,11 +258,11 @@
                break;
         }
        
-        UIAlertView *alert =  [[[UIAlertView alloc] initWithTitle:@"An error occurred."
+        UIAlertView *alert =  [[UIAlertView alloc] initWithTitle:@"An error occurred."
                                                         message:message
                                                        delegate:nil 
                                               cancelButtonTitle:@"OK"
-                                               otherButtonTitles:nil] autorelease];;
+                                               otherButtonTitles:nil];;
         [alert show];
     });   
 }
@@ -381,13 +302,12 @@
     
     // ----- non interface builder generated cells -----
     //
-    
     // search hint cell
     if (indexPath.section == 1 && indexPath.row == 0)
     {
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"radiusToggleCell"];
         if (!cell)
-            cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"radiusToggleCell"] autorelease];
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"radiusToggleCell"];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
         _searchHintSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
@@ -404,7 +324,7 @@
     {
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"radiusCell"];
         if (!cell)
-            cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"radiusCell"] autorelease];
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"radiusCell"];
 
         cell.textLabel.text = @"Current Location";
         
@@ -424,7 +344,7 @@
     // basic cell
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"basicCell"];
     if (!cell)
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"basicCell"] autorelease];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"basicCell"];
     
     // geocode button
     if (indexPath.section == 2 && indexPath.row == 0)
@@ -436,6 +356,20 @@
     }
 
     return cell;
+}
+
+
+#pragma mark - UITableViewDelegate
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [[tableView cellForRowAtIndexPath:indexPath] setSelected:NO];
+    
+    if (indexPath.section == 2 && indexPath.row == 0)
+    {
+        // perform the Geocode
+        [self performStringGeocode:self];
+    }
 }
 
 
@@ -519,7 +453,7 @@
     _selectedCoordinate = kCLLocationCoordinate2DInvalid;
 
     // show the error alert
-    UIAlertView *alert = [[[UIAlertView alloc] init] autorelease];
+    UIAlertView *alert = [[UIAlertView alloc] init];
     alert.title = @"Error obtaining location";
     alert.message = [error localizedDescription];
     [alert addButtonWithTitle:@"OK"];
@@ -527,16 +461,13 @@
 }
 
 
-#pragma mark -
-#pragma mark Actions
+#pragma mark - Actions
 
 - (IBAction)hintSwitchChanged:(id)sender
 {
     // show or hide the region hint cells
-    NSArray *indexes = [NSArray arrayWithObjects:
-                            [NSIndexPath indexPathForRow:1 inSection:1], 
-                            [NSIndexPath indexPathForRow:2 inSection:1], 
-                        nil];
+    NSArray *indexes = @[[NSIndexPath indexPathForRow:1 inSection:1], [NSIndexPath indexPathForRow:2 inSection:1]];
+    
     if (self.searchHintSwitch.on)
     {
         [self.tableView insertRowsAtIndexPaths:indexes withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -563,9 +494,9 @@
         [self.searchStringTextField resignFirstResponder];
     }
     
-    [self lockUI];
+    [self lockUI:YES];
     
-    CLGeocoder *geocoder = [[[CLGeocoder alloc] init] autorelease];
+    CLGeocoder *geocoder = [[CLGeocoder alloc] init];
     
     // if we are going to includer region hint
     if (self.searchHintSwitch.on)
@@ -573,11 +504,10 @@
         // use hint region
         CLLocationDistance dist = self.searchRadiusSlider.value; // 50,000m (50km)
         CLLocationCoordinate2D point = _selectedCoordinate;
-        CLRegion *region = [[[CLRegion alloc] initCircularRegionWithCenter:point radius:dist identifier:@"Hint Region"] autorelease];
+        CLRegion *region = [[CLRegion alloc] initCircularRegionWithCenter:point radius:dist identifier:@"Hint Region"];
         
         [geocoder geocodeAddressString:self.searchStringTextField.text inRegion:region completionHandler:^(NSArray *placemarks, NSError *error)
          {
-             NSLog(@"geocodeAddressString:inRegion:completionHandler: Completion Handler called!");
              if (error){
                  NSLog(@"Geocode failed with error: %@", error);
                  [self displayError:error];
@@ -592,7 +522,6 @@
     {
         // don't use a hint region
         [geocoder geocodeAddressString:self.searchStringTextField.text completionHandler:^(NSArray *placemarks, NSError *error) {
-             NSLog(@"geocodeAddressString:completionHandler: Completion Handler called!");
              if (error)
              {
                  NSLog(@"Geocode failed with error: %@", error);
@@ -603,20 +532,6 @@
              NSLog(@"Received placemarks: %@", placemarks);
              [self displayPlacemarks:placemarks];
          }];
-    }
-}
-
-
-#pragma mark - UITableViewDelegate
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    [[tableView cellForRowAtIndexPath:indexPath] setSelected:NO];
-    
-    if (indexPath.section == 2 && indexPath.row == 0)
-    {
-        // perform the Geocode
-        [self performStringGeocode:self];
     }
 }
 

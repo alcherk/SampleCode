@@ -1,7 +1,7 @@
 /*
      File: EAGLView.m
  Abstract: n/a
-  Version: 1.2
+  Version: 1.3
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2010 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
@@ -109,7 +109,7 @@
 
 - (void)drawView
 {
- 	int mode = self.tabBar.selectedItem.tag;
+ 	int mode = (int)self.tabBar.selectedItem.tag;
 	float value = self.slider.value;
 
 	// This application only creates a single GL context, so it is already current here.

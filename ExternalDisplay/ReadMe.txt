@@ -8,12 +8,12 @@ How to show content on an external display.
 ===========================================================================
 BUILD REQUIREMENTS:
 
-iOS 4.2 SDK
+iOS 7.0 SDK or later
 
 ===========================================================================
 RUNTIME REQUIREMENTS:
 
-iOS 3.2 or later
+iOS 6.0 or later
 
 ===========================================================================
 USING THE SAMPLE:
@@ -57,8 +57,11 @@ PresoModeViewController.h/.m - Encapsulates all state and behavior related
 ===========================================================================
 CHANGES FROM PREVIOUS VERSIONS:
 
+Version 1.1
+- Modernized for iOS 6 and 7.
+
 Version 1.0
 - First version.
 
 ===========================================================================
-Copyright (C) 2011 Apple Inc. All rights reserved.
+Copyright (C) 2011-13 Apple Inc. All rights reserved.

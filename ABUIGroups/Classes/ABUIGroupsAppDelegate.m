@@ -1,7 +1,7 @@
 /*
      File: ABUIGroupsAppDelegate.m
  Abstract: Application delegate that sets up the application.
-  Version: 1.0
+  Version: 1.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,26 +41,19 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2011 Apple Inc. All Rights Reserved.
+ Copyright (C) 2013 Apple Inc. All Rights Reserved.
  
 */
 
 #import "ABUIGroupsAppDelegate.h"
-#import "GroupViewController.h"
 
 @implementation ABUIGroupsAppDelegate
-@synthesize window, navigationController;
-
 
 #pragma mark -
 #pragma mark Application lifecycle
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {        
-    // Add the navigation controller's view to the window and display.
-    [self.window addSubview:navigationController.view];
-    [self.window makeKeyAndVisible];
-
     return YES;
 }
 
@@ -116,14 +109,6 @@
     /*
      Free up as much memory as possible by purging cached data objects that can be recreated (or reloaded from disk) later.
      */
-}
-
-
-- (void)dealloc 
-{
-	[navigationController release];
-	[window release];
-	[super dealloc];
 }
 
 @end

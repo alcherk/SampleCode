@@ -1,7 +1,7 @@
 /*
      File: RecipePrintPageRenderer.m 
  Abstract: A custom UIPrintPageRenderer to render one or more Recipes for printing 
-  Version: 1.1 
+  Version: 1.2 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2011 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2013 Apple Inc. All Rights Reserved. 
   
  */ 
 
@@ -74,7 +74,11 @@
 @end
 
 @implementation RecipePrintPageRenderer
-@synthesize recipeInfoHeight;
+{
+    NSRange pageRange;
+    NSArray *recipes;
+    NSMapTable *formatterToRecipeMap;
+}
 
 /*
  Initialize to our constant values.
@@ -84,6 +88,7 @@
     self = [super init];
     if (self) {
         recipes = [someRecipes copy];
+        formatterToRecipeMap = [NSMapTable strongToStrongObjectsMapTable];
         self.headerHeight = HEADER_HEIGHT;
         self.footerHeight = FOOTER_HEIGHT;
         self.recipeInfoHeight = 150;
@@ -95,22 +100,8 @@
 /*
  Release ownership.
  */
-- (void)dealloc {
-    [recipes release];
-    [super dealloc];
-}
 
 #pragma mark -
-
-static char UIPrintFormatterRecipeKey = 0;
-
-- (void)setRecipe:(Recipe *)recipe forFormatter:(UIPrintFormatter *)printFormatter {
-    objc_setAssociatedObject(printFormatter, &UIPrintFormatterRecipeKey, recipe, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
-- (Recipe *)recipeForFormatter:(UIPrintFormatter *)printFormatter {
-    return objc_getAssociatedObject(printFormatter, &UIPrintFormatterRecipeKey);
-}
 
 /*
  Calculate the content area based on the printableRect, that is, 
@@ -157,7 +148,7 @@ static char UIPrintFormatterRecipeKey = 0;
         NSString *html = recipe.htmlRepresentation;
         
         UIMarkupTextPrintFormatter *formatter = [[UIMarkupTextPrintFormatter alloc] initWithMarkupText:html];
-        [self setRecipe:recipe forFormatter:formatter];
+        [formatterToRecipeMap setObject:recipe forKey:formatter];
         
         // Make room for the recipe info
         UIEdgeInsets contentInsets = UIEdgeInsetsZero;
@@ -175,7 +166,6 @@ static char UIPrintFormatterRecipeKey = 0;
         page = formatter.startPage + formatter.pageCount - 1;
         previousFormatterMaxY = CGRectGetMaxY([formatter rectForPageAtIndex:page]);
         
-        [formatter release];
     }
 }
 
@@ -189,9 +179,9 @@ static char UIPrintFormatterRecipeKey = 0;
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"MMMM d, yyyy 'at' h:mm a"];
     NSString *dateString = [dateFormatter stringFromDate:[NSDate date]];
-    [dateFormatter release];
     
-    [dateString drawInRect:headerRect withFont:SYSTEM_FONT lineBreakMode:UILineBreakModeClip alignment:UITextAlignmentRight];
+    [dateString drawInRect:headerRect withAttributes:nil];
+    
 }
 
 /*
@@ -199,9 +189,9 @@ static char UIPrintFormatterRecipeKey = 0;
  To illustrate that, this class sets the current and total page number in the footer.
  */
 - (void)drawFooterForPageAtIndex:(NSInteger)pageIndex inRect:(CGRect)footerRect {
-    NSString *footer = [NSString stringWithFormat:@"Page %ld of %ld", pageIndex - pageRange.location + 1, pageRange.length];
+    NSString *footer = [NSString stringWithFormat:@"Page %d of %d", pageIndex - pageRange.location + 1, pageRange.length];
     
-    [footer drawInRect:footerRect withFont:SYSTEM_FONT lineBreakMode:UILineBreakModeClip alignment:UITextAlignmentCenter];
+    [footer drawInRect:footerRect withAttributes:nil];
 }
 
 /*
@@ -239,7 +229,7 @@ static char UIPrintFormatterRecipeKey = 0;
         [border moveToPoint:rect.origin];
         [border addLineToPoint:CGPointMake(CGRectGetMaxX(rect), CGRectGetMinY(rect))];
         
-        Recipe *recipe = [self recipeForFormatter:printFormatter];
+        Recipe *recipe = [formatterToRecipeMap objectForKey:printFormatter];
         
         // Run custom code to draw upper portion of the recipe presentation (image, title, desc)
         [self drawRecipe:recipe inRect:rect];
@@ -302,8 +292,7 @@ static char UIPrintFormatterRecipeKey = 0;
     nameRect.size.width = CGRectGetWidth(rect) - self.recipeInfoHeight;
     nameRect.size.height = self.recipeInfoHeight;
     
-    UIFont *font = [UIFont boldSystemFontOfSize:TITLE_SIZE];
-    [name drawInRect:nameRect withFont:font lineBreakMode:UILineBreakModeClip alignment:UITextAlignmentLeft];
+    [name drawInRect:nameRect withAttributes:nil];
 }
 
 // Custom drawing code to put the recipe recipe description, and prep time 
@@ -316,7 +305,7 @@ static char UIPrintFormatterRecipeKey = 0;
     infoRect.size.height = self.recipeInfoHeight - TITLE_SIZE*2;
     
     [[UIColor darkGrayColor] set];
-    [info drawInRect:infoRect withFont:SYSTEM_FONT lineBreakMode:UILineBreakModeClip alignment:UITextAlignmentLeft];
+    [info drawInRect:infoRect withAttributes:nil];
 }
 
 @end
