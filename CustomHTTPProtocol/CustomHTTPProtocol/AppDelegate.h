@@ -1,7 +1,7 @@
 /*
      File: AppDelegate.h
  Abstract: Main app controller.
-  Version: 1.0
+  Version: 1.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,15 +41,12 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2013 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
-#import <UIKit/UIKit.h>
+@import UIKit;
 
 @interface AppDelegate : NSObject
-
-@property (nonatomic, retain, readwrite) IBOutlet UIWindow *                window;
-@property (nonatomic, retain, readwrite) IBOutlet UINavigationController *  navController;
 
 @end

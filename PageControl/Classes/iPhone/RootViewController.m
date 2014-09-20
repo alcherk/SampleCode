@@ -1,7 +1,7 @@
 /*
      File: RootViewController.m
  Abstract: The primary root view controller for the iPhone.
-  Version: 1.5
+  Version: 1.6
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2013 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
@@ -97,16 +97,6 @@ static NSString *kImageKey = @"imageKey";
     [self loadScrollViewWithPage:0];
     [self loadScrollViewWithPage:1];
 }
-
-// rotation support for iOS 5.x and earlier, note for iOS 6.0 and later this will not be called
-//
-#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
-{
-    // return YES for supported orientations
-    return (toInterfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
-}
-#endif
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {

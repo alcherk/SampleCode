@@ -1,7 +1,7 @@
 /*
      File: WebViewController.m
  Abstract: Main web view controller.
-  Version: 1.0
+  Version: 1.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,63 +41,40 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2013 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
 #import "WebViewController.h"
 
-#import "CredentialsManager.h"
-
-#include <Security/Security.h>
+@import Security;
 
 @interface WebViewController () <UIWebViewDelegate>
 
+// stuff for IB
+
+@property (nonatomic, strong, readwrite) IBOutlet UIWebView *   webView;
+
 // private properties
 
-@property (nonatomic, retain, readwrite) NSURLRequest *     installRequest;
-@property (nonatomic, retain, readwrite) NSURLConnection *  installConnection;
-@property (nonatomic, retain, readwrite) NSMutableData *    installData;
-
-// forward declarations
-
-- (void)displaySites;
-- (void)displayError:(NSError *)error;
-- (NSURL *)failingURLForError:(NSError *)error;
-- (void)installFromURL:(NSURL *)url;
-- (void)installStopWithError:(NSError *)error;
+@property (nonatomic, strong, readwrite) NSURLSessionDataTask * installDataTask;
 
 @end
 
 @implementation WebViewController
 
-@synthesize webView = _webView;
-@synthesize installRequest = _installRequest;
-@synthesize installConnection = _installConnection;
-@synthesize installData = _installData;
-
-- (id)init
-{
-    self = [super initWithNibName:@"WebViewController" bundle:nil];
-    if (self != nil) {
-        self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:@"Sites" style:UIBarButtonItemStyleBordered target:self action:@selector(sitesAction:)] autorelease];
-    }
-    return self;
-}
-
 - (void)dealloc
 {
-    [self->_webView release];
-
     // All of these should be nil because the connection retains its delegate (that is, us) 
     // until it completes, and we clean these up when the connection completes.
     
-    assert(self->_installRequest == nil);
-    assert(self->_installConnection == nil);
-    assert(self->_installData == nil);
-
-    [super dealloc];
+    assert(self->_installDataTask == nil);
 }
+
+/*! Called when the user taps on the Sites button. This tells the web view to load our start 
+ *  page ("root.html").
+ *  \param sender The object that sent this action.
+ */
 
 - (IBAction)sitesAction:(id)sender
 {
@@ -105,7 +82,7 @@
 
     // If we're currently downloading an anchor to install, stop that now.
     
-    if (self.installConnection != nil) {
+    if (self.installDataTask != nil) {
         [self installStopWithError:[NSError errorWithDomain:NSCocoaErrorDomain code:NSUserCancelledError userInfo:nil]];
     }
     
@@ -123,11 +100,24 @@
     [self displaySites];
 }
 
-- (void)viewDidUnload
+/*! Called to log various bits of information.  Will be called on the main thread.
+ *  \param format A standard NSString-style format string; will not be nil.
+ */
+
+- (void)logWithFormat:(NSString *)format, ... NS_FORMAT_FUNCTION(1, 2)
 {
-    [super viewDidUnload];
-    self.webView.delegate = nil;
-    self.webView = nil;
+    id<WebViewControllerDelegate>   strongDelegate;
+
+    assert(format != nil);
+    
+    strongDelegate = self.delegate;
+    if ([strongDelegate respondsToSelector:@selector(webViewController:logWithFormat:arguments:)]) {
+        va_list     arguments;
+        
+        va_start(arguments, format);
+        [strongDelegate webViewController:self logWithFormat:format arguments:arguments];
+        va_end(arguments);
+    }
 }
 
 #pragma mark * Web view delegate callbacks
@@ -147,11 +137,8 @@
 static NSString * kAnchorInstallSchemePrefix = @"x-anchor-install-";
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
-    // A UIWebView delegate callback, called when the web view starts loading a 
-    // new page.  We detect the web view trying to load one of our anchor install 
-    // URLs and start loading it directly via NSURLConnection.  In that case we 
-    // also tell the web view to display the "Installing..." UI.
 {
+    NSString *          navigationName;
     BOOL                allowLoad;
     NSMutableString *   installURLString;
     NSURL *             installURL;
@@ -159,18 +146,37 @@ static NSString * kAnchorInstallSchemePrefix = @"x-anchor-install-";
     assert(webView == self.webView);
     #pragma unused(webView)
     assert(request != nil);
+
+    // Log the operation.
     
-    NSLog(@"%@ %d", [request URL], navigationType);
+    static NSDictionary * sNavigationNames;
+    if (sNavigationNames == nil) {
+        sNavigationNames = @{
+            @(UIWebViewNavigationTypeLinkClicked):     @"clicked", 
+            @(UIWebViewNavigationTypeFormSubmitted):   @"form submitted", 
+            @(UIWebViewNavigationTypeBackForward):     @"back/forward", 
+            @(UIWebViewNavigationTypeReload):          @"reload", 
+            @(UIWebViewNavigationTypeFormResubmitted): @"form resubmitted", 
+            @(UIWebViewNavigationTypeOther):           @"other"
+        };
+    }
+    navigationName = sNavigationNames[@(navigationType)];
+    if (navigationName == nil) {
+        navigationName = @"unknown";
+    }
+    [self logWithFormat:@"should load %@ reason %@", [request URL], navigationName];
     
-    // If it's one of our special anchor install URLs...
+    // We detect the web view trying to load one of our anchor install URLs and start loading 
+    // it directly via NSURLSession.  In that case we also tell the web view to display the 
+    // "Installing..." UI.
     
     if ( [[[[request URL] scheme] lowercaseString] hasPrefix:kAnchorInstallSchemePrefix] ) {
 
-        // Start downloading the anchor using NSURLConnection.  Before we call the install 
-        // code (-installFromURL:) we have to calculate the install URL by stripping the 
-        // prefix off the request URL.
+        // Start downloading the anchor using NSURLSession.  Before we call the install 
+        // code (-installTrustedAnchorFromURL:) we have to calculate the install URL by 
+        // stripping the prefix off the request URL.
 
-        installURLString = [[[[request URL] absoluteString] mutableCopy] autorelease];
+        installURLString = [[[request URL] absoluteString] mutableCopy];
         assert(installURLString != nil);
         
         [installURLString replaceCharactersInRange:NSMakeRange(0, [kAnchorInstallSchemePrefix length]) withString:@""];
@@ -178,7 +184,7 @@ static NSString * kAnchorInstallSchemePrefix = @"x-anchor-install-";
         installURL = [NSURL URLWithString:installURLString];
         assert(installURL != nil);
         
-        [self installFromURL:installURL];
+        [self installTrustedAnchorFromURL:installURL];
         
         allowLoad = NO;
     } else {
@@ -189,10 +195,6 @@ static NSString * kAnchorInstallSchemePrefix = @"x-anchor-install-";
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
-    // A UIWebView delegate callback, called when the web view encounters an error. 
-    // We check for an error indicating that the user navigated to a certificate 
-    // and, if we see it, point the web view to our anchor install page 
-    // (derived from "anchorInstall.html").
 {
     NSURL *     failingURL;
     NSString *  domain;
@@ -213,9 +215,9 @@ static NSString * kAnchorInstallSchemePrefix = @"x-anchor-install-";
 
     assert(domain != nil);
 
-    // If we get an error from WebKit saying that it couldn't load the data 
-    // (WebKitErrorFrameLoadInterruptedByPolicyChange) and the URL looks like a 
-    // certificate, kick off the anchor install UI.
+    // If we get an error from WebKit saying that the user navigated to a resource 
+    // that it can't display (WebKitErrorFrameLoadInterruptedByPolicyChange) and the 
+    // URL looks like a certificate, kick off the anchor install UI.
     
     if ( [domain isEqual:@"WebKitErrorDomain"] && (code == 102) && (failingURL != nil) ) {
         NSString *          failingURLExtension;
@@ -224,7 +226,7 @@ static NSString * kAnchorInstallSchemePrefix = @"x-anchor-install-";
         NSMutableString *   installURLString;
         NSURL *             installURL;
 
-        assert([failingURL scheme] != nil);     // If the user has no scheme, adding kAnchorInstallSchemePrefix would be 
+        assert([failingURL scheme] != nil);     // If the URL has no scheme, adding kAnchorInstallSchemePrefix would be 
                                                 // completely bogus.  This shouldn't never happen, but the assert makes sure.
     
         failingURLExtension = [[[[failingURL absoluteString] lastPathComponent] pathExtension] lowercaseString];
@@ -244,7 +246,7 @@ static NSString * kAnchorInstallSchemePrefix = @"x-anchor-install-";
             // Calculate installURL, that is, the failing URL without the prefix 
             // (kAnchorInstallSchemePrefix).
 
-            installURLString = [[[failingURL absoluteString] mutableCopy] autorelease];
+            installURLString = [[failingURL absoluteString] mutableCopy];
             assert(installURLString != nil);
             
             [installURLString replaceCharactersInRange:NSMakeRange(0, 0) withString:kAnchorInstallSchemePrefix];
@@ -269,14 +271,18 @@ static NSString * kAnchorInstallSchemePrefix = @"x-anchor-install-";
     // If we didn't handle the error as a special case, point the web view at our error page.
     
     if ( ! handled) {
+        [self logWithFormat:@"did fail with error %@ / %zd", domain, (ssize_t) code];
+
         [self displayError:error];
     }    
 }
 
 #pragma mark * Web view utilities
 
+/*! Tells the web view to load "root.html", our initial start page.
+ */
+
 - (void)displaySites
-    // Tells the web view to load "root.html", our initial start page.
 {
     NSURL *     rootURL;
 
@@ -286,25 +292,31 @@ static NSString * kAnchorInstallSchemePrefix = @"x-anchor-install-";
     [self.webView loadRequest:[NSURLRequest requestWithURL:rootURL]];
 }
 
+/*! Tell the anchor install page that we've started installing an anchor.  It responds by 
+ *  display its "Installing..." UI.
+ */
+
 - (void)didStartInstall
-    // Tell the anchor install page that we've started installing an anchor.  
-    // It responds by display its "Installing..." UI.
 {
     (void) [self.webView stringByEvaluatingJavaScriptFromString:@"didStartInstall()"];
 }
 
+/*! Tell the anchor install page that we've successfully installed an anchor.  
+ *  It responds by display its "Installed" UI.  Note that there's equivalent 
+ *  error notification; errors result in a redirect to our error page (see 
+ *  the -displayError: method).
+ */
+
 - (void)didFinishInstall
-    // Tell the anchor install page that we've successfully installed an anchor.  
-    // It responds by display its "Installed" UI.  Note that there's equivalent 
-    // error notification; errors result in a redirect to our error page (see 
-    // the -displayError: method).
 {
     (void) [self.webView stringByEvaluatingJavaScriptFromString:@"didFinishInstall()"];
 }
 
+/*! Tells the web view to load "error.html", our standard error page, parameterising it 
+ *  with the error domain, code and failing URL.
+ */
+
 - (void)displayError:(NSError *)error
-    // Tells the web view to load "error.html", our standard error page, 
-    // parameterising it with the error domain, code and failing URL.
 {
     NSURL *     failingURL;
     NSString *  failingURLString;
@@ -334,25 +346,37 @@ static NSString * kAnchorInstallSchemePrefix = @"x-anchor-install-";
 
 #pragma mark * Error utilities
 
-static NSString * kInstallErrorDomain = @"kInstallErrorDomain";
+/*! The error domain used by our installation error codes.
+ */
 
-enum {
+static NSString * WebViewControllerInstallErrorDomain = @"WebViewControllerInstallErrorDomain";
+
+/*! Our installation error codes.  Note that (positive) HTTP status codes are also possible.
+ */
+
+enum WebViewControllerInstallErrorCode {
     // positive numbers are HTTP status codes
-    kInstallErrorUnsupportedMIMEType   = -1, 
-    kInstallErrorCertificateDataTooBig = -2,
-    kInstallErrorCertificateDataBad    = -3
+    WebViewControllerInstallErrorUnsupportedMIMEType   = -1, 
+    WebViewControllerInstallErrorCertificateDataTooBig = -2,
+    WebViewControllerInstallErrorCertificateDataBad    = -3, 
+    WebViewControllerInstallErrorNowhereToInstall      = -4
 };
 
-- (NSError *)installErrorWithCode:(NSInteger)code
-    // Returns an error object in the domain kInstallErrorDomain with the 
-    // specified error code and the failing URL set from the current install 
-    // request ([self.installRequest URL]).
+/*! Returns an error object in the domain WebViewControllerInstallErrorDomain with 
+ *  the specified error code and the failing URL set from the current install data task's 
+ *  URL.
+ *  \param code The code to use for the error.
+ */
+
+- (NSError *)constructInstallErrorWithCode:(NSInteger)code
 {
     NSURL *                 url;
     NSString *              urlStr;
     NSMutableDictionary *   userInfo;
-        
-    url = [self.installRequest URL];
+    
+    assert(code != 0);
+
+    url = [self.installDataTask.originalRequest URL];
     urlStr = nil;
     if (url != nil) {
         urlStr = [url absoluteString];
@@ -365,19 +389,22 @@ enum {
         assert(userInfo != nil);
         
         if (url != nil) {
-            [userInfo setObject:url forKey:NSURLErrorFailingURLErrorKey];
+            userInfo[NSURLErrorFailingURLErrorKey] = url;
         }
         if (urlStr != nil) {
-            [userInfo setObject:urlStr forKey:NSURLErrorFailingURLStringErrorKey];
+            userInfo[NSURLErrorFailingURLStringErrorKey] = urlStr;
         }
     }
 
-    return [NSError errorWithDomain:kInstallErrorDomain code:code userInfo:userInfo];
+    return [NSError errorWithDomain:WebViewControllerInstallErrorDomain code:code userInfo:userInfo];
 }
 
+/*! Extracts the failing URL from an NSError by way of the NSURLErrorFailingURLErrorKey 
+ *  and NSURLErrorFailingURLStringErrorKey values in the error's user info dictionary.
+ *  \param error The error to extract info from.
+ */
+
 - (NSURL *)failingURLForError:(NSError *)error
-    // Extracts the failing URL from an NSError by way of the NSURLErrorFailingURLErrorKey 
-    // and NSURLErrorFailingURLStringErrorKey values in the error's user info dictionary.
 {
     NSURL *         result;
     NSDictionary *  userInfo;
@@ -388,13 +415,13 @@ enum {
     
     userInfo = [error userInfo];
     if (userInfo != nil) {
-        result = [userInfo objectForKey:NSURLErrorFailingURLErrorKey];
+        result = userInfo[NSURLErrorFailingURLErrorKey];
         assert( (result == nil) || [result isKindOfClass:[NSURL class]] );
         
         if (result == nil) {
             NSString *  urlStr;
             
-            urlStr = [userInfo objectForKey:NSURLErrorFailingURLStringErrorKey];
+            urlStr = userInfo[NSURLErrorFailingURLStringErrorKey];
             assert( (urlStr == nil) || [urlStr isKindOfClass:[NSString class]] );
             if (urlStr != nil) {
                 assert([urlStr isKindOfClass:[NSString class]]);
@@ -409,45 +436,55 @@ enum {
 
 #pragma mark * Anchor certificate fetch and install
 
-enum {
-    kInstallCertificateDataMaxLength     = 256 * 1024,
-    kInstallCertificateDataDefaultLength = 64 * 1024
-};
+/*! Starts the process to download and install an anchor certificate.
+ *  \param url The URL to download from.
+ */
 
-- (void)installFromURL:(NSURL *)url
-    // Starts the process to download and install an anchor certificate.
+- (void)installTrustedAnchorFromURL:(NSURL *)url
 {
     assert(url != nil);
+
+    [self logWithFormat:@"start trusted anchor install %@", url];
     
-    if (self.installConnection == nil) {
-        assert(self.installRequest == nil);
-        assert(self.installData == nil);
+    if (self.installDataTask == nil) {
         
         // Start the connection to download and install the anchor certificate.
         
-        self.installRequest = [NSURLRequest requestWithURL:url];
-        assert(self.installRequest != nil);
-        
-        self.installConnection = [NSURLConnection connectionWithRequest:self.installRequest delegate:self];
-        assert(self.installConnection != nil);
+        self.installDataTask = [[NSURLSession sharedSession] dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+            if ( (error != nil) && [[error domain] isEqual:NSURLErrorDomain] && ([error code] == NSURLErrorCancelled) ) {
+                // Do nothing.  We get here if the user cancels the install request.  If that's case then the 
+                // cancellation code ends up calling -installStopWithError: directly so there's no need to call 
+                // it here (which is what happens, indirectly, when we call -installDataTaskDidCompleteWithData:response:error:).  
+                // Moreover if we do call through we end doing the wrong thing as one error ends up overwriting the other.
+            } else {
+                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                    [self installDataTaskDidCompleteWithData:data response:response error:error];
+                }];
+            }
+        }];
+        assert(self.installDataTask != nil);
 
         [self didStartInstall];
+        
+        [self.installDataTask resume];
     } else {
         assert(NO);     // We shouldn't be able to get a second install going until the first is complete.
     }
 }
 
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
-    // An NSURLConnection delegate callback, called when the connection starts to receive 
-    // a response.  This checks that the response is reasonable and, if not, shuts down the 
-    // connection.
+/*! Checks whether the install data task's response looks good.
+ *  \param response The response to check; must not be nil.
+ *  \param errorPtr If not NULL then, on error, *errorPtr will be the actual error.
+ *  \returns Returns YES on success, NO on failure.
+ */
+
+- (BOOL)isValidInstallDataTaskResponse:(NSURLResponse *)response error:(__autoreleasing NSError **)errorPtr
 {
     NSError *   error;
     
-    assert(connection == self.installConnection);
-    #pragma unused(connection)
     assert(response != nil);
-    assert(self.installRequest != nil);
+    // errorPtr may be NULL
+    assert([NSThread isMainThread]);
     
     // Check the HTTP status code of the response.
     
@@ -458,7 +495,7 @@ enum {
         httpResponse = (NSHTTPURLResponse *) response;
         
         if ( ([httpResponse statusCode] / 100) != 2) {
-            error = [self installErrorWithCode:[httpResponse statusCode]];
+            error = [self constructInstallErrorWithCode:[httpResponse statusCode]];
         }
     }
 
@@ -471,120 +508,133 @@ enum {
             sSupportedMIMETypes = [[NSSet alloc] initWithObjects:@"application/x-x509-ca-cert", @"application/pkix-cert", nil];
         }
         if ( ! [sSupportedMIMETypes containsObject:[response MIMEType]] ) {
-            error = [self installErrorWithCode:kInstallErrorUnsupportedMIMEType];
+            error = [self constructInstallErrorWithCode:WebViewControllerInstallErrorUnsupportedMIMEType];
         }
     }
+
+    // Clean up.
     
-    // Check the expected length of the response.  We the length is unknown, use a default.  
-    // If the length is too big, fail.  If we have a known length that's within our limit, 
-    // create the data buffer with that length to avoid us having to resize it.
-    
-    if (error == nil) {
-        long long       responseLength;
-        
-        responseLength = [response expectedContentLength];
-        
-        if (responseLength == NSURLResponseUnknownLength) {
-            self.installData = [NSMutableData dataWithCapacity:kInstallCertificateDataDefaultLength];
-        } else if (responseLength > kInstallCertificateDataMaxLength) {
-            error = [self installErrorWithCode:kInstallErrorCertificateDataTooBig];
-        } else {
-            self.installData = [NSMutableData dataWithCapacity: (NSUInteger) responseLength];
-        }
-        assert( (error == nil) == (self.installData != nil) );
+    if ( (error != nil) && (errorPtr != NULL) ) {
+        *errorPtr = error;
     }
-    
-    // Stop the connection if anything was bogus.
-    
-    if (error != nil) {
-        [self installStopWithError:error];
-    }
+
+    return (error == nil);
 }
 
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
-    // An NSURLConnection delegate callback, called as the connection receives data. 
-    // This just appends the data to our installData buffer.
-{
-    assert(connection == self.installConnection);
-    #pragma unused(connection)
-    assert(data != nil);
-    
-    // If the incoming data would push us over the maximum certificate size, 
-    // fail.  Otherwise just appending the incoming data to our buffer.
-    
-    if (([self.installData length] + [data length]) > kInstallCertificateDataMaxLength) {
-        [self installStopWithError:[self installErrorWithCode:kInstallErrorCertificateDataTooBig]];
-    } else {
-        [self.installData appendData:data];
-    }
-}
+/*! Create and installs a certificate from the data returned by the install data task.
+ *  \param data The data returned by the install data task; must not be nil.
+ *  \param errorPtr If not NULL then, on error, *errorPtr will be the actual error.
+ *  \returns Returns YES on success, NO on failure.
+ */
 
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection
-    // An NSURLConnection delegate callback, called when the connection completes 
-    // successfully.  This validates the data in the data buffer and then installs 
-    // it as an anchor certificate.
+- (BOOL)parseAndInstallCertificateData:(NSData *)data error:(__autoreleasing NSError **)errorPtr
 {
     NSError *           error;
     SecCertificateRef   anchor;
-    
-    assert(connection == self.installConnection);
-    #pragma unused(connection)
+
+    assert(data != nil);
+    // errorPtr may be NULL
+    assert([NSThread isMainThread]);
     
     // Try to create a certificate from the data we downloaded.  If that 
-    // succeeds, tell the credentials manager.
+    // succeeds, tell our delegate.
     
     error = nil;
-    anchor = SecCertificateCreateWithData(NULL, (CFDataRef) self.installData);
+    anchor = SecCertificateCreateWithData(NULL, (__bridge CFDataRef) data);
     if (anchor == nil) {
-        error = [self installErrorWithCode:kInstallErrorCertificateDataBad];
+        error = [self constructInstallErrorWithCode:WebViewControllerInstallErrorCertificateDataBad];
     }
     if (error == nil) {
-        [[CredentialsManager sharedManager] addTrustedAnchor:anchor];
+        id<WebViewControllerDelegate>   strongDelegate;
+        
+        strongDelegate = self.delegate;
+        if ( ! [strongDelegate respondsToSelector:@selector(webViewController:addTrustedAnchor:error:)] ) {
+            error = [self constructInstallErrorWithCode:WebViewControllerInstallErrorNowhereToInstall];
+        } else {
+            BOOL                            success;
+            NSError *                       delegateError;
+
+            success = [strongDelegate webViewController:self addTrustedAnchor:anchor error:&delegateError];
+            if ( ! success ) {
+                error = delegateError;
+            }
+        }
+    }
+
+    // Clean up.
+    
+    if (anchor != NULL) {
+        CFRelease(anchor);
+    }
+    if ( (error != nil) && (errorPtr != NULL) ) {
+        *errorPtr = error;
     }
     
-    // Clean up the installation.  For debugging purposes only (specifically, 
-    // to make it easy to see the download animation UI), you can enable a delay.
+    return (error == nil);
+}
+
+/*! Called when the install data task completes; checks the response and then processes the certificate data.
+ *  \param data The data returned by the install data task; nil on error.
+ *  \param response The response to check; nil on error.
+ *  \param error nil on success; non-nil on error.
+ */
+
+- (void)installDataTaskDidCompleteWithData:(NSData *)data response:(NSURLResponse *)response error:(NSError *)error
+{
+    BOOL        success;
+
+    assert( (error != nil) || (data     != nil) );
+    assert( (error != nil) || (response != nil) );
+
+    assert([NSThread isMainThread]);
+
+    // Check for three different ways to fail.
     
+    success = (error == nil);
+    if (success) {
+        success = [self isValidInstallDataTaskResponse:response error:&error];
+    }
+    if (success) {
+        success = [self parseAndInstallCertificateData:data error:&error];
+    }
+    #pragma unused(success)         // quietens analyser in the Release build
+    assert(success == (error == nil));
+
+    // Clean up the installation.  For debugging purposes only (specifically, to make it 
+    // easy to see the download animation UI), you can enable a delay.  You shouldn't do anything 
+    // like this in production code because it creates a new state that the cancellation code 
+    // isn't prepared to handle.
+
     if (NO) {
         [self performSelector:@selector(installStopWithError:) withObject:error afterDelay:5.0];
     } else {
         [self installStopWithError:error];
     }
-    
-    if (anchor != NULL) {
-        CFRelease(anchor);
-    }
 }
 
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
-    // An NSURLConnection delegate callback, called when the connection completes 
-    // successfully.  This just stops the install, resulting in the error being 
-    // displayed in the web view.
-{
-    assert(connection == self.installConnection);
-    #pragma unused(connection)
-    assert(error != nil);
-    [self installStopWithError:error];
-}
+/*! Stops and cleans up the install process and:
+ *  
+ *  - if there's no error, tells the anchor install page currently being displayed 
+ *    by the web view to switch to the "Installed" UI
+ *  
+ *  - if there's an error, tells the web view to display it
+ *  \param error The actual error or nil if there's no error.
+ */
 
 - (void)installStopWithError:(NSError *)error
-    // Stops and cleans up the install process and:
-    //
-    // o if there's no error, tells the anchor install page currently being displayed 
-    //   by the web view to switch to the "Installed" UI
-    //
-    // o if there's an error, tells the web view to display it
 {
-    // error may be nil
+    assert([NSThread isMainThread]);
     
-    [self.installConnection cancel];
-    self.installConnection = nil;
-    self.installRequest = nil;
-    self.installData = nil;
+    [self.installDataTask cancel];
+    self.installDataTask = nil;
     
     if (error == nil) {
+        [self logWithFormat:@"trusted anchor install did finish"];
+
         [self didFinishInstall];
     } else {
+        [self logWithFormat:@"trusted anchor install did fail with error %@ / %zd", [error domain], (ssize_t) [error code]];
+
         [self displayError:error];
     }
 }

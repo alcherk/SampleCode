@@ -41,9 +41,10 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2011 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
-*/
+ */
+
 
 #import "AssetBrowserItem.h"
 
@@ -56,7 +57,7 @@
 - (AVAsset*)copyAssetIfCreated;
 
 @property (nonatomic, copy) NSString *title;
-@property (nonatomic, retain) UIImage *thumbnailImage;
+@property (nonatomic, strong) UIImage *thumbnailImage;
 @property (nonatomic, readonly) BOOL canGenerateThumbnails;
 @property (nonatomic, readonly) BOOL audioOnly;
 
@@ -75,13 +76,12 @@
 - (id)initWithURL:(NSURL*)URL title:(NSString*)title
 {
 	if ((self = [super init])) {
-		assetURL = [URL retain];
+		assetURL = URL;
 		if (assetURL == nil) {
-			[self release];
 			return nil;
 		}
 		haveRichestTitle = title ? YES : NO;
-		assetTitle = title ? [title copy] : [[[URL lastPathComponent] stringByDeletingPathExtension] retain];
+		assetTitle = title ? [title copy] : [[URL lastPathComponent] stringByDeletingPathExtension];
 		
 		// Assume we can generate a thumb unless we have loaded the assets or tried already and know otherwise.
 		canGenerateThumbnails = YES;
@@ -96,13 +96,13 @@
 {
 	if ((self = [super init])) {
 		// Inititialization time properties.
-		assetURL = [browserItem.URL retain];
+		assetURL = browserItem.URL;
 
 		// May have been an initialization time property.
-		assetTitle = [browserItem.title retain];
+		assetTitle = browserItem.title;
 		haveRichestTitle = browserItem.haveRichestTitle;
 		
-		thumbnailImage = [browserItem.thumbnailImage retain];
+		thumbnailImage = browserItem.thumbnailImage;
 		asset = [browserItem copyAssetIfCreated];
 		
 		canGenerateThumbnails = browserItem.canGenerateThumbnails;
@@ -167,7 +167,7 @@
 		theAsset = [[self getAssetInternal] copy];
 	});
 	
-	return [theAsset autorelease];
+	return theAsset;
 }
 
 - (AVAsset*)copyAssetIfCreated
@@ -206,7 +206,6 @@
 					{
 						NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:thisLanguage];
 						NSArray *titlesForLocale = [AVMetadataItem metadataItemsFromArray:titles withLocale:locale];
-						[locale release];
 						if ([titlesForLocale count] > 0)
 						{
 							title = [[titlesForLocale objectAtIndex:0] stringValue];
@@ -253,7 +252,7 @@ CGRect makeRectWithAspectRatioOutsideRect(CGSize aspectRatio, CGRect containerRe
 		AVAssetTrack *videoTrack = [videoTracks objectAtIndex:0];
 		NSArray *formatDescriptions = [videoTrack formatDescriptions];
 		if ([formatDescriptions count] > 0) {
-			CMVideoFormatDescriptionRef videoFormatDescription = (CMFormatDescriptionRef)[formatDescriptions objectAtIndex:0];
+			CMVideoFormatDescriptionRef videoFormatDescription = (__bridge CMFormatDescriptionRef)[formatDescriptions objectAtIndex:0];
 			naturalSize = CMVideoFormatDescriptionGetPresentationDimensions(videoFormatDescription, YES, YES);
 			naturalSizeTransformed = CGSizeApplyAffineTransform (naturalSize, videoTrack.preferredTransform);
 			naturalSizeTransformed.width = fabs(naturalSizeTransformed.width);
@@ -330,7 +329,7 @@ CGRect makeRectWithAspectRatioOutsideRect(CGSize aspectRatio, CGRect containerRe
 		
 		CGSize cropSize = AVMakeRectWithAspectRatioInsideRect(size, boundingRect).size;
 		if ( !CGSizeEqualToSize(cropSize, size) ) {
-			thumb = [[self copyImageFromCGImage:[thumb CGImage] croppedToSize:cropSize] autorelease];
+			thumb = [self copyImageFromCGImage:[thumb CGImage] croppedToSize:cropSize];
 		}
 	}
 	
@@ -380,7 +379,6 @@ CGRect makeRectWithAspectRatioOutsideRect(CGSize aspectRatio, CGRect containerRe
 			 }
 			 dispatch_async(dispatch_get_main_queue(), ^{
 				 self.thumbnailImage = thumbUIImage;
-				 [thumbUIImage release];
 				 
 				 if (handler) {
 					 handler(self.thumbnailImage);
@@ -388,7 +386,6 @@ CGRect makeRectWithAspectRatioOutsideRect(CGSize aspectRatio, CGRect containerRe
 			 });
 		 }
 		 
-		 [imageGenerator release];
 	 }];
 }
 
@@ -430,7 +427,6 @@ CGRect makeRectWithAspectRatioOutsideRect(CGSize aspectRatio, CGRect containerRe
 - (void)clearAssetCache
 {
 	dispatch_sync(assetQueue, ^(void) {
-		[asset release];
 		asset = nil;
 	});
 }
@@ -440,16 +436,4 @@ CGRect makeRectWithAspectRatioOutsideRect(CGSize aspectRatio, CGRect containerRe
 	return [NSString stringWithFormat:@"<AssetBrowserItem: %p, '%@'>", self, self.title];
 }
 
-- (void)dealloc 
-{
-	[assetURL release];
-	[assetTitle release];
-	
-	[thumbnailImage release];
-	[asset release];
-	
-	dispatch_release(assetQueue);
-	
-	[super dealloc];
-}
 @end

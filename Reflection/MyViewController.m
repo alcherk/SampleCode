@@ -1,7 +1,7 @@
 /*
      File: MyViewController.m
  Abstract: Main view controller for displaying the image, reflection and slider table.
-  Version: 1.7
+  Version: 1.8
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -46,54 +46,45 @@
  */
 
 #import "MyViewController.h"
+#import "SliderCell.h"
 
-@interface MyViewController ()
+@interface MyViewController () <UITableViewDelegate, UITableViewDataSource>
 
-@property (nonatomic, strong) UIImageView *imageView;
-@property (nonatomic, strong) UIImageView *reflectionView;
-@property (nonatomic, strong) UITableView *slidersTableView;
-
-- (UIImage *)reflectedImage:(UIImageView *)fromImage withHeight:(NSUInteger)height;
-
-- (IBAction)sizeSlideAction:(id)sender;
-- (IBAction)alphaSlideAction:(id)sender;
+@property (nonatomic, strong) IBOutlet UIImageView *imageView;
+@property (nonatomic, strong) IBOutlet UIImageView *reflectionView;
+@property (nonatomic, strong) IBOutlet UITableView *slidersTableView;
+@property (nonatomic, strong) IBOutlet NSLayoutConstraint *reflectionViewHeightConstraint;
 
 @end
+
+
+#pragma mark -
 
 @implementation MyViewController
 
 // image reflection
 static const CGFloat kDefaultReflectionFraction = 0.65;
 static const CGFloat kDefaultReflectionOpacity = 0.40;
-static const NSInteger kSliderTag = 1337;
 
+static NSString *kCellID = @"CellID";
 
 - (void)viewDidLoad
 {
 	[super viewDidLoad];
     
-    self.slidersTableView.backgroundColor = [UIColor clearColor];
-
+    [self.slidersTableView registerClass:[SliderCell class] forCellReuseIdentifier:kCellID];
+    
+    self.slidersTableView.backgroundColor = [UIColor whiteColor];
+    
 	self.view.autoresizesSubviews = YES;
 	self.view.userInteractionEnabled = YES;
 	
 	// determine the size of the reflection to create
-	NSUInteger reflectionHeight = self.imageView.bounds.size.height * kDefaultReflectionFraction;
+	int reflectionHeight = self.imageView.bounds.size.height * kDefaultReflectionFraction;
 	
 	// create the reflection image and assign it to the UIImageView
 	self.reflectionView.image = [self reflectedImage:self.imageView withHeight:reflectionHeight];
 	self.reflectionView.alpha = kDefaultReflectionOpacity;
-}
-
-- (void)viewDidUnload
-{
-	[super viewDidUnload];
-    self.reflectionView = nil;
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
-{
-    return (toInterfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
 
@@ -101,24 +92,27 @@ static const NSInteger kSliderTag = 1337;
 
 - (IBAction)sizeSlideAction:(id)sender
 {
-	UISlider* slider = (UISlider *)sender;
+    UISlider *slider = (UISlider *)sender;
 	CGFloat val = [slider value];
 	
-	NSUInteger reflectionHeight = self.imageView.bounds.size.height * val;
-	
-	// create the reflection image, assign it to the UIImageView and add the image view to the containerView
+	// change the height constraint of our reflected image view
+    NSInteger reflectionHeight = 180 * val;    // 180 is the original maximum height of the reflected image
+    self.reflectionViewHeightConstraint.constant = reflectionHeight;
+    
+    // create the reflection image, assign it to the UIImageView and add the image view to the containerView
 	self.reflectionView.image = [self reflectedImage:self.imageView withHeight:reflectionHeight];
 	
 	// get the alpha slider value, keep it set on the reflection
 	UISlider *alphaSlider = (UISlider *)[[self.slidersTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]].contentView viewWithTag:kSliderTag];
 	self.reflectionView.alpha = alphaSlider.value;
 	
-	[self.slidersTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]].detailTextLabel.text = [NSString stringWithFormat:@"%0.2f", val];
+	UITableViewCell *sliderCell = [self.slidersTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    sliderCell.detailTextLabel.text = [NSString stringWithFormat:@"%0.2f", val];
 }
 
 - (IBAction)alphaSlideAction:(id)sender
 {
-	UISlider* slider = (UISlider *)sender;
+	UISlider *slider = (UISlider *)sender;
 	CGFloat val = [slider value];
 	self.reflectionView.alpha = val;
 	
@@ -128,10 +122,10 @@ static const NSInteger kSliderTag = 1337;
 
 #pragma mark - Image Reflection
 
-CGImageRef CreateGradientImage(int pixelsWide, int pixelsHigh)
+CGImageRef CreateGradientImage(NSInteger pixelsWide, NSInteger pixelsHigh)
 {
 	CGImageRef theCGImage = NULL;
-
+    
 	// gradient is always black-white and the mask must be in the gray colorspace
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
 	
@@ -164,7 +158,7 @@ CGImageRef CreateGradientImage(int pixelsWide, int pixelsHigh)
     return theCGImage;
 }
 
-CGContextRef MyCreateBitmapContext(int pixelsWide, int pixelsHigh)
+CGContextRef MyCreateBitmapContext(NSInteger pixelsWide, NSInteger pixelsHigh)
 {
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
 	
@@ -174,19 +168,19 @@ CGContextRef MyCreateBitmapContext(int pixelsWide, int pixelsHigh)
 														// this will give us an optimal BGRA format for the device:
 														(kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst));
 	CGColorSpaceRelease(colorSpace);
-
+    
     return bitmapContext;
 }
 
-- (UIImage *)reflectedImage:(UIImageView *)fromImage withHeight:(NSUInteger)height
+- (UIImage *)reflectedImage:(UIImageView *)fromImage withHeight:(NSInteger)height
 {
-    if(height == 0)
+    if (height == 0)
 		return nil;
     
 	// create a bitmap graphics context the size of the image
 	CGContextRef mainViewContentContext = MyCreateBitmapContext(fromImage.bounds.size.width, height);
 	
-	// create a 2 bit CGImage containing a gradient that will be used for masking the 
+	// create a 2 bit CGImage containing a gradient that will be used for masking the
 	// main view content to create the 'fade' of the reflection.  The CGImageCreateWithMask
 	// function will stretch the bitmap image as required, so we can create a 1 pixel wide gradient
 	CGImageRef gradientMaskImage = CreateGradientImage(1, height);
@@ -208,7 +202,7 @@ CGContextRef MyCreateBitmapContext(int pixelsWide, int pixelsHigh)
 	CGImageRef reflectionImage = CGBitmapContextCreateImage(mainViewContentContext);
 	CGContextRelease(mainViewContentContext);
 	
-	// convert the finished reflection image to a UIImage 
+	// convert the finished reflection image to a UIImage
 	UIImage *theImage = [UIImage imageWithCGImage:reflectionImage];
 	
 	// image is retained by the property setting above, so we can release the original
@@ -237,33 +231,13 @@ CGContextRef MyCreateBitmapContext(int pixelsWide, int pixelsHigh)
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	static NSString *kCellID = @"CellID";
-	
-	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellID];
-	if (cell == nil)
-	{
-		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:kCellID];
-        cell.textLabel.backgroundColor = [UIColor clearColor];
-        cell.textLabel.font = [UIFont boldSystemFontOfSize:14.0];
-        cell.textLabel.textColor = [UIColor blackColor];
-		cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        
-        UISlider *slider = [[UISlider alloc] initWithFrame:CGRectMake(cell.contentView.bounds.origin.x + 55.0, 0.0,
-																	   cell.contentView.bounds.size.width - 110.0, 40.0)];
-        slider.tag = kSliderTag;
-        [cell.contentView addSubview:slider];
-                
-        cell.detailTextLabel.backgroundColor = [UIColor clearColor];
-        cell.detailTextLabel.font = [UIFont boldSystemFontOfSize:12.0];
-        cell.detailTextLabel.textColor = [UIColor blackColor];        
-	}
-    
+	SliderCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellID];
     UISlider *slider = (UISlider *)[cell.contentView viewWithTag:kSliderTag];
 	if (indexPath.row == 0)
 	{
 		cell.textLabel.text = @"Size";
 		slider.value = kDefaultReflectionFraction;
-		[slider addTarget:self action:@selector(sizeSlideAction:) forControlEvents:UIControlEventTouchUpInside];
+		[slider addTarget:self action:@selector(sizeSlideAction:) forControlEvents:UIControlEventValueChanged];
 		cell.detailTextLabel.text = [NSString stringWithFormat:@"%0.2f", slider.value];
 	}
 	else

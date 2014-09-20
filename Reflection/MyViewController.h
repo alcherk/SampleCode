@@ -1,7 +1,7 @@
 /*
      File: MyViewController.h
  Abstract: Main view controller for displaying the image, reflection and slider table.
-  Version: 1.7
+  Version: 1.8
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -47,6 +47,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface MyViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
+@interface MyViewController : UIViewController
 
 @end

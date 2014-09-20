@@ -9,12 +9,12 @@ Uses AVPlayer to play videos from the iPod Library, Camera Roll, or via iTunes F
 ===========================================================================
 BUILD REQUIREMENTS:
 
-iOS 5.0 SDK
+iOS 7.0 SDK or later
 
 ===========================================================================
 RUNTIME REQUIREMENTS:
 
-iPhone OS 5.0
+iOS 7.0 or later
 
 ===========================================================================
 USING THE SAMPLE:
@@ -54,4 +54,4 @@ CHANGES FROM PREVIOUS VERSIONS:
 1.0 - First Release
 
 ===========================================================================
-Copyright (C) 2010-2011 Apple Inc. All rights reserved.
+Copyright (C) 2010-2014 Apple Inc. All rights reserved.

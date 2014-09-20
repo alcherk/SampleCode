@@ -1,7 +1,7 @@
 /*
      File: DetailViewController.m 
  Abstract: A view controller used for displaying a grid of Tile views for the iPad. 
-  Version: 1.5 
+  Version: 1.6 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2013 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2014 Apple Inc. All Rights Reserved. 
   
  */
 
@@ -67,7 +67,8 @@
     Tile *tileForFrame[TILE_COUNT];
 }
 
-@property (nonatomic, strong) IBOutlet UINavigationBar *navBar;
+@property (nonatomic, weak) IBOutlet UINavigationBar *navBar;
+@property (nonatomic, weak) IBOutlet UIView *contentView;
 
 @property (nonatomic, strong) UIPopoverController *thePopoverController;
 @property (nonatomic, strong) DetailPopoverViewController *popoverViewController;
@@ -75,9 +76,9 @@
 @end
 
 
-@implementation DetailViewController
+#pragma mark -
 
-#pragma mark - View lifecycle
+@implementation DetailViewController
 
 // implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad
@@ -130,7 +131,7 @@
 			tapGesture.numberOfTouchesRequired = 1;
 			[tile addGestureRecognizer:tapGesture];
 			
-            [self.view addSubview:tile];
+            [self.contentView addSubview:tile];
         }
     }
 }
@@ -163,7 +164,7 @@
 	
 	savedPopoverRect = finalRect;
 	[self.thePopoverController presentPopoverFromRect:finalRect
-                                               inView:self.view
+                                               inView:self.contentView
                              permittedArrowDirections:UIPopoverArrowDirectionAny
                                              animated:YES];
 }
@@ -183,23 +184,11 @@
 	{
 		// we finished rotating, if a popover is allocated, show it again in the new orientation
 		[self.thePopoverController presentPopoverFromRect:savedPopoverRect
-                                                   inView:self.view
+                                                   inView:self.contentView
                                  permittedArrowDirections:UIPopoverArrowDirectionAny
                                                  animated:YES];
 	}
 }
-
-// rotation support for iOS 5.x and earlier, note for iOS 6.0 and later this will not be called
-//
-#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    // Ensure that the view controller supports rotation and that the split view can therefore show in
-    // both portrait and landscape.
-    //
-    return YES;
-}
-#endif
 
 #pragma mark - UIPopoverControllerDelegate
 

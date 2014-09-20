@@ -7,19 +7,21 @@ The WiTap sample application demonstrates how to achieve network communication b
 
 Simply build the sample using Xcode and run it in the simulator or on the device. Wait for another player to connect or select a game to connect to. Once connected, tap one or more colored pads on a device to see them highlighted simultaneously on the remote device.
 
-The version of WiTap no longer works over Bluetooth; see QA1753 "Bonjour over Bluetooth on iOS 5.0" for a discussion of why that's the case and what you can do about it.
+This version of WiTap works over Bluetooth again, courtesy of the NSNetService peer-to-peer support in iOS 7.  Indeed, it now works over peer-to-peer Wi-Fi as well.
+
+Note: For more information about peer-to-peer support in NSNetService, see QA1753 "Bonjour over Bluetooth on iOS 5.0".
 
 <https://developer.apple.com/library/ios/#qa/qa1753/_index.html>
 
 ===========================================================================
 BUILD REQUIREMENTS:
 
-Mac OS X 10.8.2, Xcode 4.6.1, iOS 6.1 SDK
+OS X 10.9.3, Xcode 5.1.1, iOS 7.1 SDK
 
 ===========================================================================
 RUNTIME REQUIREMENTS:
 
-iOS 6.0 or later
+iOS 7.0 or later
 
 ===========================================================================
 PACKING LIST:
@@ -51,19 +53,23 @@ PickerViewController.h
 PickerViewController.m
 A view controller that displays both the currently advertised game name and a list of other games available on the local network.
 
-PickerExtras.xib
-PickerHeaderBackground.png
-Some user interface bits and bobs for the PickerViewController.
+Main.storyboard
+The main storyboard for the app.
 
-Networking/QServer.m
-Networking/QServer.m
-A general-purpose TCP server class.
+cross24.png
+cross24@2x.png
+Images used by the above.
 
 main.m
 The main file for the WiTap application.
 
 ===========================================================================
 CHANGES FROM PREVIOUS VERSIONS:
+
+Version 2.1
+- Re-enabled peer-to-peer operation courtesy of the includesPeerToPeer property added to NSNetService in iOS 7.
+- Removed QServer in favor of the connection listening support added to NSNetService in iOS 7 (NSNetServiceListenForConnections).
+- Updated to the latest coding techniques and standards (including storyboards, Auto Layout, 64-bit and modules).
 
 Version 2.0
 - A major rewrite.
@@ -104,4 +110,4 @@ Version 1.3
 Version 1.2
 - Added icon.
 
-Copyright (C) 2008-2013 Apple Inc. All rights reserved.
+Copyright (C) 2008-2014 Apple Inc. All rights reserved.

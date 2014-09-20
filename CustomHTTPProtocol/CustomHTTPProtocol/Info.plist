@@ -28,12 +28,14 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1.0</string>
+	<string>1.1</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSMainNibFile</key>
-	<string>MainWindow</string>
+	<key>UIMainStoryboardFile</key>
+	<string>Main</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2011-2013 Apple Inc.</string>
+	<string>Copyright © 2011-2014 Apple Inc.</string>
 </dict>
 </plist>

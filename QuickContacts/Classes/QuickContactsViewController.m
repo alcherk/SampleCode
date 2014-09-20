@@ -3,7 +3,7 @@
  Abstract: Demonstrates how to use ABPeoplePickerNavigationControllerDelegate, ABPersonViewControllerDelegate,
  ABNewPersonViewControllerDelegate, and ABUnknownPersonViewControllerDelegate. Shows how to browse a list of 
  Address Book contacts, display and edit a contact record, create a new contact record, and update a partial contact record.
-  Version: 1.2
+  Version: 1.3
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -43,13 +43,14 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2013 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
 */
 
 #import <AddressBook/AddressBook.h>
 #import <AddressBookUI/AddressBookUI.h>
 #import "QuickContactsViewController.h"
+
 enum TableRowSelected
 {
 	kUIDisplayPickerRow = 0,
@@ -68,18 +69,7 @@ enum TableRowSelected
 
 @end
 
-
 @implementation QuickContactsViewController
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self)
-    {
-        self.title = @"QuickContacts";
-    }
-    return self;
-}
 
 #pragma mark Load views
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
@@ -165,26 +155,22 @@ enum TableRowSelected
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath 
 {
-    static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *aCell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-	if (aCell == nil)
-	{
-		// Make the Display Picker and Create New Contact rows look like buttons
-		if (indexPath.section < 2)
-		{
-			aCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-			aCell.textLabel.textAlignment = NSTextAlignmentCenter;
-		}
-		else
-		{
-			aCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-			aCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-			aCell.detailTextLabel.numberOfLines = 0;
-			// Display descriptions for the Edit Unknown Contact and Display and Edit Contact rows 
-			aCell.detailTextLabel.text = [[self.menuArray objectAtIndex:indexPath.section] valueForKey:@"description"];
-		}
-	}
-	
+    static NSString *CellIdentifier = @"CellID";
+    UITableViewCell *aCell;
+	// Make the Display Picker and Create New Contact rows look like buttons
+    if (indexPath.section < 2)
+    {
+        aCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        aCell.textLabel.textAlignment = NSTextAlignmentCenter;
+    }
+    else
+    {
+        aCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        aCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        aCell.detailTextLabel.numberOfLines = 0;
+        // Display descriptions for the Edit Unknown Contact and Display and Edit Contact rows
+        aCell.detailTextLabel.text = [[self.menuArray objectAtIndex:indexPath.section] valueForKey:@"description"];
+    }
 	aCell.textLabel.text = [[self.menuArray objectAtIndex:indexPath.section] valueForKey:@"title"];
 	return aCell;
 }
@@ -365,21 +351,5 @@ enum TableRowSelected
 {
 	return NO;
 }
-
-#pragma mark Memory management
-- (void)didReceiveMemoryWarning
-{
-    // Release the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-}
-
-- (void)dealloc
-{
-    if(_addressBook)
-    {
-        CFRelease(_addressBook);
-    }
-}
-
 
 @end

@@ -1,26 +1,26 @@
 Read Me About CustomHTTPProtocol
 ================================
-1.0
+1.1
 
-CustomHTTPProtocol shows how to use an NSURLProtocol subclass to intercept the NSURLConnections made by a high-level subsystem that does not otherwise expose its network connections.  In this specific case, it intercepts the HTTPS requests made by a UIWebView in order to support custom server trust evaluation.  You can use this technique to solve various problems, including:
+CustomHTTPProtocol shows how to use an NSURLProtocol subclass to intercept the HTTP/HTTPS requests made by a high-level subsystem that does not otherwise expose its network connections.  In this specific case, it intercepts the requests made by a UIWebView in order to support custom server trust evaluation.  You can use this technique to solve various problems, including:
 
 o implementing custom HTTPS server trust evaluation in a UIWebView (perhaps to access a server with a self-signed certificate), as shown by this specific sample code
 
 o allowing HTTPS client identity choice in a UIWebView
 
-o supporting HTTP authentication in a UIWebView
+o supporting HTTP (RFC 2617) authentication in a UIWebView
 
-o debugging problems with any subsystem that uses NSURLConnection, especially in situations where it uses HTTPS, and thus is not amenable to packet tracing
+o debugging problems with any subsystem that uses NSURL{Session,Connection}, especially in situations where it uses HTTPS, and thus is not amenable to packet tracing
 
 Additionally, the core technique shown by this sample (an NSURLProtocol subclass) can be used to solve other problems including:
 
-o forcing UIWebView to run through a custom proxy (by implementing your own URL fetching code using CFHTTPStream)
+o forcing UIWebView to run through a custom proxy (easy to set up in the NSURLSession used for the recursive requests)
 
 o running HTTP requests over some non-standard transport scheme (HTTP over an External Accessory stream pair, for example)
 
 o supporting custom URL schemes for HTTP Live Streaming encryption keys
 
-CustomHTTPProtocol requires iOS 5.1 or later, although the NSURLProtocol subclass technique should work on any version of iOS and, for that matter, on Mac OS X 10.5 and later.
+CustomHTTPProtocol requires iOS 7 or later, although the NSURLProtocol subclass technique should work on any version of iOS and, for that matter, on Mac OS X 10.5 and later.
 
 IMPORTANT: Before using the technique shown by this sample, review the "Compatibility Notes" section, below.
 
@@ -36,23 +36,27 @@ o CustomHTTPProtocol -- A directory containing all the other stuff.
 
 Within the "CustomHTTPProtocol" directory you will find:
 
-o Info.plist, main.m, MainWindow.xib, Icons, Default Images -- Standard things you might find in any iOS app.
+o Info.plist, main.m, Main.storyboard, Icons, Default Images -- Standard things you might find in any iOS app.
 
 o AppDelegate.{h,m} -- The application delegate class; this is a normal app delegate with some minor additions to a) enable the NSURLProtocol subclass, b) support logging from that subclass, and c) actually do the custom server trust evaluation (via a delegate callback from the NSURLProtocol subclass).
 
-o WebViewController.{h,m,xib} -- The main view controller, which runs a web view and manages the process of downloading anchor certificates.
+o ThreadInfo.{h,m} -- A helper class used by the app delegate logging code.
+
+o WebViewController.{h,m} -- The main view controller, which runs a web view and manages the process of downloading anchor certificates.
 
 o WebViewControllerHTML -- Some HTML files used by the above.
 
 o CredentialsManager.{h,m} -- A singleton model object that maintains the list of trusted anchors for the app.
 
-o Core Code -- The code that actually implements the NSURLProtocol subclass.  Within this directory you'll find three modules:
+o Core Code -- The code that actually implements the NSURLProtocol subclass.  Within this directory you'll find four modules:
 
-- CustomHTTPProtocol -- The actual NSURLProtocol subclass.
+- CustomHTTPProtocol.{h,m} -- The actual NSURLProtocol subclass.
 
-- CanonicalRequest -- A module that contains a single function, CanonicalRequestForRequest, which implements some standard functionality.  See the "Caveats" section (below) for more information about this.
+- QNSURLSessionDemux.{h,m} -- A helper class used by instances of the CustomHTTPProtocol class to demultiplex NSURLSession delegate events.
 
-- CacheStoragePolicy -- A module that contains a single function, CacheStoragePolicyForRequestAndResponse, which implements some standard functionality.  See the "Compatibility Notes" section (below) for more information about this.
+- CanonicalRequest.{h,m} -- A module that contains a single function, CanonicalRequestForRequest, which implements some standard functionality.  See the "Caveats" section (below) for more information about this.
+
+- CacheStoragePolicy.{h,m} -- A module that contains a single function, CacheStoragePolicyForRequestAndResponse, which implements some standard functionality.  See the "Compatibility Notes" section (below) for more information about this.
 
 Using the Sample
 ----------------
@@ -76,7 +80,7 @@ IMPORTANT: The app does not remember your installed anchors from launch to launc
 
 Building the Sample
 -------------------
-The sample was built using Xcode 4.6.3 on OS X 10.8.4 using the iOS 6.1 SDK.  You should be able to just open the project and choose Run from the Product menu.
+The sample was built using Xcode 5.1.1 on OS X 10.9.4 using the iOS 7.1 SDK.  You should be able to just open the project and choose Run from the Product menu.
 
 Compatibility Notes
 -------------------
@@ -92,9 +96,11 @@ If you plan to use a custom NSURLProtocol subclass for movie playback, watch WWD
 
 <https://developer.apple.com/videos/wwdc/2011/>
 
-An NSURLProtocol subclass can potentially affect any piece of code in your process that uses NSURLConnection and, as such, represents a real compatibility risk.  To minimize the potential for problems:
+Be aware that, if a subsystem uses NSURLSession, your custom NSURLProtocol subclass will only see requests issued in the shared session (+[NSURLSession sharedSession]).  For the protocol to work in other sessions, it must be listed (via the NSURLSessionConfiguration.protocolClasses property) in the configuration used to create the session.
 
-o limit your scope -- The easiest way to prevent problems is to limit the type of URLs that you handle.  To do this, implement +canInitWithRequest: so that it declines to process everything except the specific requests you're interested in.  For example, in this sample +canInitWithRequest: will only accept HTTPS requests, allowing HTTP requests to be processed by the default protocol implementation.
+An NSURLProtocol subclass can potentially affect any piece of code in your process that uses NSURL{Session,Connection} and, as such, represents a real compatibility risk.  To minimize the potential for problems:
+
+o limit your scope -- The easiest way to prevent problems is to limit the type of URLs that you handle.  To do this, implement +canInitWithRequest: so that it declines to process everything except the specific requests you're interested in.  For example, while +canInitWithRequest: in this sample accepts both HTTP and HTTPS requests, it would be sufficient to have it accept only HTTPS requests, allowing HTTP requests to be processed by the default protocol implementation.
 
 o memory -- Be careful not to use too much memory, particularly on iOS.
 
@@ -153,13 +159,13 @@ The NSURLProtocol subclass must call the client callbacks in the expected order.
 
 The -URLProtocol:didFailWithError: callback can be made at any time (although keep in mind the following point).
 
-The NSProtocol subclass must only send one authentication challenge to the client at a time.  After calling -URLProtocol:didReceiveAuthenticationChallenge:, it must wait for the client to resolve the challenge before calling any callbacks other than -URLProtocol:didCancelAuthenticationChallenge:.  This means that, if the connection fails while there is an outstanding authentication challenge, the NSURLProtocol subclass must call -URLProtocol:didCancelAuthenticationChallenge: before calling -URLProtocol:didFailWithError:.
+The NSURLProtocol subclass must only send one authentication challenge to the client at a time.  After calling -URLProtocol:didReceiveAuthenticationChallenge:, it must wait for the client to resolve the challenge before calling any callbacks other than -URLProtocol:didCancelAuthenticationChallenge:.  This means that, if the connection fails while there is an outstanding authentication challenge, the NSURLProtocol subclass must call -URLProtocol:didCancelAuthenticationChallenge: before calling -URLProtocol:didFailWithError:.
 
 WARNING: An NSURLProtocol subclass must operate asynchronously.  It is not safe for it to block the client thread for extended periods of time.  For example, while it's reasonable for an NSURLProtocol subclass to defer work (like an authentication challenge) to the main thread, it must do so asynchronously.  If the NSURLProtocol subclass passes a task to the main thread and then blocks waiting for the result, it's likely to deadlock the application.
 
 Caveats
 -------
-The sample app does not remember your installed anchors from launch to launch.  This would be easy to implement by extending the CredentialsManager class to store the anchors in the keychain, but I chose not to do this in order to keep things simple.
+The sample app does not remember your installed anchors from launch to launch.  This would be easy to implement by extending the CredentialsManager class to store the anchors, but I chose not to do this in order to keep things simple.
 
 The NSURLProtocolClient protocol has not been extended to support advanced protection spaces <rdar://problem/9226151>.  This means there's no way for your NSURLProtocol subclass to call the NSURLConnection delegate's -connection:canAuthenticateAgainstProtectionSpace: method.  If you do send authentication challenges to your client, you must only send standard authentication challenges (that is, challenges whose protection space's authentication method is NSURLAuthenticationMethodDefault, NSURLAuthenticationMethodHTTPBasic, or NSURLAuthenticationMethodHTTPDigest).  You must process other authentication challenges yourself (which is often the reason why you implemented the custom NSURLProtocol subclass in the first place).
 
@@ -171,19 +177,21 @@ Creating an NSHTTPURLResponse from scratch is tricky.  This sample gets around t
 
 Using a custom NSURLProtocol subclass can cause CFNetwork to leak on HTTP redirects <rdar://problem/10093777>.  To reduce the impact of this leak, minimize the size of your NSURLProtocol subclass object and have it clean up its resources in -stopLoading rather than in -dealloc.
 
+The CanonicalRequest code would most definitely benefit from adopting the NSURLComponents class that was added in iOS 7 and OS X 10.9.  The technique it currently uses is less than ideal <rdar://problem/17383757>.
+
 Creating an NSHTTPURLResponse
 -----------------------------
 Prior to iOS 5 (and OS X 10.7) there was no supported way to construct a valid NSHTTPURLResponse from scratch <rdar://problem/5817126>.  The sticking point was that the only public initialisation method (-initWithURL:MIMEType:expectedContentLength:textEncodingName:) did not let you specify the HTTP status code or headers.  Moreover, because of the interactions between NSURLConnection and CFNetwork, you can't work around this limitation by subclassing NSHTTPURLResponse and overriding the -statusCode and -allHeaderFields methods; such overrides are not seen by all subsystems that use NSURLConnection (most notably UIWebView).
 
 If you only support iOS 5 or later, this isn't an issue: when you need to construct an NSHTTPURLResponse, simply use the newly introduced -initWithURL:statusCode:HTTPVersion:headerFields: initialisation method.  However, if you must support older systems, things get more complex.  There are a variety of less-than-ideal workarounds:
 
-o Actually pass the request off to the default HTTP or HTTPS implementation by calling NSURLConnection recursively.  This will give you back an NSHTTPURLResponse that you can pass up to your client.
+o Actually pass the request off to the default HTTP or HTTPS implementation by calling NSURL{Session,Connection} recursively.  This will give you back an NSHTTPURLResponse that you can pass up to your client.
 
 This is the approach shown by this sample.
 
 o An extension of this approach is to implement a small loopback web server that returns the HTTP response you need to generate the correct NSHTTPURLResponse.
 
-o NSHTTPURLResponse supports the NSCoding protocol.  If your NSURLProtocol only needs to return a small number of fixed responses, you could create those responses via NSURLConnection at build time, archive them, and then unarchive them at run time.
+o NSHTTPURLResponse supports the NSCoding protocol.  If your NSURLProtocol only needs to return a small number of fixed responses, you could create those responses via NSURL{Session,Connection} at build time, archive them, and then unarchive them at run time.
 
 Credits and Version History
 ---------------------------
@@ -195,9 +203,11 @@ If you find any problems with this sample, please file a bug against it.
 
 1.0 (Aug 2013) was the first shipping version.
 
+1.1 (Jul 2014) is an update that changes the protocol to use NSURLSession for its recursive requests.  This works around a deadlock issue <rdar://problem/17342579> and makes the code more future proof.  There were also numerous other minor changes.
+
 Share and Enjoy
 
 Apple Developer Technical Support
 Core OS/Hardware
 
-5 Aug 2013
+28 Jul 2014

@@ -1,7 +1,7 @@
 /*
      File: ThreeViewController.m 
  Abstract: The view controller for page three. 
-  Version: 1.5 
+  Version: 1.6 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -51,14 +51,16 @@ NSString *kBadgeValuePrefKey = @"kBadgeValue";  // badge value key for storing t
 
 @interface ThreeViewController () <UITextFieldDelegate>
 
-@property (nonatomic, strong) IBOutlet UIBarButtonItem *doneButton;
+@property (nonatomic, strong) UIBarButtonItem *doneButton;
 @property (nonatomic, weak) IBOutlet UITextField *badgeField;
 
-- (IBAction)doneAction:(id)sender;
+- (void)doneAction:(id)sender;
 
 @end
 
 @implementation ThreeViewController
+
+@synthesize doneButton;
 
 - (void)viewDidLoad
 {
@@ -66,26 +68,15 @@ NSString *kBadgeValuePrefKey = @"kBadgeValue";  // badge value key for storing t
     
     // set the badge value in our test field and tabbar item
     NSString *badgeValue = [[NSUserDefaults standardUserDefaults] stringForKey:kBadgeValuePrefKey];
+    doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneAction:)];
 	if (badgeValue.length != 0)
 	{
-        self.badgeField.text = badgeValue;	
+        self.badgeField.text = badgeValue;
         self.navigationController.tabBarItem.badgeValue = self.badgeField.text;
     }
 }
 
-#pragma mark - UIViewControllerRotation
-
-// rotation support for iOS 5.x and earlier, note for iOS 6.0 and later all you need is
-// "UISupportedInterfaceOrientations" defined in your Info.plist
-//
-#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
-}
-#endif
-
-- (IBAction)doneAction:(id)sender
+- (void)doneAction:(id)sender
 {
 	// dismiss the keyboard by resigning our badge edit field as first responder
 	[self.badgeField resignFirstResponder];
@@ -134,3 +125,4 @@ NSString *kBadgeValuePrefKey = @"kBadgeValue";  // badge value key for storing t
 }
 
 @end
+

@@ -1,7 +1,7 @@
 /*
      File: LandscapeViewController.m 
  Abstract: The application view controller used when the device is in landscape orientation. 
-  Version: 1.5 
+  Version: 1.6 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -49,58 +49,46 @@
 
 @interface LandscapeViewController ()
 
-@property (assign) UIStatusBarStyle oldStatusBarStyle;
-@property (nonatomic, strong) IBOutlet UIButton *backImageButton;
+@property (strong, nonatomic) IBOutlet UIImageView *imageView;
 
-- (IBAction)doneAction:(id)sender;
+- (IBAction)actionCompleted:(id)sender;
 
 @end
 
 
 @implementation LandscapeViewController
 
+@synthesize image;
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    self.wantsFullScreenLayout = YES; // we want to overlap the status bar
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
-    _oldStatusBarStyle = [[UIApplication sharedApplication] statusBarStyle];
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:NO];
+    self.imageView.image = image;
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    
-    [[UIApplication sharedApplication] setStatusBarStyle:_oldStatusBarStyle animated:NO];
 }
 
-- (IBAction)doneAction:(id)sender
+- (IBAction)actionCompleted:(id)sender
 {
     [self dismissViewControllerAnimated:NO completion:nil];
 }
 
-
-#pragma mark - UIViewControllerRotation
-
-#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0
-// rotation support for iOS 5.x and earlier
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    return UIInterfaceOrientationIsLandscape(interfaceOrientation); // support only landscape
-}
-#endif
-
-// rotation support for iOS 6.0 and later (override what's defined in our Info.plist)
 - (NSUInteger)supportedInterfaceOrientations
 {
-    return UIInterfaceOrientationMaskLandscape; // support only landscape
+    return UIInterfaceOrientationMaskLandscape;
+}
+
+- (BOOL)shouldAutorotate
+{
+    return YES;
 }
 
 @end

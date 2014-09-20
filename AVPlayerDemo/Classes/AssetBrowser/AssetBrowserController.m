@@ -41,9 +41,9 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2011-2013 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
-*/
+ */
 
 #import "AssetBrowserController.h"
 
@@ -94,11 +94,10 @@ enum {
 		browserSourceType = sourceType;
 		if ((browserSourceType & AssetBrowserSourceTypeAll) == 0) {
 			NSLog(@"AssetBrowserController: Invalid sourceType");
-			[self release];
 			return nil;
 		}
 		
-		self.wantsFullScreenLayout = YES;
+		[self setEdgesForExtendedLayout:UIRectEdgeAll];
 		
 		thumbnailScale = [[UIScreen mainScreen] scale];
 		
@@ -151,8 +150,8 @@ enum {
 	self.tableView.decelerationRate = decel;	
     
 	if (isModal && (self.modalPresentationStyle == UIModalPresentationFullScreen)) {
-		self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel 
-                                                                                                target:self action:@selector(cancelAction)] autorelease];
+		self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel 
+                                                                                                target:self action:@selector(cancelAction)];
 	}
 }
 
@@ -162,8 +161,8 @@ enum {
 	
 	if (isModal && (self.modalPresentationStyle == UIModalPresentationFullScreen)) {
 		lastStatusBarStyle = [UIApplication sharedApplication].statusBarStyle;
-		if ( lastStatusBarStyle != UIStatusBarStyleBlackTranslucent ) {
-			[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackTranslucent animated:animated];
+		if ( lastStatusBarStyle != UIStatusBarStyleLightContent ) {
+			[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent animated:animated];
 		}
 	}
 	
@@ -215,7 +214,7 @@ enum {
 	[self disableThumbnailAndTitleGeneration];
 	
 	if (isModal && (self.modalPresentationStyle == UIModalPresentationFullScreen)) {
-		if ( lastStatusBarStyle != UIStatusBarStyleBlackTranslucent ) {
+		if ( lastStatusBarStyle != UIStatusBarStyleLightContent ) {
 			[[UIApplication sharedApplication] setStatusBarStyle:lastStatusBarStyle animated:animated];
 		}
 	}
@@ -321,7 +320,7 @@ enum {
 	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
 	if (cell == nil) {
 
-		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
 		cell.textLabel.font = [UIFont boldSystemFontOfSize:14.0];
 		cell.accessoryType = isModal ? UITableViewCellAccessoryNone : UITableViewCellAccessoryDisclosureIndicator;
 	}
@@ -341,7 +340,6 @@ enum {
 	if ([self.delegate respondsToSelector:@selector(assetBrowser:didChooseItem:)]) {
 		AssetBrowserItem *selectedItemCopy = [selectedItem copy];
 		[self.delegate assetBrowser:self didChooseItem:selectedItemCopy];
-		[selectedItemCopy release];
 	}
 }
 
@@ -531,10 +529,7 @@ enum {
 {
 	delegate = nil;
 		
-	[assetSources release];
-	[activeAssetSources release];
 	
-	[super dealloc];
 }
 
 @end
@@ -544,10 +539,10 @@ enum {
 
 + (UINavigationController*)modalAssetBrowserControllerWithSourceType:(AssetBrowserSourceType)sourceType delegate:(id <AssetBrowserControllerDelegate>)delegate
 {
-	AssetBrowserController *browser = [[[AssetBrowserController alloc] initWithSourceType:sourceType modalPresentation:YES] autorelease];
+	AssetBrowserController *browser = [[AssetBrowserController alloc] initWithSourceType:sourceType modalPresentation:YES];
 	browser.delegate = delegate;
 	
-	UINavigationController *navController = [[[UINavigationController alloc] initWithRootViewController:browser] autorelease];
+	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:browser];
 	[navController.navigationBar setBarStyle:UIBarStyleBlack];
 	[navController.navigationBar setTranslucent:YES];
 
@@ -560,7 +555,7 @@ enum {
 
 + (UITabBarController*)tabbedModalAssetBrowserControllerWithSourceType:(AssetBrowserSourceType)sourceType delegate:(id <AssetBrowserControllerDelegate>)delegate
 {
-	UITabBarController *tabBarController = [[[UITabBarController alloc] init] autorelease];
+	UITabBarController *tabBarController = [[UITabBarController alloc] init];
 	
 	NSMutableArray *assetBrowserControllers = [NSMutableArray arrayWithCapacity:0];
 	

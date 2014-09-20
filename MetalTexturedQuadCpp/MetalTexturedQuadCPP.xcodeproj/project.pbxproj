@@ -1,0 +1,504 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		363A278B1993048B003E6405 /* AAPLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 363A278A1993048B003E6405 /* AAPLView.mm */; };
+		363A27911993069F003E6405 /* AAPLTransforms.mm in Sources */ = {isa = PBXBuildFile; fileRef = 363A27901993069F003E6405 /* AAPLTransforms.mm */; };
+		363A27931993071E003E6405 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 363A27921993071E003E6405 /* Metal.framework */; };
+		363A279519930725003E6405 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 363A279419930725003E6405 /* QuartzCore.framework */; };
+		367053AD199AD2FF00986BDC /* AAPLTQRenderer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 367053AC199AD2FF00986BDC /* AAPLTQRenderer.mm */; };
+		36744E781993FB9E00B69048 /* AAPLQuad.mm in Sources */ = {isa = PBXBuildFile; fileRef = 36744E771993FB9E00B69048 /* AAPLQuad.mm */; };
+		36744E7B1993FBA600B69048 /* AAPLTexture.mm in Sources */ = {isa = PBXBuildFile; fileRef = 36744E7A1993FBA600B69048 /* AAPLTexture.mm */; };
+		36744E7D1993FBAD00B69048 /* texturedQuad.metal in Sources */ = {isa = PBXBuildFile; fileRef = 36744E7C1993FBAD00B69048 /* texturedQuad.metal */; };
+		36744E7F1993FD6F00B69048 /* Default.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 36744E7E1993FD6F00B69048 /* Default.jpg */; };
+		368438C319993DC7008A45A1 /* AAPLQTransform.mm in Sources */ = {isa = PBXBuildFile; fileRef = 368438C219993DC7008A45A1 /* AAPLQTransform.mm */; };
+		368438C719996630008A45A1 /* AAPLTexturedQuad.mm in Sources */ = {isa = PBXBuildFile; fileRef = 368438C619996630008A45A1 /* AAPLTexturedQuad.mm */; };
+		369A5A8D1992FDA400A5C6E8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 369A5A8C1992FDA400A5C6E8 /* main.m */; };
+		369A5A901992FDA400A5C6E8 /* AAPLAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 369A5A8F1992FDA400A5C6E8 /* AAPLAppDelegate.mm */; };
+		369A5A931992FDA400A5C6E8 /* AAPLViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 369A5A921992FDA400A5C6E8 /* AAPLViewController.mm */; };
+		369A5A961992FDA400A5C6E8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 369A5A941992FDA400A5C6E8 /* Main.storyboard */; };
+		369A5A981992FDA400A5C6E8 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 369A5A971992FDA400A5C6E8 /* Images.xcassets */; };
+		36F5FE6819AE87DB00B5E335 /* MetalTexturedQuadCPP.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 36F5FE6719AE87DB00B5E335 /* MetalTexturedQuadCPP.pdf */; };
+		6292139319AFCB5D00B3637D /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6292139219AFCB5D00B3637D /* LaunchScreen.xib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		363A27891993048B003E6405 /* AAPLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLView.h; sourceTree = "<group>"; };
+		363A278A1993048B003E6405 /* AAPLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AAPLView.mm; sourceTree = "<group>"; };
+		363A278F1993069F003E6405 /* AAPLTransforms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLTransforms.h; sourceTree = "<group>"; };
+		363A27901993069F003E6405 /* AAPLTransforms.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AAPLTransforms.mm; sourceTree = "<group>"; };
+		363A27921993071E003E6405 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
+		363A279419930725003E6405 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		367053AB199AD2FF00986BDC /* AAPLTQRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLTQRenderer.h; sourceTree = "<group>"; };
+		367053AC199AD2FF00986BDC /* AAPLTQRenderer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AAPLTQRenderer.mm; sourceTree = "<group>"; };
+		36744E761993FB9E00B69048 /* AAPLQuad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLQuad.h; sourceTree = "<group>"; };
+		36744E771993FB9E00B69048 /* AAPLQuad.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AAPLQuad.mm; sourceTree = "<group>"; };
+		36744E791993FBA600B69048 /* AAPLTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLTexture.h; sourceTree = "<group>"; };
+		36744E7A1993FBA600B69048 /* AAPLTexture.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AAPLTexture.mm; sourceTree = "<group>"; };
+		36744E7C1993FBAD00B69048 /* texturedQuad.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = texturedQuad.metal; sourceTree = "<group>"; };
+		36744E7E1993FD6F00B69048 /* Default.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Default.jpg; sourceTree = "<group>"; };
+		368438C119993DC7008A45A1 /* AAPLQTransform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLQTransform.h; sourceTree = "<group>"; };
+		368438C219993DC7008A45A1 /* AAPLQTransform.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AAPLQTransform.mm; sourceTree = "<group>"; };
+		368438C519996630008A45A1 /* AAPLTexturedQuad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLTexturedQuad.h; sourceTree = "<group>"; };
+		368438C619996630008A45A1 /* AAPLTexturedQuad.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AAPLTexturedQuad.mm; sourceTree = "<group>"; };
+		369A5A871992FDA400A5C6E8 /* MetalTexturedQuadCPP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MetalTexturedQuadCPP.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		369A5A8B1992FDA400A5C6E8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		369A5A8C1992FDA400A5C6E8 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		369A5A8E1992FDA400A5C6E8 /* AAPLAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AAPLAppDelegate.h; sourceTree = "<group>"; };
+		369A5A8F1992FDA400A5C6E8 /* AAPLAppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AAPLAppDelegate.mm; sourceTree = "<group>"; };
+		369A5A911992FDA400A5C6E8 /* AAPLViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AAPLViewController.h; sourceTree = "<group>"; };
+		369A5A921992FDA400A5C6E8 /* AAPLViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AAPLViewController.mm; sourceTree = "<group>"; };
+		369A5A951992FDA400A5C6E8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		369A5A971992FDA400A5C6E8 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		36F5FE6719AE87DB00B5E335 /* MetalTexturedQuadCPP.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = MetalTexturedQuadCPP.pdf; sourceTree = "<group>"; };
+		6292139219AFCB5D00B3637D /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		369A5A841992FDA400A5C6E8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				363A279519930725003E6405 /* QuartzCore.framework in Frameworks */,
+				363A27931993071E003E6405 /* Metal.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		363A279619930729003E6405 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				363A279419930725003E6405 /* QuartzCore.framework */,
+				363A27921993071E003E6405 /* Metal.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		367053AA199AD2E400986BDC /* Renderer */ = {
+			isa = PBXGroup;
+			children = (
+				368438C419996624008A45A1 /* Textured Quad */,
+				36A6511319A8004A00342623 /* Facade */,
+			);
+			name = Renderer;
+			sourceTree = "<group>";
+		};
+		36744E731993FB7600B69048 /* Quad */ = {
+			isa = PBXGroup;
+			children = (
+				36744E761993FB9E00B69048 /* AAPLQuad.h */,
+				36744E771993FB9E00B69048 /* AAPLQuad.mm */,
+			);
+			name = Quad;
+			sourceTree = "<group>";
+		};
+		36744E741993FB7C00B69048 /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+				36744E7C1993FBAD00B69048 /* texturedQuad.metal */,
+			);
+			name = Shaders;
+			sourceTree = "<group>";
+		};
+		36744E751993FB8900B69048 /* Texture */ = {
+			isa = PBXGroup;
+			children = (
+				36744E791993FBA600B69048 /* AAPLTexture.h */,
+				36744E7A1993FBA600B69048 /* AAPLTexture.mm */,
+			);
+			name = Texture;
+			sourceTree = "<group>";
+		};
+		368438C419996624008A45A1 /* Textured Quad */ = {
+			isa = PBXGroup;
+			children = (
+				36A6511219A8002F00342623 /* Base */,
+				36A6511119A8000E00342623 /* Facade */,
+			);
+			name = "Textured Quad";
+			sourceTree = "<group>";
+		};
+		369A5A7E1992FDA300A5C6E8 = {
+			isa = PBXGroup;
+			children = (
+				36F5FE6619AE87B200B5E335 /* Docs */,
+				369A5A891992FDA400A5C6E8 /* Project */,
+				363A279619930729003E6405 /* Frameworks */,
+				369A5A881992FDA400A5C6E8 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		369A5A881992FDA400A5C6E8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				369A5A871992FDA400A5C6E8 /* MetalTexturedQuadCPP.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		369A5A891992FDA400A5C6E8 /* Project */ = {
+			isa = PBXGroup;
+			children = (
+				62445F5B199D9C5C000EC7BF /* App */,
+				36A6511619A8013D00342623 /* Model */,
+				369A5A8A1992FDA400A5C6E8 /* Supporting Files */,
+			);
+			name = Project;
+			path = MetalTexturedQuadCPP;
+			sourceTree = "<group>";
+		};
+		369A5A8A1992FDA400A5C6E8 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				6292139219AFCB5D00B3637D /* LaunchScreen.xib */,
+				36744E7E1993FD6F00B69048 /* Default.jpg */,
+				369A5A941992FDA400A5C6E8 /* Main.storyboard */,
+				369A5A971992FDA400A5C6E8 /* Images.xcassets */,
+				369A5A8B1992FDA400A5C6E8 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		36A6510E19A7FFCC00342623 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				369A5A911992FDA400A5C6E8 /* AAPLViewController.h */,
+				369A5A921992FDA400A5C6E8 /* AAPLViewController.mm */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
+		36A6510F19A7FFDB00342623 /* Delegate */ = {
+			isa = PBXGroup;
+			children = (
+				369A5A8E1992FDA400A5C6E8 /* AAPLAppDelegate.h */,
+				369A5A8F1992FDA400A5C6E8 /* AAPLAppDelegate.mm */,
+			);
+			name = Delegate;
+			sourceTree = "<group>";
+		};
+		36A6511019A7FFEA00342623 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				363A27891993048B003E6405 /* AAPLView.h */,
+				363A278A1993048B003E6405 /* AAPLView.mm */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		36A6511119A8000E00342623 /* Facade */ = {
+			isa = PBXGroup;
+			children = (
+				368438C519996630008A45A1 /* AAPLTexturedQuad.h */,
+				368438C619996630008A45A1 /* AAPLTexturedQuad.mm */,
+			);
+			name = Facade;
+			sourceTree = "<group>";
+		};
+		36A6511219A8002F00342623 /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				36744E731993FB7600B69048 /* Quad */,
+				36744E751993FB8900B69048 /* Texture */,
+			);
+			name = Base;
+			sourceTree = "<group>";
+		};
+		36A6511319A8004A00342623 /* Facade */ = {
+			isa = PBXGroup;
+			children = (
+				367053AB199AD2FF00986BDC /* AAPLTQRenderer.h */,
+				367053AC199AD2FF00986BDC /* AAPLTQRenderer.mm */,
+			);
+			name = Facade;
+			sourceTree = "<group>";
+		};
+		36A6511419A800A600342623 /* Functor */ = {
+			isa = PBXGroup;
+			children = (
+				368438C119993DC7008A45A1 /* AAPLQTransform.h */,
+				368438C219993DC7008A45A1 /* AAPLQTransform.mm */,
+			);
+			name = Functor;
+			sourceTree = "<group>";
+		};
+		36A6511519A800B300342623 /* Linear Transformations */ = {
+			isa = PBXGroup;
+			children = (
+				363A278F1993069F003E6405 /* AAPLTransforms.h */,
+				363A27901993069F003E6405 /* AAPLTransforms.mm */,
+			);
+			name = "Linear Transformations";
+			sourceTree = "<group>";
+		};
+		36A6511619A8013D00342623 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				367053AA199AD2E400986BDC /* Renderer */,
+				36744E741993FB7C00B69048 /* Shaders */,
+				62445F5C199D9CA1000EC7BF /* Math */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		36F5FE6619AE87B200B5E335 /* Docs */ = {
+			isa = PBXGroup;
+			children = (
+				36F5FE6719AE87DB00B5E335 /* MetalTexturedQuadCPP.pdf */,
+			);
+			name = Docs;
+			sourceTree = "<group>";
+		};
+		62445F5B199D9C5C000EC7BF /* App */ = {
+			isa = PBXGroup;
+			children = (
+				369A5A8C1992FDA400A5C6E8 /* main.m */,
+				36A6510E19A7FFCC00342623 /* Controller */,
+				36A6510F19A7FFDB00342623 /* Delegate */,
+				36A6511019A7FFEA00342623 /* View */,
+			);
+			name = App;
+			sourceTree = "<group>";
+		};
+		62445F5C199D9CA1000EC7BF /* Math */ = {
+			isa = PBXGroup;
+			children = (
+				36A6511519A800B300342623 /* Linear Transformations */,
+				36A6511419A800A600342623 /* Functor */,
+			);
+			name = Math;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		369A5A861992FDA400A5C6E8 /* MetalTexturedQuadCPP */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 369A5AAA1992FDA400A5C6E8 /* Build configuration list for PBXNativeTarget "MetalTexturedQuadCPP" */;
+			buildPhases = (
+				369A5A831992FDA400A5C6E8 /* Sources */,
+				369A5A841992FDA400A5C6E8 /* Frameworks */,
+				369A5A851992FDA400A5C6E8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MetalTexturedQuadCPP;
+			productName = MetalTexturedQuadCPP;
+			productReference = 369A5A871992FDA400A5C6E8 /* MetalTexturedQuadCPP.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		369A5A7F1992FDA300A5C6E8 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0600;
+				ORGANIZATIONNAME = "Apple Inc.";
+				TargetAttributes = {
+					369A5A861992FDA400A5C6E8 = {
+						CreatedOnToolsVersion = 6.0;
+					};
+				};
+			};
+			buildConfigurationList = 369A5A821992FDA300A5C6E8 /* Build configuration list for PBXProject "MetalTexturedQuadCPP" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 369A5A7E1992FDA300A5C6E8;
+			productRefGroup = 369A5A881992FDA400A5C6E8 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				369A5A861992FDA400A5C6E8 /* MetalTexturedQuadCPP */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		369A5A851992FDA400A5C6E8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6292139319AFCB5D00B3637D /* LaunchScreen.xib in Resources */,
+				369A5A961992FDA400A5C6E8 /* Main.storyboard in Resources */,
+				36744E7F1993FD6F00B69048 /* Default.jpg in Resources */,
+				36F5FE6819AE87DB00B5E335 /* MetalTexturedQuadCPP.pdf in Resources */,
+				369A5A981992FDA400A5C6E8 /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		369A5A831992FDA400A5C6E8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				363A278B1993048B003E6405 /* AAPLView.mm in Sources */,
+				368438C719996630008A45A1 /* AAPLTexturedQuad.mm in Sources */,
+				36744E7B1993FBA600B69048 /* AAPLTexture.mm in Sources */,
+				363A27911993069F003E6405 /* AAPLTransforms.mm in Sources */,
+				367053AD199AD2FF00986BDC /* AAPLTQRenderer.mm in Sources */,
+				36744E7D1993FBAD00B69048 /* texturedQuad.metal in Sources */,
+				369A5A931992FDA400A5C6E8 /* AAPLViewController.mm in Sources */,
+				369A5A901992FDA400A5C6E8 /* AAPLAppDelegate.mm in Sources */,
+				36744E781993FB9E00B69048 /* AAPLQuad.mm in Sources */,
+				368438C319993DC7008A45A1 /* AAPLQTransform.mm in Sources */,
+				369A5A8D1992FDA400A5C6E8 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		369A5A941992FDA400A5C6E8 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				369A5A951992FDA400A5C6E8 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		369A5AA81992FDA400A5C6E8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = c11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LINKER_DISPLAYS_MANGLED_NAMES = YES;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		369A5AA91992FDA400A5C6E8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = c11;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				GCC_UNROLL_LOOPS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LLVM_LTO = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		369A5AAB1992FDA400A5C6E8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = MetalTexturedQuadCPP/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		369A5AAC1992FDA400A5C6E8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = MetalTexturedQuadCPP/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		369A5A821992FDA300A5C6E8 /* Build configuration list for PBXProject "MetalTexturedQuadCPP" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				369A5AA81992FDA400A5C6E8 /* Debug */,
+				369A5AA91992FDA400A5C6E8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		369A5AAA1992FDA400A5C6E8 /* Build configuration list for PBXNativeTarget "MetalTexturedQuadCPP" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				369A5AAB1992FDA400A5C6E8 /* Debug */,
+				369A5AAC1992FDA400A5C6E8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 369A5A7F1992FDA300A5C6E8 /* Project object */;
+}

@@ -16,11 +16,11 @@ reflectionView.alpha = 0.50;
 
 
 Build Requirements
-iOS 5.0 SDK
+iOS 7.0 SDK
 
 
 Runtime Requirements
-iOS 5.0 or later
+iOS 7.0 or later
 
 
 Using the Sample
@@ -33,9 +33,11 @@ Packaging List
 main.m - Main source file for this sample.
 AppDelegate.h/.m - The application's delegate to setup its window and content.
 MyViewController.h/.m - The main UIViewController containing a the UIImageView and its reflection.
+SliderCell.h/.m - UITableViewCell to host a slider, its label and value.
 
 
 Changes from Previous Versions
+1.8 - Updated to use Storyboards instead of XIBs.
 1.7 - Minor change to fix a warning related to the Architectures build setting.
 1.6 - Upgraded for iOS 5.0, now using Automatic Reference Counting (ARC)
 1.5 - Changed deployment target back to iPhone OS 3.2 and added CFBundleIconFiles in Info.plist.
@@ -46,4 +48,4 @@ Changes from Previous Versions
 1.0 - first release
 
 
-Copyright (C) 2008-2012 Apple Inc. All rights reserved.
+Copyright (C) 2008-2014 Apple Inc. All rights reserved.

@@ -1,7 +1,7 @@
 /*
      File: AppController.m
  Abstract: UIApplication's delegate class, the central controller of the application.
-  Version: 2.0
+  Version: 2.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2013 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
@@ -49,7 +49,6 @@
 
 #import "TapViewController.h"
 #import "PickerViewController.h"
-#import "QServer.h"
 
 // The Bonjour service type consists of an IANA service name (see RFC 6335) 
 // prefixed by an underscore (as per RFC 2782).
@@ -72,13 +71,14 @@ static NSString * kWiTapBonjourType = @"_witap2._tcp.";
     UIApplicationDelegate, 
     TapViewControllerDelegate, 
     PickerDelegate, 
-    UIActionSheetDelegate,
-    QServerDelegate,
+    NSNetServiceDelegate,
     NSStreamDelegate
 >
 
 @property (nonatomic, strong, readwrite) TapViewController *    tapViewController;
-@property (nonatomic, strong, readwrite) QServer *              server;
+@property (nonatomic, strong, readwrite) NSNetService *         server;
+@property (nonatomic, assign, readwrite) BOOL                   isServerStarted;
+@property (nonatomic, copy,   readwrite) NSString *             registeredName;
 @property (nonatomic, strong, readwrite) NSInputStream *        inputStream;
 @property (nonatomic, strong, readwrite) NSOutputStream *       outputStream;
 @property (nonatomic, assign, readwrite) NSUInteger             streamOpenCount;
@@ -91,20 +91,18 @@ static NSString * kWiTapBonjourType = @"_witap2._tcp.";
 
 @synthesize window = _window;
 
-- (void)applicationDidFinishLaunching:(UIApplication *)application
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     #pragma unused(application)
+    #pragma unused(launchOptions)
     
-    // Create a full-screen window
-
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    // Get the root view controller (set up by the storyboard)
     
-    // Create the root view controller
-    
-    self.tapViewController = [[TapViewController alloc] init];
+    self.tapViewController = (TapViewController *) self.window.rootViewController;
+    assert([self.tapViewController isKindOfClass:[TapViewController class]]);
     self.tapViewController.delegate = self;
     
-    // Show the window
+    // Show our window
     
     self.window.rootViewController = self.tapViewController;
     [self.window makeKeyAndVisible];
@@ -112,14 +110,18 @@ static NSString * kWiTapBonjourType = @"_witap2._tcp.";
     // Create and advertise our server.  We only want the service to be registered on 
     // local networks so we pass in the "local." domain.
 
-    self.server = [[QServer alloc] initWithDomain:@"local." type:kWiTapBonjourType name:nil preferredPort:0];
+    self.server = [[NSNetService alloc] initWithDomain:@"local." type:kWiTapBonjourType name:[UIDevice currentDevice].name port:0];
+    self.server.includesPeerToPeer = YES;
     [self.server setDelegate:self];
-    [self.server start];
+    [self.server publishWithOptions:NSNetServiceListenForConnections];
+    self.isServerStarted = YES;
     
     // Set up for a new game, which presents a Bonjour browser that displays other 
     // available games.
 
     [self setupForNewGame];
+    
+    return YES;
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
@@ -140,6 +142,8 @@ static NSString * kWiTapBonjourType = @"_witap2._tcp.";
     // Quiesce the server and service browser, if any.
     
     [self.server stop];
+    self.isServerStarted = NO;
+    self.registeredName = nil;
     if (self.picker != nil) {
         [self.picker stop];
     }
@@ -151,8 +155,10 @@ static NSString * kWiTapBonjourType = @"_witap2._tcp.";
     
     // Quicken the server.  Once this is done it will quicken the picker, if there's one up.
     
-    [self.server start];
-    if (self.server.registeredName != nil) {
+    assert( ! self.isServerStarted );
+    [self.server publishWithOptions:NSNetServiceListenForConnections];
+    self.isServerStarted = YES;
+    if (self.registeredName != nil) {
         [self startPicker];
     }
 }
@@ -169,8 +175,9 @@ static NSString * kWiTapBonjourType = @"_witap2._tcp.";
     
     // If our server is deregistered, reregister it.
     
-    if (self.server.isDeregistered) {
-        [self.server reregister];
+    if ( ! self.isServerStarted ) {
+        [self.server publishWithOptions:NSNetServiceListenForConnections];
+        self.isServerStarted = YES;
     }
     
     // And show the service picker.
@@ -182,13 +189,12 @@ static NSString * kWiTapBonjourType = @"_witap2._tcp.";
 
 - (void)startPicker
 {
-    NSNetService *  registeredService;
+    assert(self.registeredName != nil);
     
     // Tell the picker about our registration.  It uses this to a) filter out our game 
     // from the results, and b) display our game name in its table view header.
     
-    registeredService = [[NSNetService alloc] initWithDomain:@"local." type:kWiTapBonjourType name:self.server.registeredName];
-    self.picker.localService = registeredService;
+    self.picker.localService = self.server;
     
     // Start it up.
     
@@ -209,9 +215,11 @@ static NSString * kWiTapBonjourType = @"_witap2._tcp.";
         // service name so that it can exclude us from the list).  If that's not the 
         // case then the picker remains stopped until -serverDidStart: runs.
         
-        self.picker = [[PickerViewController alloc] initWithType:kWiTapBonjourType];
+        self.picker = [self.tapViewController.storyboard instantiateViewControllerWithIdentifier:@"picker"];
+        assert([self.picker isKindOfClass:[PickerViewController class]]);
+        self.picker.type = kWiTapBonjourType;
         self.picker.delegate = self;
-        if (self.server.registeredName != nil) {
+        if (self.registeredName != nil) {
             [self startPicker];
         }
 
@@ -288,7 +296,9 @@ static NSString * kWiTapBonjourType = @"_witap2._tcp.";
             if (self.streamOpenCount == 2) {
                 [self dismissPicker];
                 
-                [self.server deregister];
+                [self.server stop];
+                self.isServerStarted = NO;
+                self.registeredName = nil;
             }
         } break;
         
@@ -352,8 +362,6 @@ static NSString * kWiTapBonjourType = @"_witap2._tcp.";
 {
     assert( (self.inputStream != nil) == (self.outputStream != nil) );      // should either have both or neither
     if (self.inputStream != nil) {
-        [self.server closeOneConnection:self];
-        
         [self.inputStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
         [self.inputStream close];
         self.inputStream = nil;
@@ -407,9 +415,12 @@ static NSString * kWiTapBonjourType = @"_witap2._tcp.";
 
 #pragma mark - QServer delegate
 
-- (void)serverDidStart:(QServer *)server
+- (void)netServiceDidPublish:(NSNetService *)sender
 {
-    #pragma unused(server)
+    assert(sender == self.server);
+    #pragma unused(sender)
+
+    self.registeredName = self.server.name;
     if (self.picker != nil) {
         // If our server wasn't started when we brought up the picker, we 
         // left the picker stopped (because without our service name it can't 
@@ -420,63 +431,54 @@ static NSString * kWiTapBonjourType = @"_witap2._tcp.";
     }
 }
 
-- (id)server:(QServer *)server connectionForInputStream:(NSInputStream *)inputStream outputStream:(NSOutputStream *)outputStream
+- (void)netService:(NSNetService *)sender didAcceptConnectionWithInputStream:(NSInputStream *)inputStream outputStream:(NSOutputStream *)outputStream
 {
-    id  result;
-    
-    assert(server == self.server);
-    #pragma unused(server)
-    assert(inputStream != nil);
-    assert(outputStream != nil);
-    
-    assert( (self.inputStream != nil) == (self.outputStream != nil) );      // should either have both or neither
-    
-    if (self.inputStream != nil) {
-        // We already have a game in place; reject this new one.
-        result = nil;
-    } else {
-        // Start up the new game.  Start by deregistering the server, to discourage 
-        // other folks from connecting to us (and being disappointed when we reject 
-        // the connection).
+    // Due to a bug <rdar://problem/15626440>, this method is called on some unspecified 
+    // queue rather than the queue associated with the net service (which in this case 
+    // is the main queue).  Work around this by bouncing to the main queue.
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        assert(sender == self.server);
+        #pragma unused(sender)
+        assert(inputStream != nil);
+        assert(outputStream != nil);
 
-        [self.server deregister];
+        assert( (self.inputStream != nil) == (self.outputStream != nil) );      // should either have both or neither
         
-        // Latch the input and output sterams and kick off an open.
-        
-        self.inputStream  = inputStream;
-        self.outputStream = outputStream;
-        
-        [self openStreams];
-        
-        // This is kinda bogus.  Because we only support a single input stream 
-        // we use the app delegate as the connection object.  It makes sense if 
-        // you think about it long enough, but it's definitely strange.
-        
-        result = self;
-    }
-    
-    return result;
+        if (self.inputStream != nil) {
+            // We already have a game in place; reject this new one.
+            [inputStream open];
+            [inputStream close];
+            [outputStream open];
+            [outputStream close];
+        } else {
+            // Start up the new game.  Start by deregistering the server, to discourage 
+            // other folks from connecting to us (and being disappointed when we reject 
+            // the connection).
+
+            [self.server stop];
+            self.isServerStarted = NO;
+            self.registeredName = nil;
+            
+            // Latch the input and output sterams and kick off an open.
+            
+            self.inputStream  = inputStream;
+            self.outputStream = outputStream;
+            
+            [self openStreams];
+        }
+    }];
 }
 
-- (void)server:(QServer *)server didStopWithError:(NSError *)error
+- (void)netService:(NSNetService *)sender didNotPublish:(NSDictionary *)errorDict
     // This is called when the server stops of its own accord.  The only reason 
     // that might happen is if the Bonjour registration fails when we reregister 
     // the server, and that's hard to trigger because we use auto-rename.  I've 
     // left an assert here so that, if this does happen, we can figure out why it 
     // happens and then decide how best to handle it.
 {
-    assert(server == self.server);
-    #pragma unused(server)
-    #pragma unused(error)
-    assert(NO);
-}
-
-- (void)server:(QServer *)server closeConnection:(id)connection
-{
-    // This is called when the server shuts down, which currently never happens.
-    assert(server == self.server);
-    #pragma unused(server)
-    #pragma unused(connection)
+    assert(sender == self.server);
+    #pragma unused(sender)
+    #pragma unused(errorDict)
     assert(NO);
 }
 

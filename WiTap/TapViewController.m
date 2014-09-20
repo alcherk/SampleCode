@@ -1,7 +1,7 @@
 /*
      File: TapViewController.m
  Abstract: Controls the main tap view.
-  Version: 2.0
+  Version: 2.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2013 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
@@ -49,100 +49,39 @@
 
 #import "TapView.h"
 
-#include <AssertMacros.h>
-
 @interface TapViewController () <TapViewDelegate>
 
 @end
 
 @implementation TapViewController
 
-- (id)init
+- (void)viewDidLoad
 {
-    self = [super initWithNibName:nil bundle:nil];
-    if (self != nil) {
-        // do nothing
+    [super viewDidLoad];
+    
+    // Setting up the view colours in IB is actually harder than setting them up in code.
+    
+    for (NSInteger tapViewTag = 1; tapViewTag < (kTapViewControllerTapItemCount + 1); tapViewTag++) {
+        TapView *   tapView;
+
+        tapView = (TapView *) [self.view viewWithTag:tapViewTag];
+        assert([tapView isKindOfClass:[TapView class]]);
+        tapView.backgroundColor = [UIColor colorWithHue:(CGFloat) tapViewTag / kTapViewControllerTapItemCount
+            saturation:0.75 
+            brightness:0.75 
+            alpha:1.0
+        ];
     }
-    return self;
 }
 
-- (void)loadCloseButton
+- (IBAction)closeButtonAction:(id)sender
 {
-    UIButton *  closeButton;
+    id <TapViewControllerDelegate>  strongDelegate;
     
-    closeButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 32.0f, 32.0f)];
-    closeButton.contentMode = UIViewContentModeCenter;
-    closeButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin;
-    [closeButton setImage:[UIImage imageNamed:@"cross24"] forState:UIControlStateNormal];
-    [closeButton addTarget:self action:@selector(closeButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:closeButton];
-}
-
-enum {
-    kTapViewControllerTapsPerRow = 3
-};
-
-// The tap count must be an even multiple of the taps per row otherwise this is never 
-// going to work.
-
-check_compile_time((kTapViewControllerTapItemCount % kTapViewControllerTapsPerRow) == 0);
-
-- (void)loadView
-{
-    // Creates our main view and the tap views embedded within it.  This only creates 
-    // the views; the layout is done in viewDidLayoutSubviews.
-    
-    self.view = [[UIView alloc] initWithFrame:CGRectZero];
-    for (NSUInteger x = 0; x < kTapViewControllerTapsPerRow; x++) {
-        for (NSUInteger y = 0; y < (kTapViewControllerTapItemCount / kTapViewControllerTapsPerRow); y++) {
-            TapView *   tapView;
-            
-            tapView = [[TapView alloc] initWithFrame:CGRectZero];
-            tapView.backgroundColor = [UIColor colorWithHue:((y * kTapViewControllerTapsPerRow + x) / (CGFloat) kTapViewControllerTapItemCount) 
-                saturation:0.75 
-                brightness:0.75 
-                alpha:1.0
-            ];
-            tapView.tag = (NSInteger) (y * kTapViewControllerTapsPerRow + x + 1);
-            tapView.delegate = self;
-            [self.view addSubview:tapView];
-        }
-    }
-    
-    [self loadCloseButton];
-}
-
-- (void)viewDidLayoutSubviews
-{
-    CGRect      frame;
-    
-    [super viewDidLayoutSubviews];
-
-    // Lays out the tap views in a grid.
-    
-    frame = self.view.bounds;
-    frame.size.width  /= (CGFloat) kTapViewControllerTapsPerRow;
-    frame.size.height /= (CGFloat) kTapViewControllerTapsPerRow;
-    for (NSUInteger x = 0; x < kTapViewControllerTapsPerRow; x++) {
-        for (NSUInteger y = 0; y < (kTapViewControllerTapItemCount / kTapViewControllerTapsPerRow); y++) {
-            [self.view viewWithTag:(NSInteger) (y * kTapViewControllerTapsPerRow + x + 1)].frame = CGRectMake(
-                frame.origin.x + x * frame.size.width, 
-                frame.origin.y + y * frame.size.height, 
-                frame.size.width,
-                frame.size.height
-            );
-        }
-    }
-    
-    // We don't need to position the close button because the autosizing masks do 
-    // what we need.
-}
-
-- (void)closeButtonAction:(id)sender
-{
     #pragma unused(sender)
-    if ([self.delegate respondsToSelector:@selector(tapViewControllerDidClose:)]) {
-        [self.delegate tapViewControllerDidClose:self];
+    strongDelegate = self.delegate;
+    if ([strongDelegate respondsToSelector:@selector(tapViewControllerDidClose:)]) {
+        [strongDelegate tapViewControllerDidClose:self];
     }
 }
 
@@ -179,19 +118,25 @@ check_compile_time((kTapViewControllerTapItemCount % kTapViewControllerTapsPerRo
 
 - (void)tapViewLocalTouchDown:(TapView *)tapView
 {
-    if ([self.delegate respondsToSelector:@selector(tapViewController:localTouchDownOnItem:)]) {
+    id <TapViewControllerDelegate>  strongDelegate;
+    
+    strongDelegate = self.delegate;
+    if ([strongDelegate respondsToSelector:@selector(tapViewController:localTouchDownOnItem:)]) {
         assert(tapView.tag != 0);
         assert(tapView.tag <= kTapViewControllerTapItemCount);
-        [self.delegate tapViewController:self localTouchDownOnItem:(NSUInteger) ([tapView tag] - 1)];
+        [strongDelegate tapViewController:self localTouchDownOnItem:(NSUInteger) ([tapView tag] - 1)];
     }
 }
 
 - (void)tapViewLocalTouchUp:(TapView *)tapView
 {
-    if ([self.delegate respondsToSelector:@selector(tapViewController:localTouchUpOnItem:)]) {
+    id <TapViewControllerDelegate>  strongDelegate;
+    
+    strongDelegate = self.delegate;
+    if ([strongDelegate respondsToSelector:@selector(tapViewController:localTouchUpOnItem:)]) {
         assert(tapView.tag != 0);
         assert(tapView.tag <= kTapViewControllerTapItemCount);
-        [self.delegate tapViewController:self localTouchUpOnItem:(NSUInteger) ([tapView tag] - 1)];
+        [strongDelegate tapViewController:self localTouchUpOnItem:(NSUInteger) ([tapView tag] - 1)];
     }
 }
 

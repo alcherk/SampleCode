@@ -9,29 +9,23 @@
 /* Begin PBXBuildFile section */
 		1D3623260D0F684500981E51 /* QuickContactsAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* QuickContactsAppDelegate.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
+		1E5BCE72196F65B1007B13C8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1E5BCE70196F65B1007B13C8 /* Main.storyboard */; };
+		1E763AE0196F3EC3000DDB90 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1E763ADF196F3EC3000DDB90 /* Images.xcassets */; };
 		EB5F77280FD05CA300F02A31 /* QuickContactsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EB5F77270FD05CA300F02A31 /* QuickContactsViewController.m */; };
 		EB5F775E0FD05FD600F02A31 /* Menu.plist in Resources */ = {isa = PBXBuildFile; fileRef = EB5F775D0FD05FD600F02A31 /* Menu.plist */; };
-		EBAA0CDA11CD2E6D0000C424 /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = EBAA0CD511CD2E6D0000C424 /* Icon-Small.png */; };
-		EBAA0CDB11CD2E6D0000C424 /* Icon-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = EBAA0CD611CD2E6D0000C424 /* Icon-Small@2x.png */; };
-		EBAA0CDC11CD2E6D0000C424 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = EBAA0CD711CD2E6D0000C424 /* Icon.png */; };
-		EBAA0CDD11CD2E6D0000C424 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = EBAA0CD811CD2E6D0000C424 /* Icon@2x.png */; };
 		EBBBBB3611CC1727002F43F5 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EBBBBB3511CC1727002F43F5 /* AddressBook.framework */; };
 		EBBBBB3811CC1727002F43F5 /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EBBBBB3711CC1727002F43F5 /* AddressBookUI.framework */; };
 		EBBBBB3E11CC172F002F43F5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EBBBBB3D11CC172F002F43F5 /* UIKit.framework */; };
 		EBBBBB4211CC1735002F43F5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EBBBBB4111CC1735002F43F5 /* Foundation.framework */; };
 		EBBBBB4611CC1742002F43F5 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EBBBBB4511CC1742002F43F5 /* CoreGraphics.framework */; };
-		EBCBC1C511D404AC009DD8F3 /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = EBCBC1C411D404AC009DD8F3 /* iTunesArtwork */; };
-		EBCBC1C711D404B4009DD8F3 /* Icon-Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = EBCBC1C611D404B4009DD8F3 /* Icon-Small-50.png */; };
-		EBDB0CA017AC6459007DADF4 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = EBDB0C9D17AC6459007DADF4 /* Default-568h@2x.png */; };
-		EBDB0CA117AC6459007DADF4 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = EBDB0C9E17AC6459007DADF4 /* Default.png */; };
-		EBDB0CA217AC6459007DADF4 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = EBDB0C9F17AC6459007DADF4 /* Default@2x.png */; };
-		EBDB0D6717AC6C8D007DADF4 /* QuickContactsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = EBDB0D6917AC6C8D007DADF4 /* QuickContactsViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		1D3623240D0F684500981E51 /* QuickContactsAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuickContactsAppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* QuickContactsAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuickContactsAppDelegate.m; sourceTree = "<group>"; };
 		1D6058910D05DD3D006BFB54 /* QuickContacts.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QuickContacts.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1E5BCE71196F65B1007B13C8 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/Main.storyboard; sourceTree = "<group>"; };
+		1E763ADF196F3EC3000DDB90 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = QuickContacts/Images.xcassets; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* QuickContacts_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuickContacts_Prefix.pch; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* QuickContacts-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "QuickContacts-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
@@ -39,21 +33,11 @@
 		EB5F77260FD05CA300F02A31 /* QuickContactsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuickContactsViewController.h; sourceTree = "<group>"; };
 		EB5F77270FD05CA300F02A31 /* QuickContactsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuickContactsViewController.m; sourceTree = "<group>"; };
 		EB5F775D0FD05FD600F02A31 /* Menu.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Menu.plist; sourceTree = "<group>"; };
-		EBAA0CD511CD2E6D0000C424 /* Icon-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small.png"; path = "images/Icon-Small.png"; sourceTree = "<group>"; };
-		EBAA0CD611CD2E6D0000C424 /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small@2x.png"; path = "images/Icon-Small@2x.png"; sourceTree = "<group>"; };
-		EBAA0CD711CD2E6D0000C424 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = images/Icon.png; sourceTree = "<group>"; };
-		EBAA0CD811CD2E6D0000C424 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon@2x.png"; path = "images/Icon@2x.png"; sourceTree = "<group>"; };
 		EBBBBB3511CC1727002F43F5 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		EBBBBB3711CC1727002F43F5 /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
 		EBBBBB3D11CC172F002F43F5 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		EBBBBB4111CC1735002F43F5 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		EBBBBB4511CC1742002F43F5 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		EBCBC1C411D404AC009DD8F3 /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; name = iTunesArtwork; path = images/iTunesArtwork; sourceTree = "<group>"; };
-		EBCBC1C611D404B4009DD8F3 /* Icon-Small-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small-50.png"; path = "images/Icon-Small-50.png"; sourceTree = "<group>"; };
-		EBDB0C9D17AC6459007DADF4 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "images/Default-568h@2x.png"; sourceTree = "<group>"; };
-		EBDB0C9E17AC6459007DADF4 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = images/Default.png; sourceTree = "<group>"; };
-		EBDB0C9F17AC6459007DADF4 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x.png"; path = "images/Default@2x.png"; sourceTree = "<group>"; };
-		EBDB0D6817AC6C8D007DADF4 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/QuickContactsViewController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,18 +100,10 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				EBCBC1C611D404B4009DD8F3 /* Icon-Small-50.png */,
-				EBCBC1C411D404AC009DD8F3 /* iTunesArtwork */,
-				EBDB0C9D17AC6459007DADF4 /* Default-568h@2x.png */,
-				EBDB0C9E17AC6459007DADF4 /* Default.png */,
-				EBDB0C9F17AC6459007DADF4 /* Default@2x.png */,
-				EBAA0CD511CD2E6D0000C424 /* Icon-Small.png */,
-				EBAA0CD611CD2E6D0000C424 /* Icon-Small@2x.png */,
-				EBAA0CD711CD2E6D0000C424 /* Icon.png */,
-				EBAA0CD811CD2E6D0000C424 /* Icon@2x.png */,
+				1E763ADF196F3EC3000DDB90 /* Images.xcassets */,
 				8D1107310486CEB800E47090 /* QuickContacts-Info.plist */,
 				EB5F775D0FD05FD600F02A31 /* Menu.plist */,
-				EBDB0D6917AC6C8D007DADF4 /* QuickContactsViewController.xib */,
+				1E5BCE70196F65B1007B13C8 /* Main.storyboard */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -170,7 +146,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0460;
+				LastUpgradeCheck = 0510;
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "QuickContacts" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -198,16 +174,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				EB5F775E0FD05FD600F02A31 /* Menu.plist in Resources */,
-				EBAA0CDA11CD2E6D0000C424 /* Icon-Small.png in Resources */,
-				EBAA0CDB11CD2E6D0000C424 /* Icon-Small@2x.png in Resources */,
-				EBAA0CDC11CD2E6D0000C424 /* Icon.png in Resources */,
-				EBAA0CDD11CD2E6D0000C424 /* Icon@2x.png in Resources */,
-				EBCBC1C511D404AC009DD8F3 /* iTunesArtwork in Resources */,
-				EBCBC1C711D404B4009DD8F3 /* Icon-Small-50.png in Resources */,
-				EBDB0D6717AC6C8D007DADF4 /* QuickContactsViewController.xib in Resources */,
-				EBDB0CA017AC6459007DADF4 /* Default-568h@2x.png in Resources */,
-				EBDB0CA117AC6459007DADF4 /* Default.png in Resources */,
-				EBDB0CA217AC6459007DADF4 /* Default@2x.png in Resources */,
+				1E763AE0196F3EC3000DDB90 /* Images.xcassets in Resources */,
+				1E5BCE72196F65B1007B13C8 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -227,12 +195,12 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		EBDB0D6917AC6C8D007DADF4 /* QuickContactsViewController.xib */ = {
+		1E5BCE70196F65B1007B13C8 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				EBDB0D6817AC6C8D007DADF4 /* en */,
+				1E5BCE71196F65B1007B13C8 /* en */,
 			);
-			name = QuickContactsViewController.xib;
+			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -242,6 +210,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -277,6 +247,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -308,7 +280,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CODE_SIGN_IDENTITY = "";
@@ -328,7 +299,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CODE_SIGN_IDENTITY = "";

@@ -1,7 +1,7 @@
 /*
      File: PickerViewController.m
  Abstract: Displays a table of services that the user can pick.
-  Version: 2.0
+  Version: 2.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,17 +41,16 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2013 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
 #import "PickerViewController.h"
 
-#import <QuartzCore/QuartzCore.h>
+@import QuartzCore;
 
 @interface PickerViewController () <NSNetServiceBrowserDelegate>
 
-@property (nonatomic, strong, readwrite) IBOutlet UIImageView * pickerHeader;
 @property (nonatomic, strong, readwrite) IBOutlet UILabel *     localServiceNameLabel;
 
 @property (nonatomic, strong, readwrite) UIFont *               localServiceNameLabelFont;      // latched from localServiceNameLabel
@@ -61,8 +60,6 @@
 
 @property (nonatomic, copy,   readwrite) NSString *             connectLabelTemplate;           // latched from connectLabel
 
-- (IBAction)connectCancelAction:(id)sender;
-
 @property (nonatomic, strong, readonly ) NSMutableArray *       services;                       // of NSNetService, sorted by name
 @property (nonatomic, strong, readwrite) NSNetServiceBrowser *  browser;
 
@@ -70,19 +67,29 @@
 
 @implementation PickerViewController
 
-- (id)initWithType:(NSString *)type
-    // See comment in header.
+- (instancetype)init
 {
-    assert(type != nil);
     self = [super init];
     if (self != nil) {
-        self->_type = [type copy];
-        self->_services = [[NSMutableArray alloc] init];
-        // We observe localService so that we can react to the client changing it.
-        [self addObserver:self forKeyPath:@"localService" options:0 context:&self->_localService];
+        [self commonInit];
     }
-
     return self;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    self = [super initWithCoder:coder];
+    if (self) {
+        [self commonInit];
+    }
+    return self;
+}
+
+- (void)commonInit
+{
+    self->_services = [[NSMutableArray alloc] init];
+    // We observe localService so that we can react to the client changing it.
+    [self addObserver:self forKeyPath:@"localService" options:0 context:&self->_localService];
 }
 
 - (void)dealloc
@@ -96,7 +103,7 @@
 {
     assert(self.localServiceNameLabel != nil);
     if (self.localService == nil) {
-        self.localServiceNameLabel.font = [UIFont italicSystemFontOfSize:self.localServiceNameLabelFont.pointSize * 0.75];
+        self.localServiceNameLabel.font = [UIFont italicSystemFontOfSize:self.localServiceNameLabelFont.pointSize * 0.75f];
         self.localServiceNameLabel.text = @"registering…";
     } else {
         self.localServiceNameLabel.font = self.localServiceNameLabelFont;
@@ -135,32 +142,18 @@
 {
     [super viewDidLoad];
     
-    // We're relying on iOS 6's 'never unload views' behaviour here.
-    
-    assert(self.pickerHeader == nil);
-    assert(self.connectView  == nil);
-    assert(self.connectLabel == nil);
-
-    // Load the nib.
-    
-    (void) [[NSBundle bundleForClass:[self class]] loadNibNamed:@"PickerExtras" owner:self options:nil];
-
-    // Set up the table view header from the stuff we loaded from the nib.
-
-    assert(self.pickerHeader != nil);
     assert(self.localServiceNameLabel != nil);
+    assert(self.connectView  != nil);
+    assert(self.connectLabel != nil);
+
+    // Stash the original font for use by -setupLocalServiceNameLabel then call 
+    // -setupLocalServiceNameLabel to apply the local service to our header.
     
-    self.pickerHeader.image = [UIImage imageNamed:@"PickerHeaderBackground.png"];
-    self.localServiceNameLabelFont = self.localServiceNameLabel.font;       // stash the original font for use by -setupLocalServiceNameLabel
+    self.localServiceNameLabelFont = self.localServiceNameLabel.font;       
     [self setupLocalServiceNameLabel];
 
-    self.tableView.tableHeaderView = self.pickerHeader;
+    // Set up the connect view and stash the label text for use as a template.
 
-    // Set up the connect view from the stuff we loaded from the nib.
-
-    assert(self.connectView != nil);
-    assert(self.connectLabel != nil);
-    
     self.connectView.layer.cornerRadius = 10.0f;
     self.connectView.layer.shadowColor = [UIColor blackColor].CGColor;
     self.connectView.layer.shadowOffset = CGSizeMake(3.0f, 3.0f);
@@ -177,6 +170,7 @@
     assert(self.browser == nil);
     
     self.browser = [[NSNetServiceBrowser alloc] init];
+    self.browser.includesPeerToPeer = YES;
     [self.browser setDelegate:self];
     [self.browser searchForServicesOfType:self.type inDomain:@"local"];
 }
@@ -256,11 +250,8 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    assert(tableView == self.tableView);
     #pragma unused(tableView)
-    assert(section == 0);
     #pragma unused(section)
-
     return (NSInteger) [self.services count];
 }
 
@@ -268,21 +259,13 @@
 {
     UITableViewCell *	cell;
     NSNetService *      service;
-    
-    assert(tableView == self.tableView);
-    #pragma unused(tableView)
-    assert(indexPath != NULL);
-    assert(indexPath.section == 0);
-    assert( (indexPath.row >= 0) && ( (NSUInteger) indexPath.row < [self.services count]) );
-    #pragma unused(indexPath)
 
+    #pragma unused(tableView)
+    
     service = [self.services objectAtIndex:(NSUInteger) indexPath.row];
 
     cell = [self.tableView dequeueReusableCellWithIdentifier:@"cell"];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
-        assert(cell != nil);
-    }
+
     cell.textLabel.text = service.name;
 
     return cell;
@@ -292,11 +275,7 @@
 {
     NSNetService *      service;
 
-    assert(tableView == self.tableView);
     #pragma unused(tableView)
-    assert(indexPath != NULL);
-    assert(indexPath.section == 0);
-    assert( (indexPath.row >= 0) && ( (NSUInteger) indexPath.row < [self.services count]) );
     #pragma unused(indexPath)
 
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];

@@ -1,7 +1,7 @@
 /*
      File: OneViewController.m 
  Abstract: The view controller for page one. 
-  Version: 1.5 
+  Version: 1.6 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -51,7 +51,6 @@
 @interface OneViewController ()
 
 @property (nonatomic, strong) NSArray *dataArray;
-@property (nonatomic, strong) IBOutlet SubLevelViewController *subLevel;
 
 @end
 
@@ -84,12 +83,14 @@
 	return [self.dataArray count];
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-	UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-	_subLevel.title = cell.textLabel.text;
-		
-	[self.navigationController pushViewController:self.subLevel animated:YES];
+    if ([segue.identifier isEqualToString:@"SubLevelSegue"]) {
+        
+        SubLevelViewController *mySubLevelViewController = segue.destinationViewController;
+        UITableViewCell *cell = sender;
+        mySubLevelViewController.title = cell.textLabel.text;
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -97,29 +98,10 @@
 	static NSString *kCellID = @"cellID";
 	
 	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellID];
-	if (cell == nil)
-	{
-		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kCellID];
-		cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-		cell.selectionStyle = UITableViewCellSelectionStyleBlue;
-	}
-
-	cell.textLabel.text = [self.dataArray objectAtIndex:indexPath.row];
+	cell.textLabel.text = (self.dataArray)[indexPath.row];
 	
 	return cell;
 }
 
-
-#pragma mark - UIViewControllerRotation
-
-// rotation support for iOS 5.x and earlier, note for iOS 6.0 and later all you need is
-// "UISupportedInterfaceOrientations" defined in your Info.plist
-//
-#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
-}
-#endif
 
 @end

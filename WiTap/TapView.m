@@ -1,7 +1,7 @@
 /*
      File: TapView.m
  Abstract: UIView subclass that can highlight itself when locally or remotely tapped.
-  Version: 2.0
+  Version: 2.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,11 +41,13 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2013 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
 #import "TapView.h"
+
+@import QuartzCore;
 
 static const CGFloat kActivationInset = 10.0f;
 
@@ -78,6 +80,7 @@ static const CGFloat kActivationInset = 10.0f;
 - (void)commonInit
 {
     assert( ! self.isMultipleTouchEnabled );
+    self.layer.borderColor = [[UIColor darkGrayColor] CGColor];
     // Observe ourself to learn about someone changing the remoteTouch property.
     [self addObserver:self forKeyPath:@"remoteTouch" options:0 context:&self->_remoteTouch];
 }
@@ -87,38 +90,18 @@ static const CGFloat kActivationInset = 10.0f;
     [self removeObserver:self forKeyPath:@"remoteTouch" context:&self->_remoteTouch];
 }
 
+- (void)updateLayerBorder
+{
+    self.layer.borderWidth = (self.localTouch || self.remoteTouch) ? kActivationInset : 0.0f;
+}
+
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
     if (context == &self->_remoteTouch) {
         // If the remoteTouch property changes, redraw.
-        [self setNeedsDisplay];
+        [self updateLayerBorder];
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-    }
-}
-
-- (void)drawRect:(CGRect)rect
-{
-    #pragma unused(rect)
-    CGRect  bounds;
-    
-    bounds = self.bounds;
-    
-    // Fill with our background color.
-    
-    [self.backgroundColor setFill];
-    UIRectFill(bounds);
-
-    // If there's a touch, draw our highlight.
-    
-    if (self.localTouch || self.remoteTouch) {
-        UIBezierPath *  p;
-        
-        [[UIColor darkGrayColor] setStroke];
-
-        p = [UIBezierPath bezierPathWithRect:CGRectInset(bounds, kActivationInset / 2.0f, kActivationInset / 2.0f)];
-        p.lineWidth = kActivationInset;
-        [p stroke];
     }
 }
 
@@ -136,10 +119,14 @@ static const CGFloat kActivationInset = 10.0f;
 - (void)localTouchDown
 {
     if ( ! self.localTouch ) {
+        id <TapViewDelegate>  strongDelegate;
+
         self.localTouch = YES;
-        [self setNeedsDisplay];
-        if ([self.delegate respondsToSelector:@selector(tapViewLocalTouchDown:)]) {
-            [self.delegate tapViewLocalTouchDown:self];
+        [self updateLayerBorder];
+
+        strongDelegate = self.delegate;
+        if ([strongDelegate respondsToSelector:@selector(tapViewLocalTouchDown:)]) {
+            [strongDelegate tapViewLocalTouchDown:self];
         }
     }
 }
@@ -148,10 +135,13 @@ static const CGFloat kActivationInset = 10.0f;
 {
     if ( self.localTouch ) {
         self.localTouch = NO;
-        [self setNeedsDisplay];
+        [self updateLayerBorder];
         if (notify) {
-            if ([self.delegate respondsToSelector:@selector(tapViewLocalTouchUp:)]) {
-                [self.delegate tapViewLocalTouchUp:self];
+            id <TapViewDelegate>  strongDelegate;
+
+            strongDelegate = self.delegate;
+            if ([strongDelegate respondsToSelector:@selector(tapViewLocalTouchUp:)]) {
+                [strongDelegate tapViewLocalTouchUp:self];
             }
         }
     }

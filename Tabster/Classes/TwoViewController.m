@@ -1,7 +1,7 @@
 /*
      File: TwoViewController.m 
  Abstract: The view controller for page two. 
-  Version: 1.5 
+  Version: 1.6 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -57,7 +57,6 @@ enum {
 @interface TwoViewController ()
 
 @property (nonatomic, strong) NSArray *dataArray;
-@property (nonatomic, strong) IBOutlet LandscapeViewController *landscapeViewController;
 
 @end
 
@@ -84,51 +83,28 @@ enum {
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	static NSString *kCellID = @"cellID";
+	static NSString *kCellID = @"cellIDTwo";
 	
 	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellID];
-	if (cell == nil)
-	{
-		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kCellID];
-		cell.selectionStyle = UITableViewCellSelectionStyleBlue;
-	}
-	
-	cell.textLabel.text = [self.dataArray objectAtIndex:indexPath.row];
+	cell.textLabel.text = (self.dataArray)[indexPath.row];
 	
 	return cell;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    [self presentViewController:self.landscapeViewController animated:NO completion:^ {
-        
+    if ([segue.identifier isEqualToString:@"LandscapeViewSegue"]) {
+        LandscapeViewController *landscapeViewController = segue.destinationViewController;
+        UITableViewCell *cell = sender;
         UIImage *image = nil;
-        switch (indexPath.row)
-        {
-            case kCherryLake:
-                image = [UIImage imageNamed:@"cherrylake"];
-                break;
-                
-            case kLakeDonPedro:
-                image = [UIImage imageNamed:@"lakedonpedro"];
-                break;
+        if ([cell.textLabel.text isEqualToString:@"Cherry Lake"]) {
+            image = [UIImage imageNamed:@"cherrylake"];
         }
-        self.landscapeViewController.imageView.image = image;
-        
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    }];
+        else if ([cell.textLabel.text isEqualToString:@"Lake Don Pedro"]) {
+            image = [UIImage imageNamed:@"lakedonpedro"];
+        }
+        landscapeViewController.image = image;
+    }
 }
-
-
-#pragma mark - UIViewControllerRotation
-
-// rotation support for iOS 5.x and earlier
-//
-#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
-}
-#endif
 
 @end

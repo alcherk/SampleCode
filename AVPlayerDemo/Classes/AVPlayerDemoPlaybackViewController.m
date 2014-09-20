@@ -1,68 +1,54 @@
 /*
-
-File: AVPlayerDemoPlaybackViewController.h
-
-Abstract: UIViewController managing a playback view, thumbnail view, and associated playback UI.
-
-Version: 1.1
-
-Disclaimer: IMPORTANT:  This Apple software is supplied to you by 
-Apple Inc. ("Apple") in consideration of your agreement to the
-following terms, and your use, installation, modification or
-redistribution of this Apple software constitutes acceptance of these
-terms.  If you do not agree with these terms, please do not use,
-install, modify or redistribute this Apple software.
-
-In consideration of your agreement to abide by the following terms, and
-subject to these terms, Apple grants you a personal, non-exclusive
-license, under Apple's copyrights in this original Apple software (the
-"Apple Software"), to use, reproduce, modify and redistribute the Apple
-Software, with or without modifications, in source and/or binary forms;
-provided that if you redistribute the Apple Software in its entirety and
-without modifications, you must retain this notice and the following
-text and disclaimers in all such redistributions of the Apple Software. 
-Neither the name, trademarks, service marks or logos of Apple Inc. 
-may be used to endorse or promote products derived from the Apple
-Software without specific prior written permission from Apple.  Except
-as expressly stated in this notice, no other rights or licenses, express
-or implied, are granted by Apple herein, including but not limited to
-any patent rights that may be infringed by your derivative works or by
-other works in which the Apple Software may be incorporated.
-
-The Apple Software is provided by Apple on an "AS IS" basis.  APPLE
-MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION
-THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS
-FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND
-OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS.
-
-IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL
-OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION,
-MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED
-AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE),
-STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGE.
-
-Copyright (C) 2010-2013 Apple Inc. All Rights Reserved.
-
-*/
+     File: AVPlayerDemoPlaybackViewController.m
+ Abstract: UIViewController managing a playback view, thumbnail view, and associated playback UI.
+  Version: 1.3
+ 
+ Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
+ Inc. ("Apple") in consideration of your agreement to the following
+ terms, and your use, installation, modification or redistribution of
+ this Apple software constitutes acceptance of these terms.  If you do
+ not agree with these terms, please do not use, install, modify or
+ redistribute this Apple software.
+ 
+ In consideration of your agreement to abide by the following terms, and
+ subject to these terms, Apple grants you a personal, non-exclusive
+ license, under Apple's copyrights in this original Apple software (the
+ "Apple Software"), to use, reproduce, modify and redistribute the Apple
+ Software, with or without modifications, in source and/or binary forms;
+ provided that if you redistribute the Apple Software in its entirety and
+ without modifications, you must retain this notice and the following
+ text and disclaimers in all such redistributions of the Apple Software.
+ Neither the name, trademarks, service marks or logos of Apple Inc. may
+ be used to endorse or promote products derived from the Apple Software
+ without specific prior written permission from Apple.  Except as
+ expressly stated in this notice, no other rights or licenses, express or
+ implied, are granted by Apple herein, including but not limited to any
+ patent rights that may be infringed by your derivative works or by other
+ works in which the Apple Software may be incorporated.
+ 
+ The Apple Software is provided by Apple on an "AS IS" basis.  APPLE
+ MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION
+ THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS
+ FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND
+ OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS.
+ 
+ IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL
+ OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION,
+ MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED
+ AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE),
+ STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
+ POSSIBILITY OF SUCH DAMAGE.
+ 
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
+ 
+ */
 
 
 #import "AVPlayerDemoPlaybackViewController.h"
 #import "AVPlayerDemoPlaybackView.h"
 #import "AVPlayerDemoMetadataViewController.h"
-
-/* Asset keys */
-NSString * const kTracksKey         = @"tracks";
-NSString * const kPlayableKey		= @"playable";
-
-/* PlayerItem keys */
-NSString * const kStatusKey         = @"status";
-
-/* AVPlayer keys */
-NSString * const kRateKey			= @"rate";
-NSString * const kCurrentItemKey	= @"currentItem";
 
 @interface AVPlayerDemoPlaybackViewController ()
 - (void)play:(id)sender;
@@ -112,16 +98,15 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
 {
 	if (mURL != URL)
 	{
-		[mURL release];
 		mURL = [URL copy];
 		
         /*
          Create an asset for inspection of a resource referenced by a given URL.
-         Load the values for the asset keys "tracks", "playable".
+         Load the values for the asset key "playable".
          */
         AVURLAsset *asset = [AVURLAsset URLAssetWithURL:mURL options:nil];
         
-        NSArray *requestedKeys = [NSArray arrayWithObjects:kTracksKey, kPlayableKey, nil];
+        NSArray *requestedKeys = @[@"playable"];
         
         /* Tells the asset to load the values of any of the specified keys that are not already loaded. */
         [asset loadValuesAsynchronouslyForKeys:requestedKeys completionHandler:
@@ -177,7 +162,6 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
 	
 	[self presentViewController:metadataViewController animated:YES completion:NULL];
 
-	[metadataViewController release];
 }
 
 #pragma mark -
@@ -249,13 +233,13 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
 	}
 
 	/* Update the scrubber during normal playback. */
-	mTimeObserver = [[self.mPlayer addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(interval, NSEC_PER_SEC) 
+	__weak AVPlayerDemoPlaybackViewController *weakSelf = self;
+	mTimeObserver = [self.mPlayer addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(interval, NSEC_PER_SEC) 
 								queue:NULL /* If you pass NULL, the main queue is used. */
 								usingBlock:^(CMTime time) 
                                             {
-                                                [self syncScrubber];
-                                            }] retain];
-
+                                                [weakSelf syncScrubber];
+                                            }];
 }
 
 /* Set the scrubber based on the player current time. */
@@ -292,8 +276,9 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
 /* Set the player current time to match the scrubber position. */
 - (IBAction)scrub:(id)sender
 {
-	if ([sender isKindOfClass:[UISlider class]])
+	if ([sender isKindOfClass:[UISlider class]] && !isSeeking)
 	{
+		isSeeking = YES;
 		UISlider* slider = sender;
 		
 		CMTime playerDuration = [self playerItemDuration];
@@ -310,7 +295,11 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
 			
 			double time = duration * (value - minValue) / (maxValue - minValue);
 			
-			[self.mPlayer seekToTime:CMTimeMakeWithSeconds(time, NSEC_PER_SEC)];
+			[self.mPlayer seekToTime:CMTimeMakeWithSeconds(time, NSEC_PER_SEC) completionHandler:^(BOOL finished) {
+				dispatch_async(dispatch_get_main_queue(), ^{
+					isSeeking = NO;
+				});
+			}];
 		}
 	}
 }
@@ -331,12 +320,13 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
 		{
 			CGFloat width = CGRectGetWidth([self.mScrubber bounds]);
 			double tolerance = 0.5f * duration / width;
-
-			mTimeObserver = [[self.mPlayer addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(tolerance, NSEC_PER_SEC) queue:NULL usingBlock:
+			
+			__weak AVPlayerDemoPlaybackViewController *weakSelf = self;
+			mTimeObserver = [self.mPlayer addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(tolerance, NSEC_PER_SEC) queue:NULL usingBlock:
 			^(CMTime time)
 			{
-				[self syncScrubber];
-			}] retain];
+				[weakSelf syncScrubber];
+			}];
 		}
 	}
 
@@ -371,7 +361,7 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
 	{
 		[self setPlayer:nil];
 		
-		[self setWantsFullScreenLayout:YES];
+		[self setEdgesForExtendedLayout:UIRectEdgeAll];
 	}
 	
 	return self;
@@ -397,12 +387,8 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
     self.mPlayButton = nil;
     self.mStopButton = nil;
     self.mScrubber = nil;
-    
-    [mTimeObserver release];
-
-    [mURL release];
-    
-    [super viewDidUnload];
+	
+	[super viewDidUnload];
 }
 
 - (void)viewDidLoad
@@ -414,12 +400,10 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
 	UISwipeGestureRecognizer* swipeUpRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipe:)];
 	[swipeUpRecognizer setDirection:UISwipeGestureRecognizerDirectionUp];
 	[view addGestureRecognizer:swipeUpRecognizer];
-	[swipeUpRecognizer release];
 	
 	UISwipeGestureRecognizer* swipeDownRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipe:)];
 	[swipeDownRecognizer setDirection:UISwipeGestureRecognizerDirectionDown];
 	[view addGestureRecognizer:swipeDownRecognizer];
-	[swipeDownRecognizer release];
 
     UIBarButtonItem *scrubberItem = [[UIBarButtonItem alloc] initWithCustomView:self.mScrubber];
     UIBarButtonItem *flexItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
@@ -428,11 +412,8 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
     [infoButton addTarget:self action:@selector(showMetadata:) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *infoItem = [[UIBarButtonItem alloc] initWithCustomView:infoButton];
 
-    self.mToolbar.items = [NSArray arrayWithObjects:self.mPlayButton, flexItem, scrubberItem, infoItem, nil];
-    [scrubberItem release];
-    [flexItem release];
-    [infoItem release];
-
+    self.mToolbar.items = @[self.mPlayButton, flexItem, scrubberItem, infoItem];
+	isSeeking = NO;
 	[self initScrubberTimer];
 	
 	[self syncPlayPauseButtons];
@@ -540,11 +521,8 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
 	[mPlayer.currentItem removeObserver:self forKeyPath:@"status"];
 	
 	[self.mPlayer pause];
-	self.mPlayer = nil;
 	
-	[mURL release];
 	
-	[super dealloc];
 }
 
 @end
@@ -575,20 +553,6 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
 	AVPlayerItem *playerItem = [self.mPlayer currentItem];
 	if (playerItem.status == AVPlayerItemStatusReadyToPlay)
 	{
-        /* 
-         NOTE:
-         Because of the dynamic nature of HTTP Live Streaming Media, the best practice 
-         for obtaining the duration of an AVPlayerItem object has changed in iOS 4.3. 
-         Prior to iOS 4.3, you would obtain the duration of a player item by fetching 
-         the value of the duration property of its associated AVAsset object. However, 
-         note that for HTTP Live Streaming Media the duration of a player item during 
-         any particular playback session may differ from the duration of its asset. For 
-         this reason a new key-value observable duration property has been defined on 
-         AVPlayerItem.
-         
-         See the AV Foundation Release Notes for iOS 4.3 for more information.
-         */		
-
 		return([playerItem duration]);
 	}
 	
@@ -602,7 +566,6 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
 	if (mTimeObserver)
 	{
 		[self.mPlayer removeTimeObserver:mTimeObserver];
-		[mTimeObserver release];
 		mTimeObserver = nil;
 	}
 }
@@ -637,7 +600,6 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
 											  cancelButtonTitle:@"OK"
 											  otherButtonTitles:nil];
 	[alertView show];
-	[alertView release];
 }
 
 
@@ -688,7 +650,7 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
     {
         /* Remove existing player item key value observers and notifications. */
         
-        [self.mPlayerItem removeObserver:self forKeyPath:kStatusKey];            
+        [self.mPlayerItem removeObserver:self forKeyPath:@"status"];
 		
         [[NSNotificationCenter defaultCenter] removeObserver:self
                                                         name:AVPlayerItemDidPlayToEndTimeNotification
@@ -700,7 +662,7 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
     
     /* Observe the player item "status" key to determine when it is ready to play. */
     [self.mPlayerItem addObserver:self 
-                      forKeyPath:kStatusKey 
+                      forKeyPath:@"status"
                          options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew
                          context:AVPlayerDemoPlaybackViewControllerStatusObservationContext];
 	
@@ -723,13 +685,13 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
          AVPlayer replaceCurrentItemWithPlayerItem: replacement will/did 
          occur.*/
         [self.player addObserver:self 
-                      forKeyPath:kCurrentItemKey 
+                      forKeyPath:@"currentItem"
                          options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew
                          context:AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext];
         
         /* Observe the AVPlayer "rate" property to update the scrubber control. */
         [self.player addObserver:self 
-                      forKeyPath:kRateKey 
+                      forKeyPath:@"rate"
                          options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew
                          context:AVPlayerDemoPlaybackViewControllerRateObservationContext];
     }
@@ -739,7 +701,11 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
     {
         /* Replace the player item with a new player item. The item replacement occurs 
          asynchronously; observe the currentItem property to find out when the 
-         replacement will/did occur*/
+         replacement will/did occur
+		 
+		 If needed, configure player item here (example: adding outputs, setting text style rules,
+		 selecting media options) before associating it with a player
+		 */
         [self.mPlayer replaceCurrentItemWithPlayerItem:self.mPlayerItem];
         
         [self syncPlayPauseButtons];
@@ -777,12 +743,12 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
 	{
 		[self syncPlayPauseButtons];
 
-        AVPlayerStatus status = [[change objectForKey:NSKeyValueChangeNewKey] integerValue];
+        AVPlayerItemStatus status = [[change objectForKey:NSKeyValueChangeNewKey] integerValue];
         switch (status)
         {
             /* Indicates that the status of the player is not yet known because 
              it has not tried to load new media resources for playback */
-            case AVPlayerStatusUnknown:
+            case AVPlayerItemStatusUnknown:
             {
                 [self removePlayerTimeObserver];
                 [self syncScrubber];
@@ -792,7 +758,7 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
             }
             break;
                 
-            case AVPlayerStatusReadyToPlay:
+            case AVPlayerItemStatusReadyToPlay:
             {
                 /* Once the AVPlayerItem becomes ready to play, i.e. 
                  [playerItem status] == AVPlayerItemStatusReadyToPlay,
@@ -805,7 +771,7 @@ static void *AVPlayerDemoPlaybackViewControllerCurrentItemObservationContext = &
             }
             break;
                 
-            case AVPlayerStatusFailed:
+            case AVPlayerItemStatusFailed:
             {
                 AVPlayerItem *playerItem = (AVPlayerItem *)object;
                 [self assetFailedToPrepareForPlayback:playerItem.error];

@@ -1,7 +1,7 @@
 /*
      File: LandscapeViewController.h
  Abstract: The application view controller used when the device is in landscape orientation.
-  Version: 1.5
+  Version: 1.6
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -49,6 +49,6 @@
 
 @interface LandscapeViewController : UIViewController
 
-@property (nonatomic, weak) IBOutlet UIImageView *imageView;
+@property (nonatomic, strong) UIImage *image;
 
 @end

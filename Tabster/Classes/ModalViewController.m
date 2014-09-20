@@ -1,7 +1,7 @@
 /*
      File: ModalViewController.m 
  Abstract: The modal view controller for temporary UI interaction. 
-  Version: 1.5 
+  Version: 1.6 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -50,9 +50,7 @@
 
 @interface ModalViewController ()
 
-@property (nonatomic, weak) IBOutlet UILabel *titleLabel;
-
-- (IBAction)dismissAction:(id)sender;
+@property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 
 @end
 
@@ -61,26 +59,8 @@
 - (void)viewWillAppear:(BOOL)animated
 {
 	[super viewWillAppear:animated];
-									 	
-	self.titleLabel.text = self.owningViewController.currentSelectionTitle;
+	_titleLabel.text = self.owningViewController.currentSelectionTitle;
 }
-
-- (IBAction)dismissAction:(id)sender
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-
-#pragma mark - UIViewControllerRotation
-
-// rotation support for iOS 5.x and earlier, note for iOS 6.0 and later all you need is
-// "UISupportedInterfaceOrientations" defined in your Info.plist
-//
-#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
-}
-#endif
 
 @end
+

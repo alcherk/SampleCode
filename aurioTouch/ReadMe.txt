@@ -1,4 +1,3 @@
-
 aurioTouch
 
 ===========================================================================
@@ -6,44 +5,31 @@ DESCRIPTION:
 
 aurioTouch demonstrates use of the remote i/o audio unit for handling audio input and output. The application can display the input audio in one of the forms, a regular time domain waveform, a frequency domain waveform (computed by performing a fast fourier transform on the incoming signal), and a sonogram view (a view displaying the frequency content of a signal over time, with the color signaling relative power, the y axis being frequency and the x as time). Tap the sonogram button to switch to a sonogram view, tap anywhere on the screen to return to the oscilloscope. Tap the FFT button to perform and display the input data after an FFT transform. Pinch in the oscilloscope view to expand and contract the scale for the x axis.
 
-The code in auriouTouch uses the remote i/o audio unit (AURemoteIO) for input and output of audio, and OpenGL for display of the input waveform. The application also uses Audio Session Services to manage route changes (as described in Core Audio Overview).
+The code in aurioTouch uses the remote i/o audio unit (AURemoteIO) for input and output of audio, and OpenGL for display of the input waveform. The application also uses AVAudioSession to manage route changes (as described in the Audio Session Programming Guide).
 
 This application shows how to:
 
 	* Set up the remote i/o audio unit for input and output.
 	* Use OpenGL for graphical display of audio waveforms.
 	* Use touch events such as tapping and pinching for user interaction
-	* Use Audio Session Services to handle route changes and reconfigure the unit in response.
-	* Use Audio Session Services to set an audio session category for concurrent input and output.
-	* Use Audio Session Services to play simple alert sounds.
+	* Use AVAudioSession Services to handle route changes and reconfigure the unit in response.
+	* Use AVAudioSession Services to set an audio session category for concurrent input and output.
+	* Use AudioServices to create and play system sounds
 	
-aurioTouch does not demonstrate how to handle interruptions. 
-
 
 ===========================================================================
 RELATED INFORMATION:
 
-Core Audio Overview
-WWDC 2010 video sessions and resources
-
-
-===========================================================================
-SPECIAL CONSIDERATIONS:
-
-aurioTouch requires audio input, and so is not appropriate for the first generation iPod touch.
-
-
 ===========================================================================
 BUILD REQUIREMENTS:
 
-Mac OS X v10.6.4, Xcode 3.2, iOS 4.1, iOS SDK 4.1 or later
+OS X v10.9, Xcode 5.1, iOS 7.1, iOS SDK 7.1 or later
 
 
 ===========================================================================
 RUNTIME REQUIREMENTS:
 
-Simulator: Mac OS X v10.6.x, iOS SDK 4.1 or later
-iPhone: iOS 4.1
+iPhone: iOS 7.0
 
 
 ===========================================================================
@@ -52,33 +38,32 @@ PACKAGING LIST:
 EAGLView.h
 EAGLView.m
 
-This class wraps the CAEAGLLayer from CoreAnimation into a convenient UIView subclass.
+This class wraps the CAEAGLLayer from CoreAnimation into a convenient UIView subclass. This class is also responsible for handling touch events and drawing.
 
-aurio_helper.cpp
-aurio_helper.h
+AudioController.h
+AudioController.mm
 
-Helper functions for manipulating the remote i/o audio unit, responsible for setting up the remote i/o.
+This class demonstrates the audio APIs used to capture audio data from the microphone and play it out to the speaker. It also demonstrates how to play system sounds.
 
 aurioTouchAppDelegate.h
 aurioTouchAppDelegate.mm
 
+The application delegate for the aurioTouch app.
 
-The application delegate for the aurioTouch app, responsible for handling touch events and drawing.
+FFTHelper.h
+FFTHelper.cpp
 
-FFTBufferManager.cpp
-FFTBufferManager.h
+This class demonstrates how to use the Accelerate framework to take Fast Fourier Transforms (FFT) of the audio data. FFTs are used to perform analysis on the captured audio data
 
-This class manages buffering and computation for FFT analysis on input audio data. The methods provided are used to grab the audio, buffer it, and perform the FFT when sufficient data is available.
+BufferManager.h
+BufferManager.cpp
 
-rad2fft.h
-rad2fft.c
+This class handles buffering of audio data that is shared between the view and audio controller
 
-Provides a set of methods for radix 2 integer FFT operations.
+DCRejectionFilter.h
+DCRejectionFilter.cpp
 
-SpectrumAnalysis.cpp
-SpectrumAnalysis.h
-
-This class provides a simple spectral analysis tool.
+This class implements a DC offset filter
 
 CAMath.h
 
@@ -100,4 +85,4 @@ CAStreamBasicDescription.h
 A helper class for AudioStreamBasicDescription handling and manipulation.
 
 ================================================================================
-Copyright (C) 2008-2010 Apple Inc. All rights reserved.
+Copyright (C) 2008-2014 Apple Inc. All rights reserved.

@@ -41,9 +41,9 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2011-2013 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
-*/
+ */
 
 #import "AssetBrowserSource.h"
 
@@ -90,15 +90,15 @@
 
 + (AssetBrowserSource*)assetBrowserSourceOfType:(AssetBrowserSourceType)sourceType
 {
-	return [[[self alloc] initWithSourceType:sourceType] autorelease];
+	return [[self alloc] initWithSourceType:sourceType];
 }
 
 - (id)initWithSourceType:(AssetBrowserSourceType)type
 {
 	if ((self = [super init])) {
 		sourceType = type;
-		sourceName = [[self nameForSourceType] retain];
-		assetBrowserItems = [[NSArray array] retain];
+		sourceName = [self nameForSourceType];
+		assetBrowserItems = [NSArray array];
 		
 		enumerationQueue = dispatch_queue_create("Browser Enumeration Queue", DISPATCH_QUEUE_SERIAL);
 		dispatch_set_target_queue(enumerationQueue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0));
@@ -121,27 +121,19 @@
 }
 
 - (void)dealloc 
-{	
-	[sourceName release];
-	[assetBrowserItems release];
-	
+{
 	if (receivingIPodLibraryNotifications) {
 		MPMediaLibrary *iPodLibrary = [MPMediaLibrary defaultMediaLibrary];
 		[iPodLibrary endGeneratingLibraryChangeNotifications];
 		[[NSNotificationCenter defaultCenter] removeObserver:self name:MPMediaLibraryDidChangeNotification object:nil];
 	}
-	dispatch_release(enumerationQueue);
 	
 	if (assetsLibrary) {
 		[[NSNotificationCenter defaultCenter] removeObserver:self name:ALAssetsLibraryChangedNotification object:nil];	
-		[assetsLibrary release];
 	}
 	
 	[directoryWatcher invalidate];
 	directoryWatcher.delegate = nil;
-	[directoryWatcher release];
-	
-	[super dealloc];
 }
 
 #pragma mark -
@@ -162,10 +154,8 @@
 				NSString *title = (NSString*)[mediaItem valueForProperty:MPMediaItemPropertyTitle];
 				AssetBrowserItem *item = [[AssetBrowserItem alloc] initWithURL:URL title:title];
 				[items addObject:item];
-				[item release];
 			}
 		}
-		[videoQuery release];
 		
 		dispatch_async(dispatch_get_main_queue(), ^(void) {
 			[self updateBrowserItemsAndSignalDelegate:items];
@@ -208,8 +198,8 @@
 					  ALAssetRepresentation *defaultRepresentation = [asset defaultRepresentation];
 					  NSString *uti = [defaultRepresentation UTI];
 					  NSURL *URL = [[asset valueForProperty:ALAssetPropertyURLs] valueForKey:uti];
-					  NSString *title = [NSString stringWithFormat:@"%@ %i", NSLocalizedString(@"Video", nil), [assetItems count]+1];
-					  AssetBrowserItem *item = [[[AssetBrowserItem alloc] initWithURL:URL title:title] autorelease];
+					  NSString *title = [NSString stringWithFormat:@"%@ %lu", NSLocalizedString(@"Video", nil), [assetItems count]+1];
+					  AssetBrowserItem *item = [[AssetBrowserItem alloc] initWithURL:URL title:title];
 					  
 					  [assetItems addObject:item];
 				  }
@@ -253,11 +243,11 @@
 - (NSArray*)browserItemsInDirectory:(NSString*)directoryPath
 {
 	NSMutableArray *paths = [NSMutableArray arrayWithCapacity:0];
-	NSArray *subPaths = [[[[NSFileManager alloc] init] autorelease] contentsOfDirectoryAtPath:directoryPath error:nil];
+	NSArray *subPaths = [[[NSFileManager alloc] init] contentsOfDirectoryAtPath:directoryPath error:nil];
 	if (subPaths) {
 		for (NSString *subPath in subPaths) {
 			NSString *pathExtension = [subPath pathExtension];
-			CFStringRef preferredUTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (CFStringRef)pathExtension, NULL);
+			CFStringRef preferredUTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (__bridge CFStringRef)pathExtension, NULL);
 			BOOL fileConformsToUTI = UTTypeConformsTo(preferredUTI, kUTTypeAudiovisualContent);
 			CFRelease(preferredUTI);
 			NSString *path = [directoryPath stringByAppendingPathComponent:subPath];
@@ -270,7 +260,7 @@
 	
 	NSMutableArray *browserItems = [NSMutableArray arrayWithCapacity:0];
 	for (NSString *path in paths) {
-		AssetBrowserItem *item = [[[AssetBrowserItem alloc] initWithURL:[NSURL fileURLWithPath:path]] autorelease];
+		AssetBrowserItem *item = [[AssetBrowserItem alloc] initWithURL:[NSURL fileURLWithPath:path]];
 		[browserItems addObject:item];
 	}
 	return browserItems;
@@ -292,7 +282,7 @@
 	NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
 	NSArray *browserItems = [self browserItemsInDirectory:documentsDirectory];
 	[self updateBrowserItemsAndSignalDelegate:browserItems];
-	directoryWatcher = [[DirectoryWatcher watchFolderWithPath:documentsDirectory delegate:self] retain];
+	directoryWatcher = [DirectoryWatcher watchFolderWithPath:documentsDirectory delegate:self];
 }
 
 - (void)buildSourceLibrary

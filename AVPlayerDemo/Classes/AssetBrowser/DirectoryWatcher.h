@@ -41,9 +41,9 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2011 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
-*/
+ */
 
 #import <Foundation/Foundation.h>
 
@@ -56,14 +56,14 @@
 
 @interface DirectoryWatcher : NSObject 
 {
-	id <DirectoryWatcherDelegate> delegate;
+	id <DirectoryWatcherDelegate> __weak delegate;
     
 	int dirFD;
     int kq;
 
 	CFFileDescriptorRef dirKQRef;
 }
-@property (nonatomic, assign) id <DirectoryWatcherDelegate> delegate;
+@property (nonatomic, weak) id <DirectoryWatcherDelegate> delegate;
 
 + (DirectoryWatcher *)watchFolderWithPath:(NSString *)watchPath delegate:(id<DirectoryWatcherDelegate>)watchDelegate;
 - (void)invalidate;

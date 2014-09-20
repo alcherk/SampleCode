@@ -1,7 +1,7 @@
 /*
      File: SubLevelViewController.m 
  Abstract: The view controller for sublevel 2. 
-  Version: 1.5 
+  Version: 1.6 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -51,7 +51,7 @@
 @interface SubLevelViewController ()
 
 @property (nonatomic, strong) NSArray *dataArray;
-@property (nonatomic, strong) IBOutlet ModalViewController *myModalViewController;
+@property (nonatomic, strong) ModalViewController *myModalViewController;
 
 @end
 
@@ -64,33 +64,24 @@
 {
 	[super viewDidLoad];
 	
-	self.hidesBottomBarWhenPushed = YES;
-	
 	self.dataArray = @[@"Feature 1", @"Feature 2"];
 }
 
-
 #pragma mark - UITableViewDelegate
 
-- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
+- (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-	UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-	
-	// keep track of this view controller so modalViewController can set its label value;
-	self.myModalViewController.owningViewController = self;
-	
-	self.currentSelectionTitle = cell.textLabel.text;	// remember the current selection
-	
-	[self.navigationController presentViewController:self.myModalViewController animated:YES completion:nil];
+    if ([segue.identifier isEqualToString:@"modalSegue"]) {
+        ModalViewController *myModalViewController1 = segue.destinationViewController;
+        myModalViewController1.owningViewController = self;
+        UITableViewCell *cell = sender;
+        self.currentSelectionTitle = cell.textLabel.text;
+    }
 }
 
-- (void)accessoryButtonTapped:(UIControl *) button withEvent:(UIEvent *)event
+- (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:[[[event touchesForView:button] anyObject] locationInView:self.tableView]];
-    if ( indexPath == nil )
-        return;
-    
-    [self.tableView.delegate tableView:self.tableView accessoryButtonTappedForRowWithIndexPath:indexPath];
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
 }
 
 #pragma mark - UITableViewDataSource
@@ -105,33 +96,13 @@
 	static NSString *kCellID2 = @"cellID2";
 	
 	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellID2];
-	if (cell == nil)
-	{
-		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kCellID2];
-        UIButton *button = [UIButton buttonWithType:UIButtonTypeInfoLight];
-        [button addTarget:self
-                   action:@selector(accessoryButtonTapped:withEvent:)
-         forControlEvents:UIControlEventTouchUpInside];
-        cell.accessoryView = button;
-		cell.selectionStyle = UITableViewCellSelectionStyleNone;
-	}
-
-	cell.textLabel.text = [self.dataArray objectAtIndex:indexPath.row];
+	cell.textLabel.text = (self.dataArray)[indexPath.row];
 	
 	return cell;
 }
 
-
-#pragma mark - UIViewControllerRotation
-
-// rotation support for iOS 5.x and earlier, note for iOS 6.0 and later all you need is
-// "UISupportedInterfaceOrientations" defined in your Info.plist
-//
-#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+- (IBAction)unwindToSub:(UIStoryboardSegue *)unwindSegue
 {
-    return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
-#endif
 
 @end

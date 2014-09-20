@@ -41,9 +41,9 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2011 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
-*/
+ */
 
 #import <Foundation/Foundation.h>
 
@@ -70,7 +70,7 @@ typedef NSUInteger AssetBrowserSourceType;
 	NSString *sourceName;
 	NSArray *assetBrowserItems;
 	
-	id <AssetBrowserSourceDelegate> delegate;
+	id <AssetBrowserSourceDelegate> __weak delegate;
 	
 	BOOL haveBuiltSourceLibrary;
 	ALAssetsLibrary *assetsLibrary;
@@ -87,7 +87,7 @@ typedef NSUInteger AssetBrowserSourceType;
 @property (nonatomic, readonly) NSString *name;
 @property (nonatomic, readonly, copy) NSArray *items; // NSArray of AssetBrowserItems
 @property (nonatomic, readonly) AssetBrowserSourceType type;
-@property (nonatomic, assign) id <AssetBrowserSourceDelegate> delegate;
+@property (nonatomic, weak) id <AssetBrowserSourceDelegate> delegate;
 
 @end
 

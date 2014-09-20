@@ -1,7 +1,7 @@
 /*
      File: PickerViewController.h
  Abstract: Displays a table of services that the user can pick.
-  Version: 2.0
+  Version: 2.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,22 +41,19 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2013 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
-#import <UIKit/UIKit.h>
+@import UIKit;
 
 @protocol PickerDelegate;
 
 @interface PickerViewController : UITableViewController
 
-- (id)initWithType:(NSString *)type;
-    // Initialises the picker to browse for services of the specified type.
+// properties you must set before starting and must not change while started
 
-// properties set by the init method
-
-@property (nonatomic, copy,   readonly ) NSString *             type;
+@property (nonatomic, copy,   readwrite) NSString *             type;
 
 // properties you mustn't set while started
 

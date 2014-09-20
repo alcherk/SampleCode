@@ -1,7 +1,7 @@
 /*
      File: MyViewController.m 
  Abstract: The root view controller for the iPhone design of this app. 
-  Version: 1.5 
+  Version: 1.6 
   
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
  Inc. ("Apple") in consideration of your agreement to the following 
@@ -41,17 +41,18 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE. 
   
- Copyright (C) 2013 Apple Inc. All Rights Reserved. 
+ Copyright (C) 2014 Apple Inc. All Rights Reserved. 
   
  */
 
 #import "MyViewController.h"
 
 @interface MyViewController ()
-{
-    int pageNumber;
-}
+@property (assign) NSInteger pageNumber;
 @end
+
+
+#pragma mark -
 
 @implementation MyViewController
 
@@ -60,7 +61,7 @@
 {
     if (self = [super initWithNibName:@"MyView" bundle:nil])
     {
-        pageNumber = page;
+        _pageNumber = page;
     }
     return self;
 }
@@ -68,7 +69,8 @@
 // set the label and background color when the view has finished loading
 - (void)viewDidLoad
 {
-    self.pageNumberLabel.text = [NSString stringWithFormat:@"Page %d", pageNumber + 1];
+    [super viewDidLoad];
+    self.pageNumberLabel.text = [NSString stringWithFormat:@"Page %ld", (long)self.pageNumber + 1];
 }
 
 @end

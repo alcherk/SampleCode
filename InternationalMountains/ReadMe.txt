@@ -55,12 +55,12 @@ CFBundleDisplayName InfoPlist.strings entry.
 ================================================================================
 BUILD REQUIREMENTS:
 
-Mac OS X 10.6.3 or later, iOS SDK 4.0
+Xcode 5.0 or later, iOS SDK 7.0 or later
 
 ================================================================================
 RUNTIME REQUIREMENTS:
 
-iOS 4.0
+iOS 6.0 or later
 
 ================================================================================
 PACKAGING LIST:
@@ -173,8 +173,10 @@ at this time on iOS.
 ================================================================================
 CHANGES FROM PREVIOUS VERSIONS:
 
+1.3 - Adopts Storyboard, Base Internationalization, and Auto Layout, adds code to elegantly handle system locale change notification and app setting change, and refines Traditional Chinese localization.
+1.2 - Upgrade for iOS 7.0 SDK, adopts current best practices for Objective-C (including use of properties, autosynthesis, and literals)
 1.1 - Updates to make project compatible with iOS 4.0 SDK.
 1.0 - First release.
 
 ================================================================================
-Copyright (C) 2009-2010 Apple Inc. All rights reserved.
+Copyright (C) 2009-2014 Apple Inc. All rights reserved.

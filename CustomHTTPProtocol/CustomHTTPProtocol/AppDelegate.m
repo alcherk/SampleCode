@@ -1,7 +1,7 @@
 /*
      File: AppDelegate.m
  Abstract: Main app controller.
-  Version: 1.0
+  Version: 1.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,7 +41,7 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2013 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
@@ -53,44 +53,56 @@
 
 #import "CustomHTTPProtocol.h"
 
-#include <mach/mach.h>              // for mach_thread_self
+#import "ThreadInfo.h"
 
-@interface AppDelegate () <CustomHTTPProtocolDelegate>
+#include <pthread.h>            // for pthread_threadid_np
 
-@property (nonatomic, retain, readwrite) WebViewController *   viewController;
+@interface AppDelegate () <UIApplicationDelegate, WebViewControllerDelegate, CustomHTTPProtocolDelegate>
+
+@property (nonatomic, strong, readwrite) CredentialsManager *   credentialsManager;
+
+/*! For threadInfoByThreadID, each key is an NSNumber holding a thread ID and each 
+    value is a ThreadInfo object.  The dictionary is protected by @synchronized on 
+    the app delegate object itself.
+    
+    In the debugger you can dump this info with:
+    
+    (lldb) po [[[UIApplication sharedApplication] delegate] threadInfoByThreadID]
+ */
+
+@property (atomic, strong, readwrite) NSMutableDictionary *     threadInfoByThreadID;
+@property (atomic, assign, readwrite) NSUInteger                nextThreadNumber;           ///< Protected by @synchronized on the delegate object.
 
 @end
 
 @implementation AppDelegate
 
-@synthesize window         = _window;
-@synthesize navController  = _navController;
-
-@synthesize viewController = _viewController;
+@synthesize window = _window;                   // synthesis required because property is declared in UIApplicationDelegate protocol
 
 static BOOL sAppDelegateLoggingEnabled = YES;
 
-static NSTimeInterval sAppStartTime;                // since reference date
+static NSTimeInterval sAppStartTime;            // since reference date
 
-// both of the following are protected by @synchronized on the class
-
-static CFMutableDictionaryRef sThreadToIDMap;       // maps Mach thread ID (as returned by mach_thread_self) to our thread ID (allocated via sNextThreadID)
-static NSUInteger             sNextThreadID = 1;
-
-- (void)applicationDidFinishLaunching:(UIApplication *)application
+- (BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     #pragma unused(application)
+    #pragma unused(launchOptions)
+    WebViewController *   webViewController;
+    
     assert(self.window != nil);
-    assert(self.navController != nil);
     
     sAppStartTime = [NSDate timeIntervalSinceReferenceDate];
-
-    // Prepare the globals needed by our logging code.
     
-    sThreadToIDMap = CFDictionaryCreateMutable(NULL, 0, NULL, NULL);
-    CFDictionarySetValue(sThreadToIDMap, (const void *) (uintptr_t) mach_thread_self(), (const void *) (uintptr_t) 0);
+    self.credentialsManager = [[CredentialsManager alloc] init];
 
-    // Start up the core code.
+    // Prepare the globals needed by our logging code.  The call to -threadInfoForCurrentThread 
+    // sets up the main thread's thread info record and ensures it has a thread number of 0.
+
+    self.threadInfoByThreadID = [[NSMutableDictionary alloc] init];
+    (void) [self threadInfoForCurrentThread];
+    
+    // Start up the core code.  Change the if expression to NO to disable the CustomHTTPProtocol for 
+    // comparative testing and so on.
     
     [CustomHTTPProtocol setDelegate:self];
     if (YES) {
@@ -99,98 +111,193 @@ static NSUInteger             sNextThreadID = 1;
     
     // Create the web view controller and set up the UI.  We do this after setting 
     // up the core code in case this triggers any HTTP requests.
+    // 
+    // By default the Test button is not shown because this sample is focused on UIWebView.  
+    // If you want to runs tests with NSURL{Session,Connection}, change the if expression to 
+    // show the Test button and then configure the test by changing the code in -testAction:.
     
-    self.viewController = [[[WebViewController alloc] init] autorelease];
-    assert(self.viewController != nil);
-    self.viewController.title = @"CustomHTTPProtocol";
+    webViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle bundleForClass:[self class]]] instantiateViewControllerWithIdentifier:@"webView"];
+    assert(webViewController != nil);
+    webViewController.delegate = self;
     if (NO) {
-        self.viewController.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:@"Test" style:UIBarButtonItemStyleBordered target:self action:@selector(testAction:)] autorelease];
+        webViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Test" style:UIBarButtonItemStyleBordered target:self action:@selector(testAction:)];
     }
-    [self.navController pushViewController:self.viewController animated:NO];
+    [((UINavigationController *) self.window.rootViewController) pushViewController:webViewController animated:NO];
 
-    [self.window addSubview:self.navController.view];
 	[self.window makeKeyAndVisible];
+    
+    return YES;
 }
 
-- (void)customHTTPProtocol:(CustomHTTPProtocol *)protocol logWithFormat:(NSString *)format arguments:(va_list)argList
-    // Called by the CustomHTTPProtocol class to pass us log messages.  We respond by simply 
-    // logging the messages
+- (ThreadInfo *)threadInfoForCurrentThread
 {
+    int             junk;
+    uint64_t        tid;
+    NSNumber *      tidObj;
+    ThreadInfo *    result;
+
+    // Get the thread ID and box it for use as a dictionary key.
+    
+    junk = pthread_threadid_np(pthread_self(), &tid);
+    #pragma unused(junk)            // quietens analyser in the Release build
+    assert(junk == 0);
+    tidObj = @(tid);
+    
+    // Look up the thread info using that key.
+    
+    @synchronized (self) {
+        result = self.threadInfoByThreadID[tidObj];
+    }
+    
+    // If we didn't find one, create it.  We drop the @synchronized while doing this because 
+    // it might take a while; in theory no one else should be able to add this thread into 
+    // the dictionary (because threads only add themselves) so we just assert that this 
+    // hasn't happened.
+    // 
+    // Also note that, because self.nextThreadNumber accesses must be protected by the 
+    // @synchronized, we actually created the ThreadInfo object inside the @synchronized 
+    // block.  That shouldn't be a problem because -[ThreadInfo initXxx] is trivial.
+    
+    if (result == nil) {
+        ThreadInfo *    newThreadInfo;
+        char            threadName[256];
+        NSString *      threadNameObj;
+
+        if ( (pthread_getname_np(pthread_self(), threadName, sizeof(threadName)) == 0) && (threadName[0] != 0) ) {
+            // We got a name and it's not empty.
+            threadNameObj = [[NSString alloc] initWithUTF8String:threadName];
+        } else if (pthread_main_np()) {
+            threadNameObj = @"-main-";
+        } else {
+            threadNameObj = @"-unnamed-";
+        }
+        assert(threadNameObj != nil);
+
+        @synchronized (self) {
+            assert(self.threadInfoByThreadID[tidObj] == nil);
+
+            newThreadInfo = [[ThreadInfo alloc] initWithThreadID:tid number:self.nextThreadNumber name:threadNameObj];
+            self.nextThreadNumber += 1;
+
+            self.threadInfoByThreadID[tidObj] = newThreadInfo;
+            result = newThreadInfo;
+        }
+    }
+    
+    return result;
+}
+
+/*! Our logging core, called by various logging routines, each with a unique prefix. May be called 
+ *  by any thread.
+ *  \param prefix A prefix to to insert into the log; must not be nil; if non-empty, should include a trailing space.
+ *  \param format A standard NSString-style format string.
+ *  \param arguments Arguments for that format string.
+ */
+
+- (void)logWithPrefix:(NSString *)prefix format:(NSString *)format arguments:(va_list)arguments
+{
+    assert(prefix != nil);
+    assert(format != nil);
+    
     if (sAppDelegateLoggingEnabled) {
         NSTimeInterval  now;
-        mach_port_t     machThreadID;
-        NSUInteger      threadID;
+        ThreadInfo *    threadInfo;
         NSString *      str;
         char            elapsedStr[16];
 
         now = [NSDate timeIntervalSinceReferenceDate];
 
-        machThreadID = mach_thread_self();
-        @synchronized ([self class]) {
-            BOOL            found;
-            const void *    value;
-            
-            found = CFDictionaryGetValueIfPresent(sThreadToIDMap, (const void *) (uintptr_t) machThreadID, &value) != false;
-            if (found) {
-                threadID = (uintptr_t) value;
-            } else {
-                threadID = sNextThreadID;
-                sNextThreadID += 1;
-                CFDictionarySetValue(sThreadToIDMap, (const void *) (uintptr_t) machThreadID, (const void *) (uintptr_t) threadID);
-            }
-        };
+        threadInfo = [self threadInfoForCurrentThread];
         
-        str = [[NSString alloc] initWithFormat:format arguments:argList];
+        str = [[NSString alloc] initWithFormat:format arguments:arguments];
         assert(str != nil);
         
         snprintf(elapsedStr, sizeof(elapsedStr), "+%.1f", (now - sAppStartTime));
         
-        if (protocol == nil) {
-            fprintf(stderr, "%3zu %s %s\n",    (size_t) threadID, elapsedStr, [str UTF8String]);
-        } else {
-            fprintf(stderr, "%3zu %s %p %s\n", (size_t) threadID, elapsedStr, protocol, [str UTF8String]);
-        }
-        
-        [str release];
+        fprintf(stderr, "%3zu %s %s%s\n", (size_t) threadInfo.number, elapsedStr, [prefix UTF8String], [str UTF8String]);
     }
 }
 
-- (void)logWithFormat:(NSString *)format, ...
+- (void)customHTTPProtocol:(CustomHTTPProtocol *)protocol logWithFormat:(NSString *)format arguments:(va_list)arguments
 {
-    va_list     ap;
+    NSString *  prefix;
     
-    va_start(ap, format);
-    [self customHTTPProtocol:nil logWithFormat:format arguments:ap];
-    va_end(ap);
+    // protocol may be nil
+    assert(format != nil);
+    
+    if (protocol == nil) {
+        prefix = @"protocol ";
+    } else {
+        prefix = [NSString stringWithFormat:@"protocol %p ", protocol];
+    }
+    [self logWithPrefix:prefix format:format arguments:arguments];
+}
+
+- (BOOL)webViewController:(WebViewController *)controller addTrustedAnchor:(SecCertificateRef)anchor error:(NSError *__autoreleasing *)errorPtr
+{
+    #pragma unused(controller)
+    assert(controller != nil);
+    assert(anchor != NULL);
+    // errorPtr may be NULL
+    #pragma unused(errorPtr)
+    assert([NSThread isMainThread]);
+    
+    [self.credentialsManager addTrustedAnchor:anchor];
+    return YES;
+}
+
+- (void)webViewController:(WebViewController *)controller logWithFormat:(NSString *)format arguments:(va_list)arguments
+{
+    #pragma unused(controller)
+    assert(controller != nil);
+    assert(format != nil);
+    assert([NSThread isMainThread]);
+    
+    [self logWithPrefix:@"web view " format:format arguments:arguments];
+}
+
+/*! Called by the test subsystem (see below) to log various bits of information. 
+ *  Will be called on the main thread.
+ *  \param format A standard NSString-style format string; will not be nil.
+ */
+
+- (void)testLogWithFormat:(NSString *)format, ... NS_FORMAT_FUNCTION(1, 2)
+{
+    va_list     arguments;
+    
+    assert(format != nil);
+    
+    va_start(arguments, format);
+    [self logWithPrefix:@"test " format:format arguments:arguments];
+    va_end(arguments);
 }
 
 - (BOOL)customHTTPProtocol:(CustomHTTPProtocol *)protocol canAuthenticateAgainstProtectionSpace:(NSURLProtectionSpace *)protectionSpace
-    // A CustomHTTPProtocol delegate callback, called when the protocol needs to process 
-    // an authentication challenge.  In this case we accept any server trust authentication 
-    // challenges.
 {
     assert(protocol != nil);
     #pragma unused(protocol)
     assert(protectionSpace != nil);
     
+    // We accept any server trust authentication challenges.
+    
     return [[protectionSpace authenticationMethod] isEqual:NSURLAuthenticationMethodServerTrust];
 }
 
 - (void)customHTTPProtocol:(CustomHTTPProtocol *)protocol didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
-    // A CustomHTTPProtocol delegate callback, called when the protocol has an authenticate 
-    // challenge that the delegate accepts via -customHTTPProtocol:canAuthenticateAgainstProtectionSpace:. 
-    // In this specific case it's only called to handle server trust authentication challenges. 
-    // It evaluates the trust based on both the global set of trusted anchors and the list of trusted 
-    // anchors returned by the CredentialsManager.
 {
     OSStatus            err;
     NSURLCredential *   credential;
     SecTrustRef         trust;
     SecTrustResultType  trustResult;
+
+    // Given our implementation of -customHTTPProtocol:canAuthenticateAgainstProtectionSpace:, this method 
+    // is only called to handle server trust authentication challenges.  It evaluates the trust based on 
+    // both the global set of trusted anchors and the list of trusted anchors returned by the CredentialsManager.
     
     assert(protocol != nil);
     assert(challenge != nil);
     assert([[[challenge protectionSpace] authenticationMethod] isEqual:NSURLAuthenticationMethodServerTrust]);
+    assert([NSThread isMainThread]);
     
     credential = nil;
 
@@ -204,7 +311,7 @@ static NSUInteger             sNextThreadID = 1;
     if (trust == NULL) {
         assert(NO);
     } else {
-        err = SecTrustSetAnchorCertificates(trust, (CFArrayRef) [CredentialsManager sharedManager].trustedAnchors);
+        err = SecTrustSetAnchorCertificates(trust, (__bridge CFArrayRef) self.credentialsManager.trustedAnchors);
         if (err != noErr) {
             assert(NO);
         } else {
@@ -228,24 +335,66 @@ static NSUInteger             sNextThreadID = 1;
     [protocol resolveAuthenticationChallenge:challenge withCredential:credential];
 }
 
-#pragma mark NSURLConnection test
+// We don't need to implement -customHTTPProtocol:didCancelAuthenticationChallenge: because we always resolve 
+// the challenge synchronously within -customHTTPProtocol:didReceiveAuthenticationChallenge:.
 
-// This code lets you test a vanilla NSURLConnection in addition to the UIWebView test shown by the main 
-// app.  This is useful because UIWebView uses NSURLConnection (actually, the private CFNetwork API that 
-// underlies NSURLConnection, CFURLConnection) in a unique way, so it's important to test your code 
-// with both UIWebView and NSURLConnection.
+#pragma mark Test Button
+
+/*! Called when the user taps of the (optional) Test button in the nav bar.  This kicks off a various 
+ *  tests, selectable at compile time by changing the if expressions.
+ *  \param sender The object that sent this action.
+ */
 
 - (void)testAction:(id)sender
 {
     #pragma unused(sender)
-    [self logWithFormat:@"test start"];
-    (void) [NSURLConnection connectionWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"http://www.apple.com/"]] delegate:self];
+    if (NO) {
+        [self testNSURLConnection];
+    }
+    if (YES) {
+        [self testNSURLSession];
+    }
+}
+
+#pragma mark NSURLSession test
+
+/*! This routine kicks off a vanilla NSURLSession task, as opposed to the UIWebView test shown by the 
+ *  main app.  This is useful because UIWebView uses NSURLConnection (actually, the private CFNetwork 
+ *  API that underlies NSURLConnection, CFURLConnection) in a unique way, so it's important to test 
+ *  your code with both UIWebView and NSURLSession.
+ */
+
+- (void)testNSURLSession
+{
+    [self testLogWithFormat:@"start (NSURLSession)"];
+    [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:@"https://www.apple.com/"] completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        #pragma unused(data)
+        if (error != nil) {
+            [self testLogWithFormat:@"error:%@ / %d", [error domain], (int) [error code]];
+        } else {
+            [self testLogWithFormat:@"success:%zd / %@", (ssize_t) [(NSHTTPURLResponse *) response statusCode], [response URL]];
+        }
+    }] resume];
+}
+
+#pragma mark NSURLConnection test
+
+/*! This routine kicks off a vanilla NSURLConnection, as opposed to the UIWebView test shown by the 
+ *  main app.  This is useful because UIWebView uses NSURLConnection (actually, the private CFNetwork 
+ *  API that underlies NSURLConnection, CFURLConnection) in a unique way, so it's important to test 
+ *  your code with both UIWebView and NSURLConnection.
+ */
+
+- (void)testNSURLConnection
+{
+    [self testLogWithFormat:@"start (NSURLConnection)"];
+    (void) [NSURLConnection connectionWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"https://www.apple.com/"]] delegate:self];
 }
 
 - (NSURLRequest *)connection:(NSURLConnection *)connection willSendRequest:(NSURLRequest *)request redirectResponse:(NSURLResponse *)response
 {
     #pragma unused(connection)
-    [self logWithFormat:@"test willSendRequest:%@ redirectResponse:%@", request, response];
+    [self testLogWithFormat:@"willSendRequest:%@ redirectResponse:%@", [request URL], [response URL]];
     return request;
 }
 
@@ -253,34 +402,34 @@ static NSUInteger             sNextThreadID = 1;
 {
     #pragma unused(connection)
     #pragma unused(response)
-    [self logWithFormat:@"test didReceiveResponse:%@", response];
+    [self testLogWithFormat:@"didReceiveResponse:%zd / %@", (ssize_t) [(NSHTTPURLResponse *) response statusCode], [response URL]];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
 {
     #pragma unused(connection)
     #pragma unused(data)
-    [self logWithFormat:@"test didReceiveData:%zu", (size_t) [data length]];
+    [self testLogWithFormat:@"didReceiveData:%zu", (size_t) [data length]];
 }
 
 - (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse
 {
     #pragma unused(connection)
-    [self logWithFormat:@"test willCacheResponse:%@", cachedResponse];
+    [self testLogWithFormat:@"willCacheResponse:%@", [[cachedResponse response] URL]];
     return cachedResponse;
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
     #pragma unused(connection)
-    [self logWithFormat:@"test connectionDidFinishLoading"];
+    [self testLogWithFormat:@"connectionDidFinishLoading"];
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
     #pragma unused(connection)
     #pragma unused(error)
-    [self logWithFormat:@"test didFailWithError:%@ / %d", [error domain], (int) [error code]];
+    [self testLogWithFormat:@"didFailWithError:%@ / %d", [error domain], (int) [error code]];
 }
 
 @end

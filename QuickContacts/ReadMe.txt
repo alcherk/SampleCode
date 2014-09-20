@@ -32,14 +32,14 @@ QuickContactsViewController.h
 QuickContactsViewController.m
 A view controller for managing the table.
 
-QuickContactsViewController.xib
-The nib file containing a table view.
+Main.storyboard
+The storyboard file containing a table view controller.
 
 
 Changes from Previous Versions
 1.0 - First version.
 1.1 - Upgraded project to build with the iOS 4.0 SDK.
 1.2 - Updated for iOS 6.0, now uses ARC, and shows how to check and request access to a user’s address book database.  
+1.3 - Updated to support Storyboards.
 
-
-Copyright (c) 2010-2013 Apple Inc. All rights reserved.
+Copyright (c) 2010-2014 Apple Inc. All rights reserved.

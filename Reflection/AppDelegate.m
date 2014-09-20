@@ -1,7 +1,7 @@
 /*
      File: AppDelegate.m
  Abstract: The application delegate class used for installing our view controller.
-  Version: 1.7
+  Version: 1.8
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -49,18 +49,11 @@
 #import "MyViewController.h"
 
 @interface AppDelegate ()
-@property (nonatomic, strong) IBOutlet MyViewController *viewController;
+
 @end
 
 @implementation AppDelegate
 
-- (void)applicationDidFinishLaunching:(UIApplication *)application
-{	
-	// using the viewController xib outlet, add its view to our window
-	self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    self.window.rootViewController = self.viewController;
-	[self.window makeKeyAndVisible];
-}
-
+@synthesize window;
 
 @end

@@ -1,7 +1,7 @@
 /*
      File: CredentialsManager.m
  Abstract: Manages the list of trusted anchor certificates.
-  Version: 1.0
+  Version: 1.1
  
  Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
  Inc. ("Apple") in consideration of your agreement to the following
@@ -41,38 +41,23 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2013 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
  */
 
 #import "CredentialsManager.h"
 
-#include <Security/Security.h>
+@import Security;
 
 @interface CredentialsManager ()
 
-@property (atomic, retain, readonly) NSMutableArray *   mutableTrustedAnchors;
+@property (atomic, strong, readonly ) NSMutableArray *   mutableTrustedAnchors;
 
 @end
 
 @implementation CredentialsManager
 
-@synthesize mutableTrustedAnchors = _mutableTrustedAnchors;
-
-+ (CredentialsManager *)sharedManager
-{
-    static CredentialsManager * sSharedManager;
-    
-    @synchronized (self) {          // on the class itself!
-        if (sSharedManager == nil) {
-            sSharedManager = [[CredentialsManager alloc] init];
-            assert(sSharedManager != nil);
-        }
-    }
-    return sSharedManager;
-}
-
-- (id)init
+- (instancetype)init
 {
     self = [super init];
     if (self != nil) {
@@ -87,7 +72,7 @@
     NSArray *   result;
 
     @synchronized (self) {
-        result = [[self->_mutableTrustedAnchors copy] autorelease];
+        result = [self->_mutableTrustedAnchors copy];
         assert(result != nil);
     }
     return result;
@@ -95,40 +80,19 @@
 
 - (void)addTrustedAnchor:(SecCertificateRef)newAnchor
 {
-    CFDataRef   newAnchorData;
     BOOL        found;
     
-    newAnchorData = SecCertificateCopyData(newAnchor);
-    assert(newAnchorData != NULL);
+    assert(newAnchor != NULL);
     
     @synchronized (self) {
         
-        found = NO;
-        
         // Check to see if the certificate is already in the mutableTrustedAnchors 
-        // array.  If SecCertificateRef supported CFEqual properly, this would be 
-        // easy, but alas it does not.
+        // array.  Somewhere along the line SecCertificate refs started supporting 
+        // CFEqual, so we can use -indexOfObject:, which is nice.
         
-        for (id anchorObj in self->_mutableTrustedAnchors) {
-            SecCertificateRef   anchor;
-            CFDataRef           anchorData;
-            
-            anchor = (SecCertificateRef) anchorObj;
-            assert(CFGetTypeID(anchor) == SecCertificateGetTypeID());
-            
-            anchorData = SecCertificateCopyData(anchor);
-            assert(anchorData != NULL);
-            
-            found = CFEqual(anchorData, newAnchorData) != false;
-            
-            CFRelease(anchorData);
-            
-            if (found) {
-                break;
-            }
-        }
+        found = [self->_mutableTrustedAnchors indexOfObject:(__bridge id) newAnchor] != NSNotFound;
         
-        // If the new anchor is unique, add it to the array.
+        // If the new anchor isn't already in the array, add it.
         
         if ( ! found ) {
             NSIndexSet *    indexSet;
@@ -137,12 +101,10 @@
             assert(indexSet != nil);
             
             [self willChange:NSKeyValueChangeInsertion valuesAtIndexes:indexSet forKey:@"trustedAnchors"];
-            [self->_mutableTrustedAnchors addObject:(id)newAnchor];
+            [self->_mutableTrustedAnchors addObject:(__bridge id)newAnchor];
             [self  didChange:NSKeyValueChangeInsertion valuesAtIndexes:indexSet forKey:@"trustedAnchors"];
         }
     }
-    
-    CFRelease(newAnchorData);
 }
 
 @end

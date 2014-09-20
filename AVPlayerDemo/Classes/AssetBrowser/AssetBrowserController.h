@@ -41,9 +41,9 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2011 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
-*/
+ */
 
 #import <UIKit/UIViewController.h>
 #import <UIKit/UITableView.h>
@@ -63,7 +63,7 @@
 	BOOL singleSourceTypeMode;
 	BOOL haveBuiltSourceLibraries;
 	
-	id <AssetBrowserControllerDelegate> delegate;
+	id <AssetBrowserControllerDelegate> __weak delegate;
 	
 	BOOL thumbnailAndTitleGenerationIsRunning;
 	BOOL thumbnailAndTitleGenerationEnabled;
@@ -92,7 +92,7 @@
 
 - (void)clearSelection; // Used to clear the selection without dismissing the asset browser;
 
-@property (nonatomic, assign) id<AssetBrowserControllerDelegate> delegate;
+@property (nonatomic, weak) id<AssetBrowserControllerDelegate> delegate;
 
 @end
 

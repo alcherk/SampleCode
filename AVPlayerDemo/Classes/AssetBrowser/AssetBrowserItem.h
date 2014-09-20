@@ -41,9 +41,9 @@
  STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
  POSSIBILITY OF SUCH DAMAGE.
  
- Copyright (C) 2011 Apple Inc. All Rights Reserved.
+ Copyright (C) 2014 Apple Inc. All Rights Reserved.
  
-*/
+ */
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
@@ -89,8 +89,8 @@ typedef NSInteger AssetBrowserItemFillMode;
 @property (nonatomic, readonly) NSURL *URL;
 @property (nonatomic, readonly, copy) NSString *title;
 @property (nonatomic, readonly) BOOL haveRichestTitle;
-@property (nonatomic, readonly, retain) UIImage *thumbnailImage;
-@property (nonatomic, readonly) AVAsset *asset;
+@property (nonatomic, readonly, strong) UIImage *thumbnailImage;
+@property (weak, nonatomic, readonly) AVAsset *asset;
 
 - (void)clearThumbnailCache;
 - (void)clearAssetCache;
